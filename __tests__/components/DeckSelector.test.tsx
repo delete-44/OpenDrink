@@ -1,10 +1,12 @@
 import DeckSelector from "@/components/DeckSelector";
-import { render } from "@testing-library/react-native";
+import { render, screen } from "@testing-library/react-native";
 
-describe("<DeckSelector />", () => {
-  test("Text renders correctly on DeckSelector", () => {
-    const { getByText } = render(<DeckSelector />);
+describe("DeckSelector", () => {
+  it("renders UI elements correctly", () => {
+    render(<DeckSelector />);
 
-    getByText("Default");
+    expect(screen.getByText("Default")).toBeVisible();
+
+    expect(screen.getAllByRole("button")).toHaveLength(2);
   });
 });

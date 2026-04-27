@@ -41,13 +41,21 @@ export default function PlayerList() {
   return (
     <View style={styles.playerList}>
       <View style={styles.playerInputWrapper}>
-        <TextInput
-          style={globalStyles.textInput}
-          value={newPlayer}
-          onChangeText={setNewPlayer}
-        />
+        <View style={globalStyles.formGroup}>
+          <Text style={globalStyles.label} nativeID="playerNameLabel">
+            Name
+          </Text>
+          <TextInput
+            aria-labelledby="playerNameLabel"
+            style={globalStyles.textInput}
+            value={newPlayer}
+            onChangeText={setNewPlayer}
+          />
+        </View>
 
         <Pressable
+          role="button"
+          accessibilityLabel="Add Player"
           style={globalStyles.buttonHighlight}
           onPress={() => addPlayer(newPlayer)}
         >
@@ -79,5 +87,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: SPACING_SM,
     justifyContent: "space-between",
+    alignItems: "baseline",
   },
 });

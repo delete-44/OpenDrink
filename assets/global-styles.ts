@@ -12,6 +12,9 @@ export const SPACING_SM = 8;
 export const SPACING_MD = 16;
 export const SPACING_LG = 24;
 
+const FONT_SIZE_MD = 16;
+const FONT_SIZE_LG = 24;
+
 const baseButton = {
   backgroundColor: CONTENT_COLOR,
   borderWidth: 5,
@@ -27,13 +30,16 @@ export default StyleSheet.create({
     flex: 1,
   },
   textLg: {
-    fontSize: 24,
+    fontSize: FONT_SIZE_LG,
     color: CONTENT_COLOR,
   },
   textMd: {
-    fontSize: 20,
+    fontSize: FONT_SIZE_MD,
     color: CONTENT_COLOR,
     flex: 1,
+  },
+  label: {
+    color: CONTENT_COLOR,
   },
   textInput: {
     flex: 1,
@@ -42,7 +48,12 @@ export default StyleSheet.create({
     borderColor: DECORATION_COLOR,
     borderRadius: SPACING_SM,
     padding: SPACING_SM,
-    fontSize: 20,
+    fontSize: 16,
+    minHeight: 32,
+  },
+  formGroup: {
+    flexDirection: "column",
+    flex: 1,
   },
   buttonHighlight: {
     ...baseButton,

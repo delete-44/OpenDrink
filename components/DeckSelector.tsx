@@ -13,12 +13,14 @@ export default function DeckSelector() {
 
       <View style={styles.deckSelectorActions}>
         <Pressable
+          role="button"
           style={globalStyles.button}
           onPress={() => alert("Pressed Edit")}
         >
           <Text style={globalStyles.buttonText}>Edit</Text>
         </Pressable>
         <Pressable
+          role="button"
           style={globalStyles.button}
           onPress={() => alert("Pressed New")}
         >
