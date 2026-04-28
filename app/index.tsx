@@ -1,6 +1,5 @@
 import {
   KeyboardAvoidingView,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -26,9 +25,7 @@ export default function Index() {
 
       <PlayerList />
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "padding"}
-      >
+      <KeyboardAvoidingView behavior="padding">
         <View style={styles.heroButtonWrapper}>
           <Pressable
             role="button"
