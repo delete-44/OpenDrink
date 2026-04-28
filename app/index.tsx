@@ -50,7 +50,7 @@ export default function Index() {
             style={styles.heroButton}
             onPress={() => alert("Get started clicked")}
           >
-            <Text style={globalStyles.buttonText}>Get Started!</Text>
+            <Text style={styles.heroButtonText}>Get Started!</Text>
           </Pressable>
         </View>
       </KeyboardAvoidingView>
@@ -71,5 +71,9 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING_LG,
     alignSelf: "center",
     boxShadow: `-5px 5px 0 ${DECORATION_COLOR}`,
+  },
+  heroButtonText: {
+    ...globalStyles.buttonText,
+    fontSize: 32,
   },
 });

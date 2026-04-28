@@ -11,6 +11,7 @@ import globalStyles from "@/assets/global-styles";
 import {
   CONTENT_BACKDROP,
   ERROR_MESSAGE_HEIGHT,
+  SPACING_LG,
   SPACING_MD,
   SPACING_SM,
 } from "@/assets/style-constants";
@@ -110,6 +111,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
+    height: "auto",
+    marginTop: SPACING_LG,
   },
   addPlayerButton: {
     ...globalStyles.buttonHighlight,
