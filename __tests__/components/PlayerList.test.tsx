@@ -14,8 +14,16 @@ describe("PlayerList", () => {
     jest.resetAllMocks();
   });
 
-  // TODO
-  it("renders an empty state when no players provided", () => {});
+  it("renders an empty state when no players provided", () => {
+    render(
+      <StorageContext.Provider value={mockValue}>
+        <PlayerList />
+      </StorageContext.Provider>,
+    );
+
+    const noPlayersMessage = screen.getByText("Add players here!");
+    expect(noPlayersMessage).toBeVisible();
+  });
 
   it("prevents user adding empty names", () => {
     render(

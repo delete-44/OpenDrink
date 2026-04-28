@@ -15,6 +15,7 @@ import {
 } from "@/assets/style-constants";
 import { StorageContext } from "@/context/StorageContext";
 import { useCallback, useContext, useState } from "react";
+import PlayerListEmptyState from "./PlayerListEmptyState";
 import PlayerListItem from "./PlayerListItem";
 
 export default function PlayerList() {
@@ -54,6 +55,7 @@ export default function PlayerList() {
             Name
           </Text>
           <TextInput
+            autoCorrect={false}
             aria-labelledby="playerNameLabel"
             style={globalStyles.textInput}
             value={newPlayer}
@@ -74,6 +76,7 @@ export default function PlayerList() {
       <FlatList
         data={players}
         renderItem={({ item }) => <PlayerListItem name={item} />}
+        ListEmptyComponent={PlayerListEmptyState}
       />
     </View>
   );
