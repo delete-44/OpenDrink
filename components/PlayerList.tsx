@@ -11,6 +11,7 @@ import globalStyles from "@/assets/global-styles";
 import {
   CONTENT_BACKDROP,
   ERROR_MESSAGE_HEIGHT,
+  FORM_CONTROL_SIZE,
   SPACING_LG,
   SPACING_MD,
   SPACING_SM,
@@ -117,5 +118,6 @@ const styles = StyleSheet.create({
   addPlayerButton: {
     ...globalStyles.buttonHighlight,
     marginBottom: ERROR_MESSAGE_HEIGHT,
+    height: FORM_CONTROL_SIZE,
   },
 });

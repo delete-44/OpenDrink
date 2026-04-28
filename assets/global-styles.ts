@@ -39,7 +39,6 @@ export default StyleSheet.create({
   textMd: {
     ...baseText,
     fontSize: FONT_SIZE_MD,
-    flex: 1,
   },
   label: {
     ...baseText,

@@ -32,7 +32,7 @@ export default function PlayerListItem({ name }: PlayerListItemProps) {
 
   return (
     <View style={styles.playerListItemWrapper}>
-      <Text style={globalStyles.textLg}>{name}</Text>
+      <Text style={styles.playerName}>{name}</Text>
       <Pressable
         role="button"
         accessibilityLabel="Remove Player"
@@ -53,5 +53,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     marginVertical: 4,
+  },
+  playerName: {
+    ...globalStyles.textLg,
+    flex: 1,
   },
 });

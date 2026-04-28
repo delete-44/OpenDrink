@@ -23,7 +23,7 @@ export default function RootLayout() {
   return (
     <StorageProvider>
       <Stack screenOptions={{ headerShown: false }} />
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" />
     </StorageProvider>
   );
 }

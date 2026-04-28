@@ -1,4 +1,5 @@
 import {
+  ImageBackground,
   Keyboard,
   KeyboardAvoidingView,
   Pressable,
@@ -39,6 +40,11 @@ export default function Index() {
 
   return (
     <SafeAreaView style={{ ...globalStyles.rootBg, gap: SPACING_MD }}>
+      <ImageBackground
+        source={require("../assets/images/bg-pattern.png")}
+        resizeMode="repeat"
+        style={styles.backgroundImage}
+      />
       {!isKeyboardVisible && <DeckSelector />}
 
       <PlayerList />
@@ -59,6 +65,15 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: "100%",
+    height: "100%",
+  },
   heroButtonWrapper: {
     borderTopWidth: 5,
     borderTopColor: DECORATION_COLOR,
