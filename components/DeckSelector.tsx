@@ -1,8 +1,9 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 import globalStyles from "@/assets/global-styles";
 import {
   CONTENT_BACKDROP,
+  CONTENT_COLOR,
   SPACING_MD,
   SPACING_SM,
 } from "@/assets/style-constants";
@@ -10,6 +11,13 @@ import {
 export default function DeckSelector() {
   return (
     <View style={styles.deckSelector}>
+      <View style={styles.logoBackground}>
+        <Image
+          style={styles.logo}
+          source={require("../assets/icons/deck.png")}
+          alt=""
+        />
+      </View>
       <Text style={globalStyles.textLg}>Default</Text>
 
       <View style={styles.deckSelectorActions}>
@@ -33,6 +41,12 @@ export default function DeckSelector() {
 }
 
 const styles = StyleSheet.create({
+  logoBackground: {
+    backgroundColor: CONTENT_COLOR,
+    borderRadius: 99,
+    padding: SPACING_MD,
+  },
+  logo: {},
   deckSelector: {
     padding: SPACING_MD,
     marginInline: "auto",

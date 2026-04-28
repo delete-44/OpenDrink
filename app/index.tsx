@@ -41,7 +41,7 @@ export default function Index() {
   return (
     <SafeAreaView style={{ ...globalStyles.rootBg, gap: SPACING_MD }}>
       <ImageBackground
-        source={require("../assets/images/bg-pattern.png")}
+        source={require("../assets/images/decorative/bg-pattern.png")}
         resizeMode="repeat"
         style={styles.backgroundImage}
       />
