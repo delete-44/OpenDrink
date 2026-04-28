@@ -1,4 +1,5 @@
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Pressable,
   StyleSheet,
@@ -16,12 +17,29 @@ import {
 } from "@/assets/style-constants";
 import DeckSelector from "@/components/DeckSelector";
 import PlayerList from "@/components/PlayerList";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showListener = Keyboard.addListener("keyboardDidShow", () => {
+      setIsKeyboardVisible(true);
+    });
+    const hideListener = Keyboard.addListener("keyboardDidHide", () => {
+      setIsKeyboardVisible(false);
+    });
+
+    return () => {
+      showListener.remove();
+      hideListener.remove();
+    };
+  }, []);
+
   return (
     <SafeAreaView style={{ ...globalStyles.rootBg, gap: SPACING_MD }}>
-      <DeckSelector />
+      {!isKeyboardVisible && <DeckSelector />}
 
       <PlayerList />
 
@@ -29,7 +47,6 @@ export default function Index() {
         <View style={styles.heroButtonWrapper}>
           <Pressable
             role="button"
-            accessibilityLabel="Remove Player"
             style={styles.heroButton}
             onPress={() => alert("Get started clicked")}
           >
