@@ -32,12 +32,44 @@ describe("PlayerList", () => {
       </StorageContext.Provider>,
     );
 
+    let errorMessage = screen.queryByText("Player name cannot be empty");
+    expect(errorMessage).toBeNull();
+
     const input = screen.getByLabelText("Name");
     const addButton = screen.getByRole("button", { name: "Add Player" });
     fireEvent.press(addButton);
 
     expect(mockSavePlayers).not.toHaveBeenCalled();
     expect(input).toHaveProp("value", "");
+
+    errorMessage = screen.getByText("Player name cannot be empty");
+    expect(errorMessage).toBeVisible();
+  });
+
+  it("clears error message on new input", () => {
+    render(
+      <StorageContext.Provider value={mockValue}>
+        <PlayerList />
+      </StorageContext.Provider>,
+    );
+
+    let errorMessage = screen.queryByText("Player name cannot be empty");
+    expect(errorMessage).toBeNull();
+
+    const input = screen.getByLabelText("Name");
+    const addButton = screen.getByRole("button", { name: "Add Player" });
+    fireEvent.press(addButton);
+
+    expect(mockSavePlayers).not.toHaveBeenCalled();
+    expect(input).toHaveProp("value", "");
+
+    errorMessage = screen.getByText("Player name cannot be empty");
+    expect(errorMessage).toBeVisible();
+
+    fireEvent.changeText(input, "Alice");
+
+    errorMessage = screen.queryByText("Player name cannot be empty");
+    expect(errorMessage).toBeNull();
   });
 
   it("trims whitespace from player names", () => {
@@ -85,6 +117,9 @@ describe("PlayerList", () => {
         </StorageContext.Provider>,
       );
 
+      let errorMessage = screen.queryByText("Player already exists");
+      expect(errorMessage).toBeNull();
+
       const input = screen.getByLabelText("Name");
       fireEvent.changeText(input, "Alice");
 
@@ -94,7 +129,8 @@ describe("PlayerList", () => {
       expect(mockSavePlayers).not.toHaveBeenCalled();
       expect(input).toHaveProp("value", "Alice");
 
-      // TODO: Assert error message is shown
+      errorMessage = screen.getByText("Player already exists");
+      expect(errorMessage).toBeVisible();
     });
   });
 });

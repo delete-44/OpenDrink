@@ -2,9 +2,11 @@ import { StyleSheet } from "react-native";
 import {
   BACKGROUND_COLOR,
   CONTENT_COLOR,
+  DANGER_COLOR,
   DECORATION_COLOR,
   FONT_SIZE_LG,
   FONT_SIZE_MD,
+  FONT_SIZE_SM,
   HIGHLIGHT_COLOR,
   SPACING_MD,
   SPACING_SM,
@@ -32,7 +34,12 @@ export default StyleSheet.create({
     flex: 1,
   },
   label: {
+    fontSize: FONT_SIZE_SM,
     color: CONTENT_COLOR,
+  },
+  textDanger: {
+    fontSize: FONT_SIZE_SM,
+    color: DANGER_COLOR,
   },
   textInput: {
     flex: 1,

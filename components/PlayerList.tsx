@@ -20,21 +20,21 @@ import PlayerListItem from "./PlayerListItem";
 
 export default function PlayerList() {
   const { players, savePlayers } = useContext(StorageContext);
+
   const [newPlayer, setNewPlayer] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const addPlayer = useCallback(
     (name: string) => {
       const newPlayers = [...players];
 
       if (!name.trim()) {
-        // TODO: Error state
-        console.warn("Player name cannot be empty");
+        setErrorMessage("Player name cannot be empty");
         return;
       }
 
       if (players.includes(name.trim())) {
-        // TODO: Error state
-        console.warn("Player already exists");
+        setErrorMessage("Player already exists");
         return;
       }
 
@@ -54,13 +54,24 @@ export default function PlayerList() {
           <Text style={globalStyles.label} nativeID="playerNameLabel">
             Name
           </Text>
+
           <TextInput
             autoCorrect={false}
             aria-labelledby="playerNameLabel"
             style={globalStyles.textInput}
             value={newPlayer}
-            onChangeText={setNewPlayer}
+            onChangeText={(text) => {
+              setErrorMessage("");
+              setNewPlayer(text);
+            }}
           />
+
+          {errorMessage ? (
+            <Text style={globalStyles.textDanger}>{errorMessage}</Text>
+          ) : (
+            // Manually setting placeholder with fixed height to prevent UI jumps
+            <View style={{ height: 17 }} />
+          )}
         </View>
 
         <Pressable
