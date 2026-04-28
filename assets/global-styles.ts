@@ -12,6 +12,11 @@ import {
   SPACING_SM,
 } from "./style-constants";
 
+const baseText = {
+  color: CONTENT_COLOR,
+  fontFamily: "JockeyOne",
+};
+
 const baseButton = {
   backgroundColor: CONTENT_COLOR,
   borderWidth: 5,
@@ -25,30 +30,32 @@ export default StyleSheet.create({
     flex: 1,
   },
   textLg: {
+    ...baseText,
     fontSize: FONT_SIZE_LG,
-    color: CONTENT_COLOR,
   },
   textMd: {
+    ...baseText,
     fontSize: FONT_SIZE_MD,
-    color: CONTENT_COLOR,
     flex: 1,
   },
   label: {
+    ...baseText,
     fontSize: FONT_SIZE_SM,
-    color: CONTENT_COLOR,
   },
   textDanger: {
+    ...baseText,
     fontSize: FONT_SIZE_SM,
     color: DANGER_COLOR,
   },
   textInput: {
+    fontFamily: "JockeyOne",
     flex: 1,
     backgroundColor: CONTENT_COLOR,
     borderWidth: 5,
     borderColor: DECORATION_COLOR,
     borderRadius: SPACING_SM,
     padding: SPACING_SM,
-    fontSize: 16,
+    fontSize: FONT_SIZE_MD,
     minHeight: 32,
   },
   formGroup: {
@@ -69,7 +76,8 @@ export default StyleSheet.create({
     padding: SPACING_MD,
   },
   buttonText: {
-    fontSize: 20,
+    fontFamily: "JockeyOne",
+    fontSize: FONT_SIZE_MD,
     color: DECORATION_COLOR,
   },
 });

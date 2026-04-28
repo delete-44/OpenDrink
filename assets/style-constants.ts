@@ -10,6 +10,6 @@ export const SPACING_SM = 8;
 export const SPACING_MD = 16;
 export const SPACING_LG = 24;
 
-export const FONT_SIZE_SM = 14;
-export const FONT_SIZE_MD = 16;
+export const FONT_SIZE_SM = 16;
+export const FONT_SIZE_MD = 20;
 export const FONT_SIZE_LG = 24;
