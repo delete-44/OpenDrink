@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import globalStyles, { SPACING_SM } from "@/assets/global-styles";
+import globalStyles from "@/assets/global-styles";
+import { SPACING_SM } from "@/assets/style-constants";
 import { StorageContext } from "@/context/StorageContext";
 import { useCallback, useContext } from "react";
 
@@ -31,7 +32,7 @@ export default function PlayerListItem({ name }: PlayerListItemProps) {
 
   return (
     <View style={styles.playerListItemWrapper}>
-      <Text style={globalStyles.textMd}>{name}</Text>
+      <Text style={globalStyles.textLg}>{name}</Text>
       <Pressable
         role="button"
         accessibilityLabel="Remove Player"
@@ -51,5 +52,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
+    marginVertical: 4,
   },
 });

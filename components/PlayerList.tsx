@@ -1,10 +1,18 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
-import globalStyles, {
+import globalStyles from "@/assets/global-styles";
+import {
   CONTENT_BACKDROP,
   SPACING_MD,
   SPACING_SM,
-} from "@/assets/global-styles";
+} from "@/assets/style-constants";
 import { StorageContext } from "@/context/StorageContext";
 import { useCallback, useContext, useState } from "react";
 import PlayerListItem from "./PlayerListItem";
@@ -63,9 +71,10 @@ export default function PlayerList() {
         </Pressable>
       </View>
 
-      {players.map((player) => (
-        <PlayerListItem name={player} key={player} />
-      ))}
+      <FlatList
+        data={players}
+        renderItem={({ item }) => <PlayerListItem name={item} />}
+      />
     </View>
   );
 }
@@ -73,8 +82,10 @@ export default function PlayerList() {
 const styles = StyleSheet.create({
   playerList: {
     maxWidth: "90%",
-    padding: SPACING_MD,
+    paddingHorizontal: SPACING_MD,
+    paddingVertical: SPACING_SM,
     marginInline: "auto",
+    flex: 1,
 
     backgroundColor: CONTENT_BACKDROP,
     borderRadius: SPACING_SM,

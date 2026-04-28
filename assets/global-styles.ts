@@ -1,19 +1,14 @@
-import Constants from "expo-constants";
 import { StyleSheet } from "react-native";
-
-const BACKGROUND_COLOR = "#540D6E";
-const CONTENT_COLOR = "#FFFFFF";
-const HIGHLIGHT_COLOR = "#F49907";
-const DECORATION_COLOR = "#000000";
-
-export const CONTENT_BACKDROP = "rgba(0, 0, 0, 0.4)";
-
-export const SPACING_SM = 8;
-export const SPACING_MD = 16;
-export const SPACING_LG = 24;
-
-const FONT_SIZE_MD = 16;
-const FONT_SIZE_LG = 24;
+import {
+  BACKGROUND_COLOR,
+  CONTENT_COLOR,
+  DECORATION_COLOR,
+  FONT_SIZE_LG,
+  FONT_SIZE_MD,
+  HIGHLIGHT_COLOR,
+  SPACING_MD,
+  SPACING_SM,
+} from "./style-constants";
 
 const baseButton = {
   backgroundColor: CONTENT_COLOR,
@@ -25,8 +20,6 @@ const baseButton = {
 export default StyleSheet.create({
   rootBg: {
     backgroundColor: BACKGROUND_COLOR,
-    paddingTop: Constants.statusBarHeight + SPACING_LG,
-    paddingBottom: SPACING_LG,
     flex: 1,
   },
   textLg: {

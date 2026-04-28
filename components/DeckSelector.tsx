@@ -1,10 +1,11 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import globalStyles, {
+import globalStyles from "@/assets/global-styles";
+import {
   CONTENT_BACKDROP,
   SPACING_MD,
   SPACING_SM,
-} from "@/assets/global-styles";
+} from "@/assets/style-constants";
 
 export default function DeckSelector() {
   return (
