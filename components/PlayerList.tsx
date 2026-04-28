@@ -10,6 +10,7 @@ import {
 import globalStyles from "@/assets/global-styles";
 import {
   CONTENT_BACKDROP,
+  ERROR_MESSAGE_HEIGHT,
   SPACING_MD,
   SPACING_SM,
 } from "@/assets/style-constants";
@@ -64,7 +65,7 @@ export default function PlayerList() {
         <Pressable
           role="button"
           accessibilityLabel="Add Player"
-          style={globalStyles.buttonHighlight}
+          style={styles.addPlayerButton}
           onPress={() => addPlayer(newPlayer)}
         >
           <Text style={globalStyles.buttonText}>+</Text>
@@ -105,9 +106,13 @@ const styles = StyleSheet.create({
     gap: SPACING_MD,
   },
   playerInputWrapper: {
-    flexDirection: "row",
     gap: SPACING_SM,
+    flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "baseline",
+    alignItems: "flex-end",
+  },
+  addPlayerButton: {
+    ...globalStyles.buttonHighlight,
+    marginBottom: ERROR_MESSAGE_HEIGHT,
   },
 });

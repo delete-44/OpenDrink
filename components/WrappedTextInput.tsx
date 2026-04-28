@@ -1,4 +1,5 @@
 import globalStyles from "@/assets/global-styles";
+import { ERROR_MESSAGE_HEIGHT } from "@/assets/style-constants";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
 type WrappedTextInputProps = {
@@ -41,7 +42,7 @@ export default function WrappedTextInput({
 
 const style = StyleSheet.create({
   errorMessageWrapper: {
-    height: 20,
+    height: ERROR_MESSAGE_HEIGHT,
     marginLeft: 5,
   },
 });

@@ -7,6 +7,7 @@ import {
   FONT_SIZE_LG,
   FONT_SIZE_MD,
   FONT_SIZE_SM,
+  FORM_CONTROL_SIZE,
   HIGHLIGHT_COLOR,
   SPACING_MD,
   SPACING_SM,
@@ -22,6 +23,8 @@ const baseButton = {
   borderWidth: 5,
   borderColor: DECORATION_COLOR,
   borderRadius: SPACING_SM,
+  minWidth: FORM_CONTROL_SIZE,
+  minHeight: FORM_CONTROL_SIZE,
 };
 
 export default StyleSheet.create({
@@ -57,7 +60,7 @@ export default StyleSheet.create({
     borderRadius: SPACING_SM,
     padding: SPACING_SM,
     fontSize: FONT_SIZE_MD,
-    minHeight: 48,
+    minHeight: FORM_CONTROL_SIZE,
   },
   formGroup: {
     flexDirection: "column",
@@ -80,5 +83,6 @@ export default StyleSheet.create({
     fontFamily: "JockeyOne",
     fontSize: FONT_SIZE_MD,
     color: DECORATION_COLOR,
+    textAlign: "center",
   },
 });
