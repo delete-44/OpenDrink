@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, TextStyle, ViewStyle } from "react-native";
 import {
   BACKGROUND_COLOR,
   CONTENT_COLOR,
@@ -7,17 +7,27 @@ import {
   FONT_SIZE_LG,
   FONT_SIZE_MD,
   FONT_SIZE_SM,
+  FORM_CONTROL_SIZE,
   HIGHLIGHT_COLOR,
   SPACING_MD,
   SPACING_SM,
 } from "./style-constants";
+
+const baseText = {
+  color: CONTENT_COLOR,
+  fontFamily: "JockeyOne",
+} as TextStyle;
 
 const baseButton = {
   backgroundColor: CONTENT_COLOR,
   borderWidth: 5,
   borderColor: DECORATION_COLOR,
   borderRadius: SPACING_SM,
-};
+  minWidth: FORM_CONTROL_SIZE,
+  minHeight: FORM_CONTROL_SIZE,
+  justifyContent: "center",
+  alignItems: "center",
+} as ViewStyle;
 
 export default StyleSheet.create({
   rootBg: {
@@ -25,31 +35,33 @@ export default StyleSheet.create({
     flex: 1,
   },
   textLg: {
+    ...baseText,
     fontSize: FONT_SIZE_LG,
-    color: CONTENT_COLOR,
   },
   textMd: {
+    ...baseText,
     fontSize: FONT_SIZE_MD,
-    color: CONTENT_COLOR,
-    flex: 1,
   },
   label: {
+    ...baseText,
     fontSize: FONT_SIZE_SM,
-    color: CONTENT_COLOR,
+    marginLeft: 5, // To account for the chunky borders
   },
   textDanger: {
+    ...baseText,
     fontSize: FONT_SIZE_SM,
     color: DANGER_COLOR,
   },
   textInput: {
+    fontFamily: "JockeyOne",
     flex: 1,
     backgroundColor: CONTENT_COLOR,
     borderWidth: 5,
     borderColor: DECORATION_COLOR,
     borderRadius: SPACING_SM,
     padding: SPACING_SM,
-    fontSize: 16,
-    minHeight: 32,
+    fontSize: FONT_SIZE_MD,
+    minHeight: FORM_CONTROL_SIZE,
   },
   formGroup: {
     flexDirection: "column",
@@ -69,7 +81,9 @@ export default StyleSheet.create({
     padding: SPACING_MD,
   },
   buttonText: {
-    fontSize: 20,
+    fontFamily: "JockeyOne",
+    fontSize: FONT_SIZE_SM,
     color: DECORATION_COLOR,
+    textAlign: "center",
   },
 });

@@ -3,14 +3,16 @@ import {
   FlatList,
   Pressable,
   StyleSheet,
-  Text,
-  TextInput,
   View,
 } from "react-native";
 
 import globalStyles from "@/assets/global-styles";
+import { plus } from "@/assets/icons/plus";
 import {
   CONTENT_BACKDROP,
+  ERROR_MESSAGE_HEIGHT,
+  FORM_CONTROL_SIZE,
+  SPACING_LG,
   SPACING_MD,
   SPACING_SM,
 } from "@/assets/style-constants";
@@ -18,6 +20,8 @@ import { StorageContext } from "@/context/StorageContext";
 import { useCallback, useContext, useState } from "react";
 import PlayerListEmptyState from "./PlayerListEmptyState";
 import PlayerListItem from "./PlayerListItem";
+import SVG from "./SVG";
+import WrappedTextInput from "./WrappedTextInput";
 
 export default function PlayerList() {
   const { players, savePlayers, isLoading } = useContext(StorageContext);
@@ -51,37 +55,23 @@ export default function PlayerList() {
   return (
     <View style={styles.playerList}>
       <View style={styles.playerInputWrapper}>
-        <View style={globalStyles.formGroup}>
-          <Text style={globalStyles.label} nativeID="playerNameLabel">
-            Name
-          </Text>
-
-          <TextInput
-            autoCorrect={false}
-            aria-labelledby="playerNameLabel"
-            style={globalStyles.textInput}
-            value={newPlayer}
-            onChangeText={(text) => {
-              setErrorMessage("");
-              setNewPlayer(text);
-            }}
-          />
-
-          {errorMessage ? (
-            <Text style={globalStyles.textDanger}>{errorMessage}</Text>
-          ) : (
-            // Manually setting placeholder with fixed height to prevent UI jumps
-            <View style={{ height: 17 }} />
-          )}
-        </View>
+        <WrappedTextInput
+          label="Name"
+          value={newPlayer}
+          errorMessage={errorMessage}
+          onChange={(text) => {
+            setErrorMessage("");
+            setNewPlayer(text);
+          }}
+        />
 
         <Pressable
           role="button"
           accessibilityLabel="Add Player"
-          style={globalStyles.buttonHighlight}
+          style={styles.addPlayerButton}
           onPress={() => addPlayer(newPlayer)}
         >
-          <Text style={globalStyles.buttonText}>+</Text>
+          <SVG icon={plus} width={24} height={24} />
         </Pressable>
       </View>
 
@@ -116,12 +106,18 @@ const styles = StyleSheet.create({
 
     flexDirection: "column",
     alignItems: "center",
-    gap: SPACING_MD,
   },
   playerInputWrapper: {
-    flexDirection: "row",
     gap: SPACING_SM,
+    flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "baseline",
+    alignItems: "flex-end",
+    height: "auto",
+    marginTop: SPACING_LG,
+  },
+  addPlayerButton: {
+    ...globalStyles.buttonHighlight,
+    marginBottom: ERROR_MESSAGE_HEIGHT,
+    height: FORM_CONTROL_SIZE,
   },
 });

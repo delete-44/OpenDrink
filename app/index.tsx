@@ -1,4 +1,5 @@
 import {
+  ImageBackground,
   Keyboard,
   KeyboardAvoidingView,
   Pressable,
@@ -39,6 +40,11 @@ export default function Index() {
 
   return (
     <SafeAreaView style={{ ...globalStyles.rootBg, gap: SPACING_MD }}>
+      <ImageBackground
+        source={require("../assets/images/decorative/bg-pattern.png")}
+        resizeMode="repeat"
+        style={styles.backgroundImage}
+      />
       {!isKeyboardVisible && <DeckSelector />}
 
       <PlayerList />
@@ -50,7 +56,7 @@ export default function Index() {
             style={styles.heroButton}
             onPress={() => alert("Get started clicked")}
           >
-            <Text style={globalStyles.buttonText}>Get Started!</Text>
+            <Text style={styles.heroButtonText}>Get Started!</Text>
           </Pressable>
         </View>
       </KeyboardAvoidingView>
@@ -59,17 +65,30 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: "100%",
+    height: "100%",
+  },
   heroButtonWrapper: {
     borderTopWidth: 5,
     borderTopColor: DECORATION_COLOR,
     backgroundColor: BACKGROUND_COLOR,
     padding: SPACING_SM,
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
   },
   heroButton: {
     ...globalStyles.buttonHighlight,
     paddingVertical: SPACING_LG,
     alignSelf: "center",
     boxShadow: `-5px 5px 0 ${DECORATION_COLOR}`,
+  },
+  heroButtonText: {
+    ...globalStyles.buttonText,
+    fontSize: 32,
   },
 });

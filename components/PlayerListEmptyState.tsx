@@ -7,7 +7,7 @@ export default function PlayerListEmptyState() {
     <View style={styles.container}>
       <Image
         style={styles.image}
-        source={require("../assets/images/arrow-up.png")}
+        source={require("../assets/images/decorative/arrow-up.png")}
         alt=""
       />
       <Text style={globalStyles.textMd}>Add players here!</Text>
@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
     gap: SPACING_SM,
   },
   image: {
-    width: 100,
-    height: 200,
+    width: 50,
+    height: 150,
     resizeMode: "contain",
   },
 });
