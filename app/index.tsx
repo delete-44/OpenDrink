@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     borderTopColor: DECORATION_COLOR,
     backgroundColor: BACKGROUND_COLOR,
     padding: SPACING_SM,
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
   },
   heroButton: {
     ...globalStyles.buttonHighlight,

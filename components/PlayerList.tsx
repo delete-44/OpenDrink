@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
 
     flexDirection: "column",
     alignItems: "center",
-    gap: SPACING_MD,
   },
   playerInputWrapper: {
     gap: SPACING_SM,
