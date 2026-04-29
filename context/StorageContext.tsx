@@ -5,8 +5,9 @@ import { createContext, useEffect, useState } from "react";
 
 export const StorageContext = createContext({} as StorageContextProps);
 
-const PLAYER_KEY = "players";
+const CURRENT_DECK_KEY = "current_deck_idx";
 const DECK_KEY = "decks";
+const PLAYER_KEY = "players";
 
 export async function loadResourceImpl<T>(
   storageKey: string,
@@ -37,17 +38,21 @@ export async function saveResourceImpl<T>(
 }
 
 export function StorageProvider({ children }: StorageProviderProps) {
+  const [currentDeckIndex, setCurrentDeckIndex] = useState(0);
   const [decks, setDecks] = useState<TDeck[]>([]);
   const [players, setPlayers] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const [loadedDecks, loadedPlayers] = await Promise.all([
-        loadResourceImpl(DECK_KEY, [DEFAULT_DECK]),
-        loadResourceImpl(PLAYER_KEY, [] as string[]),
-      ]);
+      const [loadedCurrentDeckIndex, loadedDecks, loadedPlayers] =
+        await Promise.all([
+          loadResourceImpl(CURRENT_DECK_KEY, 0),
+          loadResourceImpl(DECK_KEY, [DEFAULT_DECK]),
+          loadResourceImpl(PLAYER_KEY, [] as string[]),
+        ]);
 
+      setCurrentDeckIndex(loadedCurrentDeckIndex);
       setDecks(loadedDecks);
       setPlayers(loadedPlayers);
 
@@ -56,6 +61,11 @@ export function StorageProvider({ children }: StorageProviderProps) {
 
     fetchData();
   }, []);
+
+  const saveCurrentDeckIndex = async (idx: number) => {
+    await saveResourceImpl(CURRENT_DECK_KEY, idx);
+    setCurrentDeckIndex(idx);
+  };
 
   const saveDecks = async (newDecks: TDeck[]) => {
     await saveResourceImpl(DECK_KEY, newDecks);
@@ -68,11 +78,13 @@ export function StorageProvider({ children }: StorageProviderProps) {
   };
 
   const value = {
-    isLoading,
+    currentDeckIndex,
+    saveCurrentDeckIndex,
     decks,
     saveDecks,
     players,
     savePlayers,
+    isLoading,
   };
 
   return (

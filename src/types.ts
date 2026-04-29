@@ -21,9 +21,11 @@ export type StorageProviderProps = {
 };
 
 export type StorageContextProps = {
-  isLoading: boolean;
+  currentDeckIndex: number;
+  saveCurrentDeckIndex: (idx: number) => void;
   decks: TDeck[];
   saveDecks: (newDecks: TDeck[]) => void;
   players: string[];
   savePlayers: (newPlayers: string[]) => void;
+  isLoading: boolean;
 };

@@ -1,15 +1,28 @@
+import { StorageProvider } from "@/context/StorageContext";
 import { render, screen, waitFor } from "@testing-library/react-native";
 import { act } from "react";
 import { DeviceEventEmitter } from "react-native";
 import Index from "../app/index";
 
+jest.mock("expo-secure-store", () => ({
+  getItemAsync: jest.fn(async (key: string) => {
+    if (key === "decks")
+      return JSON.stringify([{ name: "Default", cards: ["a"] }]);
+    if (key === "current_deck_idx") return JSON.stringify(0);
+    return null;
+  }),
+  setItemAsync: jest.fn(),
+}));
+
 describe("Index", () => {
-  beforeEach(() => {});
-
   it("should hide DeckSelector when keyboard shows", async () => {
-    render(<Index />);
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <StorageProvider>{children}</StorageProvider>
+    );
 
-    expect(screen.getByText("Default")).toBeVisible();
+    render(<Index />, { wrapper });
+
+    await waitFor(() => expect(screen.getByText("Default")).toBeTruthy());
 
     // Simulate keyboard show
     act(() => {
@@ -22,7 +35,13 @@ describe("Index", () => {
   });
 
   it("should show DeckSelector when keyboard hides", async () => {
-    render(<Index />);
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <StorageProvider>{children}</StorageProvider>
+    );
+
+    render(<Index />, { wrapper });
+
+    await waitFor(() => expect(screen.getByText("Default")).toBeTruthy());
 
     act(() => {
       DeviceEventEmitter.emit("keyboardDidShow");

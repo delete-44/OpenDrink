@@ -1,17 +1,32 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 import globalStyles from "@/assets/global-styles";
 import { pencil } from "@/assets/icons/pencil";
 import { plus } from "@/assets/icons/plus";
+import { StorageContext } from "@/context/StorageContext";
 import {
   CONTENT_BACKDROP,
   CONTENT_COLOR,
   SPACING_MD,
   SPACING_SM,
 } from "@/src/constants/style-constants";
+import { useContext, useMemo } from "react";
 import SVG from "./SVG";
 
 export default function DeckSelector() {
+  const { decks, currentDeckIndex, isLoading } = useContext(StorageContext);
+
+  const currentDeck = useMemo(() => {
+    return decks[currentDeckIndex] || decks[0];
+  }, [decks, currentDeckIndex]);
+
   return (
     <View style={styles.deckSelector}>
       <View style={styles.logoBackground}>
@@ -21,7 +36,11 @@ export default function DeckSelector() {
           alt=""
         />
       </View>
-      <Text style={globalStyles.textLg}>Default</Text>
+      {isLoading ? (
+        <ActivityIndicator color="#fff" accessibilityLabel="Loading decks" />
+      ) : (
+        <Text style={globalStyles.textLg}>{currentDeck.name}</Text>
+      )}
 
       <View style={styles.deckSelectorActions}>
         <Pressable

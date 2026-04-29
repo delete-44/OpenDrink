@@ -82,49 +82,12 @@ describe("StorageContext", () => {
     });
   });
 
-  describe("#savePlayers", () => {
-    it("saves players to SecureStore and updates context", async () => {
+  describe("StorageProvider", () => {
+    beforeEach(() => {
       mockSetItemAsync.mockResolvedValueOnce();
-
-      const wrapper = ({ children }: { children: React.ReactNode }) => (
-        <StorageProvider>{children}</StorageProvider>
-      );
-
-      const { result } = renderHook(() => useContext(StorageContext), {
-        wrapper,
-      });
-
-      const newPlayers = ["Sally", "Alice"];
-
-      // Wait for data to load to prevent race conditions in test
-      await waitFor(() => {
-        expect(result.current.isLoading).toBe(false);
-      });
-
-      await act(async () => {
-        await result.current.savePlayers(newPlayers);
-      });
-
-      expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
-      expect(mockSetItemAsync).toHaveBeenCalledWith(
-        "players",
-        JSON.stringify(newPlayers),
-      );
-
-      // Wait for data to load again...
-      await waitFor(() => {
-        expect(result.current.isLoading).toBe(false);
-      });
-
-      // Assert context state updated
-      expect(result.current.players).toEqual(newPlayers);
     });
-  });
 
-  describe("#saveDecks", () => {
-    it("saves decks to SecureStore and updates context", async () => {
-      mockSetItemAsync.mockResolvedValueOnce();
-
+    const renderStorageContext = async () => {
       const wrapper = ({ children }: { children: React.ReactNode }) => (
         <StorageProvider>{children}</StorageProvider>
       );
@@ -133,30 +96,82 @@ describe("StorageContext", () => {
         wrapper,
       });
 
-      const newDecks = [{ name: "Default", cards: ["Test card"] }] as TDeck[];
-
       // Wait for data to load to prevent race conditions in test
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
       });
 
-      await act(async () => {
-        await result.current.saveDecks(newDecks);
+      return result;
+    };
+
+    describe("#saveCurrentDeckIndex", () => {
+      it("saves current deck idx to SecureStore and updates context", async () => {
+        const decks = [
+          { name: "Default", cards: ["Test card"] },
+          { name: "Second Deck", cards: ["Test 2"] },
+        ] as TDeck[];
+
+        mockStore["decks"] = JSON.stringify(decks);
+
+        const storageContext = await renderStorageContext();
+
+        const newIdx = 1;
+
+        await act(async () => {
+          await storageContext.current.saveCurrentDeckIndex(newIdx);
+        });
+
+        expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
+        expect(mockSetItemAsync).toHaveBeenCalledWith(
+          "current_deck_idx",
+          JSON.stringify(newIdx),
+        );
+
+        // Assert context state updated
+        expect(storageContext.current.currentDeckIndex).toEqual(newIdx);
       });
+    });
 
-      expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
-      expect(mockSetItemAsync).toHaveBeenCalledWith(
-        "decks",
-        JSON.stringify(newDecks),
-      );
+    describe("#saveDecks", () => {
+      it("saves decks to SecureStore and updates context", async () => {
+        const storageContext = await renderStorageContext();
 
-      // Wait for data to load again...
-      await waitFor(() => {
-        expect(result.current.isLoading).toBe(false);
+        const newDecks = [{ name: "Default", cards: ["Test card"] }] as TDeck[];
+
+        await act(async () => {
+          await storageContext.current.saveDecks(newDecks);
+        });
+
+        expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
+        expect(mockSetItemAsync).toHaveBeenCalledWith(
+          "decks",
+          JSON.stringify(newDecks),
+        );
+
+        // Assert context state updated
+        expect(storageContext.current.decks).toEqual(newDecks);
       });
+    });
 
-      // Assert context state updated
-      expect(result.current.decks).toEqual(newDecks);
+    describe("#savePlayers", () => {
+      it("saves players to SecureStore and updates context", async () => {
+        const storageContext = await renderStorageContext();
+
+        const newPlayers = ["Sally", "Alice"];
+
+        await act(async () => {
+          await storageContext.current.savePlayers(newPlayers);
+        });
+
+        expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
+        expect(mockSetItemAsync).toHaveBeenCalledWith(
+          "players",
+          JSON.stringify(newPlayers),
+        );
+
+        // Assert context state updated
+        expect(storageContext.current.players).toEqual(newPlayers);
+      });
     });
   });
 });
