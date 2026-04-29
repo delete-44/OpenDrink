@@ -1,6 +1,10 @@
-type NonEmptyArray<T> = [T, ...T[]];
+export type NonEmptyArray<T> = [T, ...T[]];
 
-export type TDeck = NonEmptyArray<string>;
+export type TDeck = {
+  name: string;
+  cards: NonEmptyArray<string>;
+};
+
 export type TPlayers = NonEmptyArray<string>;
 
 export type GameState = {

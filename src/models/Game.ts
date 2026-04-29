@@ -1,22 +1,22 @@
-import { GameState, TDeck, TPlayers } from "../types";
+import { GameState, NonEmptyArray, TDeck, TPlayers } from "../types";
 
 export class Game {
-  private readonly deck: TDeck;
+  private readonly cards: NonEmptyArray<string>;
   private readonly players: TPlayers;
 
-  private currentDeck: string[];
+  private currentCards: string[];
   private currentPlayers: string[];
 
   constructor(startingDeck: TDeck, startingPlayers: TPlayers) {
-    this.deck = startingDeck;
-    this.currentDeck = [...startingDeck];
+    this.cards = startingDeck.cards;
+    this.currentCards = [...startingDeck.cards];
 
     this.players = startingPlayers;
     this.currentPlayers = [...startingPlayers];
   }
 
   private resetDeck() {
-    this.currentDeck = [...this.deck];
+    this.currentCards = [...this.cards];
   }
 
   private resetPlayers() {
@@ -24,7 +24,7 @@ export class Game {
   }
 
   public drawCard(): GameState {
-    if (this.currentDeck.length === 0) {
+    if (this.currentCards.length === 0) {
       this.resetDeck();
     }
 
@@ -33,7 +33,7 @@ export class Game {
     }
 
     // TODO: Randomise selection
-    const card = this.currentDeck.pop() as string;
+    const card = this.currentCards.pop() as string;
     const player = this.currentPlayers.pop() as string;
 
     return { card, player };
