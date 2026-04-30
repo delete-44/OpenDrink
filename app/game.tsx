@@ -29,10 +29,8 @@ export default function GameScreen() {
       const newGame = new Game(currentDeck, players);
       setGame(newGame);
       setCurrentCard(newGame.drawCard());
-    } catch (e) {
-      console.error(e);
-
-      setErrorMessage("Game not properly initialized");
+    } catch (e: any) {
+      setErrorMessage(e.message);
     }
   }, [isLoading, currentDeck, players]);
 
@@ -74,6 +72,8 @@ export default function GameScreen() {
         onPress={() => {
           setCurrentCard(game.drawCard());
         }}
+        role="button"
+        accessibilityLabel="Tap to draw next card"
       >
         <Text style={{ ...globalStyles.textLg, ...styles.screenTextMixin }}>
           {currentCard.player}&apos;s Turn
