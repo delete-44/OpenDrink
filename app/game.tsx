@@ -11,11 +11,14 @@ import { StorageContext } from "@/context/StorageContext";
 import { SPACING_LG, SPACING_MD } from "@/src/constants/style-constants";
 import { Game } from "@/src/models/Game";
 import { GameState } from "@/src/types";
+import { useKeepAwake } from "expo-keep-awake";
 import { router } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function GameScreen() {
+  useKeepAwake();
+
   const { currentDeck, players, isLoading } = useContext(StorageContext);
 
   const [game, setGame] = useState<Game>();
