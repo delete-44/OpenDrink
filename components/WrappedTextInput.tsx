@@ -1,5 +1,5 @@
 import globalStyles from "@/assets/global-styles";
-import { ERROR_MESSAGE_HEIGHT } from "@/assets/style-constants";
+import { ERROR_MESSAGE_HEIGHT } from "@/src/constants/style-constants";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
 type WrappedTextInputProps = {

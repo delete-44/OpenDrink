@@ -2,8 +2,8 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import globalStyles from "@/assets/global-styles";
 import { minus } from "@/assets/icons/minus";
-import { SPACING_SM } from "@/assets/style-constants";
 import { StorageContext } from "@/context/StorageContext";
+import { SPACING_SM } from "@/src/constants/style-constants";
 import { useCallback, useContext } from "react";
 import SVG from "./SVG";
 

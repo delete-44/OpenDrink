@@ -1,5 +1,5 @@
-import { DANGER_COLOR } from "@/assets/style-constants";
 import WrappedTextInput from "@/components/WrappedTextInput";
+import { DANGER_COLOR } from "@/src/constants/style-constants";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 
 describe("WrappedTextInput", () => {

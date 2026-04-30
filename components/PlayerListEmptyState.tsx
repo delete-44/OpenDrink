@@ -1,5 +1,5 @@
 import globalStyles from "@/assets/global-styles";
-import { SPACING_MD, SPACING_SM } from "@/assets/style-constants";
+import { SPACING_MD, SPACING_SM } from "@/src/constants/style-constants";
 import { Image, StyleSheet, Text, View } from "react-native";
 
 export default function PlayerListEmptyState() {

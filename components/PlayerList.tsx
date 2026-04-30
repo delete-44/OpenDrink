@@ -8,6 +8,7 @@ import {
 
 import globalStyles from "@/assets/global-styles";
 import { plus } from "@/assets/icons/plus";
+import { StorageContext } from "@/context/StorageContext";
 import {
   CONTENT_BACKDROP,
   ERROR_MESSAGE_HEIGHT,
@@ -15,8 +16,7 @@ import {
   SPACING_LG,
   SPACING_MD,
   SPACING_SM,
-} from "@/assets/style-constants";
-import { StorageContext } from "@/context/StorageContext";
+} from "@/src/constants/style-constants";
 import { useCallback, useContext, useState } from "react";
 import PlayerListEmptyState from "./PlayerListEmptyState";
 import PlayerListItem from "./PlayerListItem";

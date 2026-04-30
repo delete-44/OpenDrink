@@ -9,15 +9,16 @@ import {
 } from "react-native";
 
 import globalStyles from "@/assets/global-styles";
+import DeckSelector from "@/components/DeckSelector";
+import PlayerList from "@/components/PlayerList";
 import {
   BACKGROUND_COLOR,
   DECORATION_COLOR,
   SPACING_LG,
   SPACING_MD,
   SPACING_SM,
-} from "@/assets/style-constants";
-import DeckSelector from "@/components/DeckSelector";
-import PlayerList from "@/components/PlayerList";
+} from "@/src/constants/style-constants";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -39,7 +40,7 @@ export default function Index() {
   }, []);
 
   return (
-    <SafeAreaView style={{ ...globalStyles.rootBg, gap: SPACING_MD }}>
+    <SafeAreaView style={{ ...globalStyles.backgroundPlain, gap: SPACING_MD }}>
       <ImageBackground
         source={require("../assets/images/decorative/bg-pattern.png")}
         resizeMode="repeat"
@@ -52,9 +53,9 @@ export default function Index() {
       <KeyboardAvoidingView behavior="padding">
         <View style={styles.heroButtonWrapper}>
           <Pressable
-            role="button"
             style={styles.heroButton}
-            onPress={() => alert("Get started clicked")}
+            role="button"
+            onPress={() => router.navigate("/game")}
           >
             <Text style={styles.heroButtonText}>Get Started!</Text>
           </Pressable>
