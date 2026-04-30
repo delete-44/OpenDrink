@@ -4,6 +4,7 @@ import {
   CONTENT_COLOR,
   DANGER_COLOR,
   DECORATION_COLOR,
+  FONT_SIZE_HERO,
   FONT_SIZE_LG,
   FONT_SIZE_MD,
   FONT_SIZE_SM,
@@ -33,6 +34,10 @@ export default StyleSheet.create({
   rootBg: {
     backgroundColor: BACKGROUND_COLOR,
     flex: 1,
+  },
+  textHero: {
+    ...baseText,
+    fontSize: FONT_SIZE_HERO,
   },
   textLg: {
     ...baseText,

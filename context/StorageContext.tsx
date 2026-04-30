@@ -1,7 +1,7 @@
 import DEFAULT_DECK from "@/src/constants/default-deck";
 import { StorageContextProps, StorageProviderProps, TDeck } from "@/src/types";
 import * as SecureStore from "expo-secure-store";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 
 export const StorageContext = createContext({} as StorageContextProps);
 
@@ -62,6 +62,10 @@ export function StorageProvider({ children }: StorageProviderProps) {
     fetchData();
   }, []);
 
+  const currentDeck = useMemo(() => {
+    return decks[currentDeckIndex] || decks[0];
+  }, [decks, currentDeckIndex]);
+
   const saveCurrentDeckIndex = async (idx: number) => {
     await saveResourceImpl(CURRENT_DECK_KEY, idx);
     setCurrentDeckIndex(idx);
@@ -78,6 +82,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
   };
 
   const value = {
+    currentDeck,
     currentDeckIndex,
     saveCurrentDeckIndex,
     decks,

@@ -7,7 +7,7 @@ export type TDeck = {
   cards: NonEmptyArray<string>;
 };
 
-export type TPlayers = NonEmptyArray<string>;
+export type TPlayers = string[];
 
 export type GameState = {
   card: string;
@@ -21,6 +21,7 @@ export type StorageProviderProps = {
 };
 
 export type StorageContextProps = {
+  currentDeck: TDeck;
   currentDeckIndex: number;
   saveCurrentDeckIndex: (idx: number) => void;
   decks: TDeck[];

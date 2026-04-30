@@ -22,7 +22,10 @@ export default function RootLayout() {
 
   return (
     <StorageProvider>
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="game" />
+      </Stack>
       <StatusBar barStyle="light-content" />
     </StorageProvider>
   );

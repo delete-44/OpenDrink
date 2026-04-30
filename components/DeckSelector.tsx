@@ -30,11 +30,7 @@ export default function DeckSelector() {
   return (
     <View style={styles.deckSelector}>
       <View style={styles.logoBackground}>
-        <Image
-          style={styles.logo}
-          source={require("../assets/icons/deck.png")}
-          alt=""
-        />
+        <Image source={require("../assets/icons/deck.png")} alt="" />
       </View>
       {isLoading ? (
         <ActivityIndicator color="#fff" accessibilityLabel="Loading decks" />
@@ -70,7 +66,6 @@ const styles = StyleSheet.create({
     borderRadius: 99,
     padding: SPACING_MD,
   },
-  logo: {},
   deckSelector: {
     padding: SPACING_MD,
     marginInline: "auto",
@@ -80,11 +75,11 @@ const styles = StyleSheet.create({
 
     flexDirection: "column",
     alignItems: "center",
-    gap: SPACING_MD,
+    gap: SPACING_SM,
   },
   deckSelectorActions: {
     flexDirection: "row",
-    gap: SPACING_MD,
+    gap: SPACING_SM,
     justifyContent: "space-between",
   },
 });

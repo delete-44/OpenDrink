@@ -129,6 +129,7 @@ describe("StorageContext", () => {
 
         // Assert context state updated
         expect(storageContext.current.currentDeckIndex).toEqual(newIdx);
+        expect(storageContext.current.currentDeck).toEqual(decks[newIdx]);
       });
     });
 

@@ -13,6 +13,7 @@ export const SPACING_LG = 24;
 export const FONT_SIZE_SM = 16;
 export const FONT_SIZE_MD = 20;
 export const FONT_SIZE_LG = 24;
+export const FONT_SIZE_HERO = 48;
 
 export const FORM_CONTROL_SIZE = 52; // Minimum height for form controls
 export const ERROR_MESSAGE_HEIGHT = 23; // Fixed height of error messages to prevent UI jumps
