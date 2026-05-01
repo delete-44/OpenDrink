@@ -7,7 +7,7 @@ import {
 import { router } from "expo-router";
 import React, { act } from "react";
 import { DeviceEventEmitter } from "react-native";
-import Index from "../app/index";
+import Index from "../../app/index";
 
 jest.mock("expo-router", () => ({
   router: {

@@ -1,159 +1,114 @@
 import PlayerList from "@/components/PlayerList";
-import { StorageContext } from "@/context/StorageContext";
 import { fireEvent, render, screen } from "@testing-library/react-native";
+import React from "react";
 
 describe("PlayerList", () => {
   const mockSavePlayers = jest.fn();
-  const mockValue = {
-    players: [],
-    savePlayers: mockSavePlayers,
-    isLoading: false,
-    currentDeck: {
-      name: "Test",
-      cards: ["123"],
-    },
-    currentDeckIndex: 0,
-    saveCurrentDeckIndex: jest.fn(),
-    decks: [],
-    saveDeck: jest.fn(),
-  };
 
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
-  it("renders an empty state when no players provided", () => {
-    render(
-      <StorageContext.Provider value={mockValue}>
-        <PlayerList />
-      </StorageContext.Provider>,
-    );
-
-    const noPlayersMessage = screen.getByText("Add players here!");
-    expect(noPlayersMessage).toBeVisible();
-  });
-
-  it("prevents user adding empty names", () => {
-    render(
-      <StorageContext.Provider value={mockValue}>
-        <PlayerList />
-      </StorageContext.Provider>,
-    );
-
-    let errorMessage = screen.queryByText("Player name cannot be empty");
-    expect(errorMessage).toBeNull();
-
-    const input = screen.getByLabelText("Name");
-    const addButton = screen.getByRole("button", { name: "Add Player" });
-    fireEvent.press(addButton);
-
-    expect(mockSavePlayers).not.toHaveBeenCalled();
-    expect(input).toHaveProp("value", "");
-
-    errorMessage = screen.getByText("Player name cannot be empty");
-    expect(errorMessage).toBeVisible();
-  });
-
-  it("clears error message on new input", () => {
-    render(
-      <StorageContext.Provider value={mockValue}>
-        <PlayerList />
-      </StorageContext.Provider>,
-    );
-
-    let errorMessage = screen.queryByText("Player name cannot be empty");
-    expect(errorMessage).toBeNull();
-
-    const input = screen.getByLabelText("Name");
-    const addButton = screen.getByRole("button", { name: "Add Player" });
-    fireEvent.press(addButton);
-
-    expect(mockSavePlayers).not.toHaveBeenCalled();
-    expect(input).toHaveProp("value", "");
-
-    errorMessage = screen.getByText("Player name cannot be empty");
-    expect(errorMessage).toBeVisible();
-
-    fireEvent.changeText(input, "Alice");
-
-    errorMessage = screen.queryByText("Player name cannot be empty");
-    expect(errorMessage).toBeNull();
-  });
-
-  it("trims whitespace from player names", () => {
-    render(
-      <StorageContext.Provider value={mockValue}>
-        <PlayerList />
-      </StorageContext.Provider>,
-    );
-
-    const input = screen.getByLabelText("Name");
-    fireEvent.changeText(input, " Alice  ");
-
-    const addButton = screen.getByRole("button", { name: "Add Player" });
-    fireEvent.press(addButton);
-
-    expect(mockSavePlayers).toHaveBeenCalledWith(["Alice"]);
-    expect(input).toHaveProp("value", "");
-  });
-
   it("renders a loading state", () => {
-    const mockValue = {
+    jest.spyOn(React, "useContext").mockReturnValue({
       players: [],
-      savePlayers: jest.fn(),
+      savePlayers: mockSavePlayers,
       isLoading: true,
-      currentDeck: {
-        name: "Test",
-        cards: ["123"],
-      },
-      currentDeckIndex: 0,
-      saveCurrentDeckIndex: jest.fn(),
-      decks: [],
-      saveDeck: jest.fn(),
-    };
+    });
 
-    render(
-      <StorageContext.Provider value={mockValue}>
-        <PlayerList />
-      </StorageContext.Provider>,
-    );
+    render(<PlayerList />);
 
     expect(screen.queryByText("Add players here!")).toBeNull();
     expect(screen.getByLabelText("Loading players")).toBeVisible();
   });
 
+  describe("with no players initialised", () => {
+    beforeEach(() => {
+      jest.spyOn(React, "useContext").mockReturnValue({
+        players: [],
+        savePlayers: mockSavePlayers,
+        isLoading: false,
+      });
+    });
+
+    it("renders an empty state when no players provided", () => {
+      render(<PlayerList />);
+
+      const noPlayersMessage = screen.getByText("Add players here!");
+      expect(noPlayersMessage).toBeVisible();
+    });
+
+    it("prevents user adding empty names", () => {
+      render(<PlayerList />);
+
+      let errorMessage = screen.queryByText("Player name cannot be empty");
+      expect(errorMessage).toBeNull();
+
+      const input = screen.getByLabelText("Name");
+      const addButton = screen.getByRole("button", { name: "Add Player" });
+      fireEvent.press(addButton);
+
+      expect(mockSavePlayers).not.toHaveBeenCalled();
+      expect(input).toHaveProp("value", "");
+
+      errorMessage = screen.getByText("Player name cannot be empty");
+      expect(errorMessage).toBeVisible();
+    });
+
+    it("clears error message on new input", () => {
+      render(<PlayerList />);
+
+      let errorMessage = screen.queryByText("Player name cannot be empty");
+      expect(errorMessage).toBeNull();
+
+      const input = screen.getByLabelText("Name");
+      const addButton = screen.getByRole("button", { name: "Add Player" });
+      fireEvent.press(addButton);
+
+      expect(mockSavePlayers).not.toHaveBeenCalled();
+      expect(input).toHaveProp("value", "");
+
+      errorMessage = screen.getByText("Player name cannot be empty");
+      expect(errorMessage).toBeVisible();
+
+      fireEvent.changeText(input, "Alice");
+
+      errorMessage = screen.queryByText("Player name cannot be empty");
+      expect(errorMessage).toBeNull();
+    });
+
+    it("trims whitespace from player names", () => {
+      render(<PlayerList />);
+
+      const input = screen.getByLabelText("Name");
+      fireEvent.changeText(input, " Alice  ");
+
+      const addButton = screen.getByRole("button", { name: "Add Player" });
+      fireEvent.press(addButton);
+
+      expect(mockSavePlayers).toHaveBeenCalledWith(["Alice"]);
+      expect(input).toHaveProp("value", "");
+    });
+  });
+
   describe("with existing players", () => {
-    const mockValue = {
-      players: ["Alice", "Rincewind"],
-      savePlayers: mockSavePlayers,
-      isLoading: false,
-      currentDeck: {
-        name: "Test",
-        cards: ["123"],
-      },
-      currentDeckIndex: 0,
-      saveCurrentDeckIndex: jest.fn(),
-      decks: [],
-      saveDeck: jest.fn(),
-    };
+    beforeEach(() => {
+      jest.spyOn(React, "useContext").mockReturnValue({
+        players: ["Alice", "Rincewind"],
+        savePlayers: mockSavePlayers,
+        isLoading: false,
+      });
+    });
 
     it("renders a list of players from storage", () => {
-      render(
-        <StorageContext.Provider value={mockValue}>
-          <PlayerList />
-        </StorageContext.Provider>,
-      );
+      render(<PlayerList />);
 
       expect(screen.getByText("Alice")).toBeVisible();
       expect(screen.getByText("Rincewind")).toBeVisible();
     });
 
     it("prevents duplicate players from being added", () => {
-      render(
-        <StorageContext.Provider value={mockValue}>
-          <PlayerList />
-        </StorageContext.Provider>,
-      );
+      render(<PlayerList />);
 
       let errorMessage = screen.queryByText("Player already exists");
       expect(errorMessage).toBeNull();
@@ -172,11 +127,7 @@ describe("PlayerList", () => {
     });
 
     it("allows user to remove players", () => {
-      render(
-        <StorageContext.Provider value={mockValue}>
-          <PlayerList />
-        </StorageContext.Provider>,
-      );
+      render(<PlayerList />);
 
       const removePlayerButton = screen.getByRole("button", {
         name: "Remove Rincewind",
