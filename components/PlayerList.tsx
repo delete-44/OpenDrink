@@ -11,8 +11,8 @@ import { plus } from "@/assets/icons/plus";
 import { StorageContext } from "@/context/StorageContext";
 import {
   CONTENT_BACKDROP,
-  ERROR_MESSAGE_HEIGHT,
   FORM_CONTROL_SIZE,
+  FORM_LABEL_HEIGHT,
   SPACING_LG,
   SPACING_MD,
   SPACING_SM,
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   },
   addPlayerButton: {
     ...globalStyles.buttonHighlight,
-    marginBottom: ERROR_MESSAGE_HEIGHT,
+    marginBottom: FORM_LABEL_HEIGHT,
     height: FORM_CONTROL_SIZE,
   },
 });

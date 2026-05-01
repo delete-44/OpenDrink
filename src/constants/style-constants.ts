@@ -17,4 +17,4 @@ export const FONT_SIZE_LG = 24;
 export const FONT_SIZE_HERO = 32;
 
 export const FORM_CONTROL_SIZE = 52; // Minimum height for form controls
-export const ERROR_MESSAGE_HEIGHT = 23; // Fixed height of error messages to prevent UI jumps
+export const FORM_LABEL_HEIGHT = 23; // Fixed height of labels & error messages to prevent UI jumps

@@ -60,7 +60,6 @@ export default StyleSheet.create({
   label: {
     ...baseText,
     fontSize: FONT_SIZE_SM,
-    marginLeft: 5, // To account for the chunky borders
   },
   textDanger: {
     ...baseText,

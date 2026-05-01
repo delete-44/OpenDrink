@@ -17,6 +17,7 @@ import {
   SPACING_MD,
   SPACING_SM,
 } from "@/src/constants/style-constants";
+import { router } from "expo-router";
 import { useContext, useMemo } from "react";
 import SVG from "./SVG";
 
@@ -42,7 +43,12 @@ export default function DeckSelector() {
         <Pressable
           role="button"
           style={globalStyles.buttonSm}
-          onPress={() => alert("Pressed Edit")}
+          onPress={() =>
+            router.navigate({
+              pathname: "/decks/[idx]/edit",
+              params: { idx: currentDeckIndex },
+            })
+          }
         >
           <SVG icon={pencil} width={24} height={24} />
           <Text style={globalStyles.buttonText}>Edit</Text>

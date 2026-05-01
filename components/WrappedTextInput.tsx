@@ -1,5 +1,5 @@
 import globalStyles from "@/assets/global-styles";
-import { ERROR_MESSAGE_HEIGHT } from "@/src/constants/style-constants";
+import { FORM_LABEL_HEIGHT } from "@/src/constants/style-constants";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
 type WrappedTextInputProps = {
@@ -17,9 +17,11 @@ export default function WrappedTextInput({
 }: WrappedTextInputProps) {
   return (
     <View style={globalStyles.formGroup}>
-      <Text style={globalStyles.label} nativeID={`${label}-label`}>
-        {label}
-      </Text>
+      <View style={style.textWrapper}>
+        <Text style={globalStyles.label} nativeID={`${label}-label`}>
+          {label}
+        </Text>
+      </View>
 
       <TextInput
         autoCorrect={false}
@@ -29,7 +31,7 @@ export default function WrappedTextInput({
         onChangeText={onChange}
       />
 
-      <View style={style.errorMessageWrapper}>
+      <View style={style.textWrapper}>
         {errorMessage && (
           <Text style={globalStyles.textDanger} role="alert">
             {errorMessage}
@@ -41,8 +43,8 @@ export default function WrappedTextInput({
 }
 
 const style = StyleSheet.create({
-  errorMessageWrapper: {
-    height: ERROR_MESSAGE_HEIGHT,
+  textWrapper: {
+    height: FORM_LABEL_HEIGHT,
     marginLeft: 5,
   },
 });
