@@ -1,6 +1,5 @@
 import PlayerList from "@/components/PlayerList";
 import { StorageContext } from "@/context/StorageContext";
-import { NonEmptyArray } from "@/src/types";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 
 describe("PlayerList", () => {
@@ -11,12 +10,12 @@ describe("PlayerList", () => {
     isLoading: false,
     currentDeck: {
       name: "Test",
-      cards: ["123"] as NonEmptyArray<string>,
+      cards: ["123"],
     },
     currentDeckIndex: 0,
     saveCurrentDeckIndex: jest.fn(),
     decks: [],
-    saveDecks: jest.fn(),
+    saveDeck: jest.fn(),
   };
 
   beforeEach(() => {
@@ -105,12 +104,12 @@ describe("PlayerList", () => {
       isLoading: true,
       currentDeck: {
         name: "Test",
-        cards: ["123"] as NonEmptyArray<string>,
+        cards: ["123"],
       },
       currentDeckIndex: 0,
       saveCurrentDeckIndex: jest.fn(),
       decks: [],
-      saveDecks: jest.fn(),
+      saveDeck: jest.fn(),
     };
 
     render(
@@ -130,12 +129,12 @@ describe("PlayerList", () => {
       isLoading: false,
       currentDeck: {
         name: "Test",
-        cards: ["123"] as NonEmptyArray<string>,
+        cards: ["123"],
       },
       currentDeckIndex: 0,
       saveCurrentDeckIndex: jest.fn(),
       decks: [],
-      saveDecks: jest.fn(),
+      saveDeck: jest.fn(),
     };
 
     it("renders a list of players from storage", () => {

@@ -18,8 +18,8 @@ import {
   SPACING_SM,
 } from "@/src/constants/style-constants";
 import { useCallback, useContext, useState } from "react";
-import PlayerListEmptyState from "./PlayerListEmptyState";
-import PlayerListItem from "./PlayerListItem";
+import RemovableListItem from "./RemovableListItem";
+import PlayerListEmptyState from "./status/PlayerListEmptyState";
 import SVG from "./SVG";
 import WrappedTextInput from "./WrappedTextInput";
 
@@ -52,6 +52,15 @@ export default function PlayerList() {
     [players, savePlayers],
   );
 
+  const removePlayerAt = useCallback(
+    (playerIndex: number) => {
+      const newPlayers = players.filter((_, idx) => idx !== playerIndex);
+
+      savePlayers(newPlayers);
+    },
+    [players, savePlayers],
+  );
+
   return (
     <View style={styles.playerList}>
       <View style={styles.playerInputWrapper}>
@@ -77,7 +86,13 @@ export default function PlayerList() {
 
       <FlatList
         data={players}
-        renderItem={({ item }) => <PlayerListItem name={item} />}
+        renderItem={({ item, index }) => (
+          <RemovableListItem
+            label={item}
+            idx={index}
+            removeItemAt={removePlayerAt}
+          />
+        )}
         ListEmptyComponent={
           isLoading ? (
             <ActivityIndicator
