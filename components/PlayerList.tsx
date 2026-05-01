@@ -31,8 +31,6 @@ export default function PlayerList() {
 
   const addPlayer = useCallback(
     (name: string) => {
-      const newPlayers = [...players];
-
       if (!name.trim()) {
         setErrorMessage("Player name cannot be empty");
         return;
@@ -43,7 +41,7 @@ export default function PlayerList() {
         return;
       }
 
-      newPlayers.push(name.trim());
+      const newPlayers = [...players, name.trim()];
 
       savePlayers(newPlayers);
 
