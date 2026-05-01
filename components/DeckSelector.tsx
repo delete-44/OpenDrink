@@ -53,13 +53,14 @@ export default function DeckSelector() {
           <SVG icon={pencil} width={24} height={24} />
           <Text style={globalStyles.buttonText}>Edit Deck</Text>
         </Pressable>
+
         <Pressable
           role="button"
           style={globalStyles.buttonSm}
           onPress={() => alert("Pressed New")}
         >
           <SVG icon={plus} width={24} height={24} />
-          <Text style={globalStyles.buttonText}>New</Text>
+          <Text style={globalStyles.buttonText}>New Deck</Text>
         </Pressable>
       </View>
     </View>

@@ -1,4 +1,11 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 import globalStyles from "@/assets/global-styles";
 import { plus } from "@/assets/icons/plus";
@@ -11,9 +18,10 @@ import SVG from "@/components/SVG";
 import WrappedTextInput from "@/components/WrappedTextInput";
 import { StorageContext } from "@/context/StorageContext";
 import {
+  BACKGROUND_COLOR_HIGHLIGHT,
+  DECORATION_COLOR,
   FORM_CONTROL_SIZE,
   FORM_LABEL_HEIGHT,
-  SPACING_LG,
   SPACING_MD,
   SPACING_SM,
 } from "@/src/constants/style-constants";
@@ -105,7 +113,9 @@ export default function Edit() {
           ListEmptyComponent={CardListEmptyState}
           ItemSeparatorComponent={HorizontalDivider}
         />
+      </View>
 
+      <KeyboardAvoidingView behavior="padding">
         <View style={styles.inputWrapper}>
           <WrappedTextInput
             label="Card Content"
@@ -126,7 +136,7 @@ export default function Edit() {
             <SVG icon={plus} width={24} height={24} />
           </Pressable>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -147,8 +157,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    height: "auto",
-    marginTop: SPACING_LG,
+
+    borderTopWidth: 5,
+    borderTopColor: DECORATION_COLOR,
+    backgroundColor: BACKGROUND_COLOR_HIGHLIGHT,
+    padding: SPACING_SM,
+    paddingTop: SPACING_SM + FORM_LABEL_HEIGHT,
   },
   addButton: {
     ...globalStyles.buttonHighlight,
