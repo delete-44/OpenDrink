@@ -39,6 +39,23 @@ export default function Edit() {
   const { decks, saveDeck, isLoading } = useContext(StorageContext);
   const { idx } = useLocalSearchParams<{ idx: string }>();
 
+  // Callback for adding multiple cards to the deck; currently
+  // used for inserting the default deck from the empty screen;
+  // longer term could be useful for downloading/importing decks
+  const addCards = useCallback(
+    (newCards: string[]) => {
+      if (!deck) return;
+
+      const modifiedCards = [...deck.cards, ...newCards];
+
+      saveDeck(parseInt(idx), {
+        name: deck.name,
+        cards: modifiedCards,
+      });
+    },
+    [deck, idx, saveDeck],
+  );
+
   const addCard = useCallback(
     (newCard: string) => {
       if (!deck) return;
@@ -110,7 +127,7 @@ export default function Edit() {
               removeItemAt={removeCardAt}
             />
           )}
-          ListEmptyComponent={CardListEmptyState}
+          ListEmptyComponent={<CardListEmptyState addCards={addCards} />}
           ItemSeparatorComponent={HorizontalDivider}
         />
       </View>

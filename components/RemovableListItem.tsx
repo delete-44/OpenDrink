@@ -36,12 +36,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: SPACING_SM,
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
     width: "100%",
     marginVertical: SPACING_SM,
   },
   listItemLabel: {
     ...globalStyles.textLg,
     flex: 1,
+    paddingVertical: SPACING_SM,
   },
 });

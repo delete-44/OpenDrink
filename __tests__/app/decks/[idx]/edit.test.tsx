@@ -1,4 +1,5 @@
 import Edit from "@/app/decks/[idx]/edit";
+import DEFAULT_DECK from "@/src/constants/default-deck";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
@@ -30,7 +31,7 @@ describe("Edit", () => {
 
     render(<Edit />);
 
-    expect(screen.queryByText("Add Cards here!")).toBeNull();
+    expect(screen.queryByText("... or add your own here!")).toBeNull();
     expect(screen.queryByLabelText("Loading Deck")).toBeNull();
     expect(screen.getByText("Error: Failed to load Deck.")).toBeVisible();
   });
@@ -49,7 +50,7 @@ describe("Edit", () => {
 
       render(<Edit />);
 
-      expect(screen.queryByText("Add Cards here!")).toBeNull();
+      expect(screen.queryByText("... or add your own here!")).toBeNull();
       expect(screen.getByLabelText("Loading Deck")).toBeVisible();
       expect(screen.queryByText("Error: Failed to load Deck.")).toBeNull();
     });
@@ -66,11 +67,26 @@ describe("Edit", () => {
       it("renders an empty state when no cards provided", () => {
         render(<Edit />);
 
-        const noPlayersMessage = screen.getByText("Add Cards here!");
-        expect(noPlayersMessage).toBeVisible();
+        expect(
+          screen.getByRole("button", { name: "Load Default Cards" }),
+        ).toBeVisible();
+        expect(screen.getByText("... or add your own here!")).toBeVisible();
 
         expect(screen.queryByLabelText("Loading Deck")).toBeNull();
         expect(screen.queryByText("Error: Failed to load Deck.")).toBeNull();
+      });
+
+      it("allows the user to load the default deck", () => {
+        render(<Edit />);
+
+        fireEvent.press(
+          screen.getByRole("button", { name: "Load Default Cards" }),
+        );
+
+        expect(mockSaveDeck).toHaveBeenCalledWith(0, {
+          name: "Test Deck",
+          cards: DEFAULT_DECK.cards,
+        });
       });
 
       it("prevents user adding empty cards", () => {
