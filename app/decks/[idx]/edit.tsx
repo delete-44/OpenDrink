@@ -25,40 +25,51 @@ import {
   SPACING_MD,
   SPACING_SM,
 } from "@/src/constants/style-constants";
-import { TDeck } from "@/src/types";
 import { useLocalSearchParams } from "expo-router";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Edit() {
   const [newCard, setNewCard] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [deck, setDeck] = useState<TDeck>();
   const [pageLoadError, setPageLoadError] = useState("");
 
   const { decks, saveDeck, isLoading } = useContext(StorageContext);
   const { idx } = useLocalSearchParams<{ idx: string }>();
+
+  const currentDeck = useMemo(() => {
+    if (isLoading) return undefined;
+
+    const deckIdx = parseInt(idx);
+    const loadedDeck = decks[deckIdx];
+
+    if (!loadedDeck?.cards) {
+      setPageLoadError("Failed to load Deck.");
+    }
+
+    return loadedDeck;
+  }, [decks, idx, isLoading]);
 
   // Callback for adding multiple cards to the deck; currently
   // used for inserting the default deck from the empty screen;
   // longer term could be useful for downloading/importing decks
   const addCards = useCallback(
     (newCards: string[]) => {
-      if (!deck) return;
+      if (!currentDeck) return;
 
-      const modifiedCards = [...deck.cards, ...newCards];
+      const modifiedCards = [...currentDeck.cards, ...newCards];
 
       saveDeck(parseInt(idx), {
-        name: deck.name,
+        name: currentDeck.name,
         cards: modifiedCards,
       });
     },
-    [deck, idx, saveDeck],
+    [currentDeck, idx, saveDeck],
   );
 
   const addCard = useCallback(
     (newCard: string) => {
-      if (!deck) return;
+      if (!currentDeck) return;
 
       if (!newCard.trim()) {
         setErrorMessage("Card cannot be empty");
@@ -66,60 +77,47 @@ export default function Edit() {
         return;
       }
 
-      const newCards = [...deck.cards, newCard.trim()];
+      const newCards = [...currentDeck.cards, newCard.trim()];
 
       saveDeck(parseInt(idx), {
-        name: deck.name,
+        name: currentDeck.name,
         cards: newCards,
       });
 
       setNewCard("");
     },
-    [deck, idx, saveDeck],
+    [currentDeck, idx, saveDeck],
   );
 
   const removeCardAt = useCallback(
     (cardIndex: number) => {
-      if (!deck) return;
+      if (!currentDeck) return;
 
-      const newCards = deck.cards.filter((_, idx) => idx !== cardIndex);
+      const newCards = currentDeck.cards.filter((_, idx) => idx !== cardIndex);
 
       saveDeck(parseInt(idx), {
-        name: deck.name,
+        name: currentDeck.name,
         cards: newCards,
       });
     },
-    [deck, idx, saveDeck],
+    [currentDeck, idx, saveDeck],
   );
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    const deckIdx = parseInt(idx);
-    const currentDeck = decks[deckIdx];
-
-    if (!currentDeck || !currentDeck?.cards) {
-      setPageLoadError("Failed to load Deck.");
-    }
-
-    setDeck(currentDeck);
-  }, [decks, idx, isLoading]);
 
   if (isLoading) {
     return <LoadingScreen label="Loading Deck" />;
   }
 
-  if (pageLoadError || !deck) {
+  if (pageLoadError || !currentDeck) {
     return <ErrorScreen message={pageLoadError} />;
   }
 
   return (
     <SafeAreaView style={globalStyles.backgroundGradient}>
       <View style={styles.listContainer}>
-        <Text style={globalStyles.textLg}>{deck.name}</Text>
+        <Text style={globalStyles.textLg}>{currentDeck.name}</Text>
 
         <FlatList
-          data={deck.cards}
+          data={currentDeck.cards}
           renderItem={({ item, index }) => (
             <RemovableListItem
               label={item}

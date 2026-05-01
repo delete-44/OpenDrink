@@ -44,6 +44,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 250,
     resizeMode: "contain",
-    transform: "rotate(180deg)",
+    transform: [{ rotate: "180deg" }],
   },
 });
