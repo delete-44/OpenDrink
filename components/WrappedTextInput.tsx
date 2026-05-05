@@ -28,6 +28,8 @@ export default function WrappedTextInput({
       <TextInput
         autoCorrect={false}
         aria-labelledby={`${label}-label`}
+        aria-invalid={errorMessage !== ""}
+        aria-describedby={errorMessage ? `${label}-error` : undefined}
         style={globalStyles.textInput}
         value={value}
         onChangeText={onChange}
@@ -36,7 +38,11 @@ export default function WrappedTextInput({
 
       <View style={style.textWrapper}>
         {errorMessage && (
-          <Text style={globalStyles.textDanger} role="alert">
+          <Text
+            style={globalStyles.textDanger}
+            role="alert"
+            nativeID={`${label}-error`}
+          >
             {errorMessage}
           </Text>
         )}

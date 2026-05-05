@@ -1,6 +1,7 @@
 import globalStyles from "@/assets/global-styles";
 import { check } from "@/assets/icons/check";
 import { pencil } from "@/assets/icons/pencil";
+import { StorageContext } from "@/context/StorageContext";
 import {
   DECORATION_COLOR,
   FORM_CONTROL_SIZE,
@@ -9,8 +10,15 @@ import {
   SPACING_SM,
 } from "@/src/constants/style-constants";
 import { Deck } from "@/src/models/Deck";
-import { useState } from "react";
-import { Pressable, StyleSheet, Text, View, ViewStyle } from "react-native";
+import { useCallback, useContext, useState } from "react";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View,
+  ViewStyle,
+} from "react-native";
 import SVG from "./SVG";
 import WrappedTextInput from "./WrappedTextInput";
 
@@ -19,10 +27,36 @@ type DeckTitlebarProps = {
 };
 
 export default function DeckTitlebar({ currentDeck }: DeckTitlebarProps) {
+  const { saveDeck } = useContext(StorageContext);
+
   const [editingDeckName, setEditingDeckName] = useState(
     currentDeck.name === "",
   );
+
   const [workingDeckName, setWorkingDeckName] = useState(currentDeck.name);
+  const [deckNameErrorMessage, setDeckNameErrorMessage] = useState("");
+
+  const updateDeckName = useCallback(
+    (name: string) => {
+      if (name.trim() === "") {
+        setDeckNameErrorMessage("Deck name cannot be empty");
+
+        return;
+      }
+
+      const updatedDeck = new Deck(
+        name.trim(),
+        [...currentDeck.cards],
+        currentDeck.id,
+      );
+
+      saveDeck(currentDeck.id, updatedDeck);
+      setEditingDeckName(false);
+
+      ToastAndroid.show("Name Saved", ToastAndroid.SHORT);
+    },
+    [currentDeck, saveDeck],
+  );
 
   if (editingDeckName) {
     return (
@@ -30,18 +64,19 @@ export default function DeckTitlebar({ currentDeck }: DeckTitlebarProps) {
         <WrappedTextInput
           label="Deck Name"
           value={workingDeckName}
-          errorMessage={""} // TODO: Error handling
+          errorMessage={deckNameErrorMessage}
           onChange={(text) => {
+            setDeckNameErrorMessage("");
             setWorkingDeckName(text);
           }}
-          autofocus={currentDeck.name === ""}
+          autofocus
         />
 
         <Pressable
           role="button"
           style={styles.confirmButton}
           accessibilityLabel="Confirm Change"
-          onPress={() => setEditingDeckName(false)} // TODO: And save deck
+          onPress={() => updateDeckName(workingDeckName)}
         >
           <SVG icon={check} width={24} height={24} />
         </Pressable>
