@@ -4,6 +4,7 @@ import {
   StorageContext,
   StorageProvider,
 } from "@/context/StorageContext";
+import { Deck } from "@/src/models/Deck";
 import { TDeck } from "@/src/types";
 import { renderHook, waitFor } from "@testing-library/react-native";
 import * as SecureStore from "expo-secure-store";
@@ -107,8 +108,8 @@ describe("StorageContext", () => {
     describe("#saveCurrentDeckIndex", () => {
       it("saves current deck idx to SecureStore and updates context", async () => {
         const decks = [
-          { name: "Default", cards: ["Test card"] },
-          { name: "Second Deck", cards: ["Test 2"] },
+          { id: "1", name: "Default", cards: ["Test card"] },
+          { id: "2", name: "Second Deck", cards: ["Test 2"] },
         ] as TDeck[];
 
         mockStore["decks"] = JSON.stringify(decks);
@@ -136,18 +137,19 @@ describe("StorageContext", () => {
     describe("#saveDeck", () => {
       it("saves single deck to SecureStore and updates context", async () => {
         const decks = [
-          { name: "Default", cards: ["Test card"] },
-          { name: "Second Deck", cards: ["Test 2"] },
+          { id: "1", name: "Default", cards: ["Test card"] },
+          { id: "2", name: "Second Deck", cards: ["Test 2"] },
         ] as TDeck[];
 
         mockStore["decks"] = JSON.stringify(decks);
 
         const storageContext = await renderStorageContext();
 
-        const updatedDeck = {
-          name: "Default",
-          cards: ["Test card updated"],
-        } as TDeck;
+        const updatedDeck = new Deck(
+          decks[0].name,
+          ["Test card updated"],
+          decks[0].id,
+        );
 
         await act(async () => {
           await storageContext.current.saveDeck(0, updatedDeck);

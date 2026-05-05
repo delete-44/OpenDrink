@@ -1,5 +1,6 @@
 import DEFAULT_DECK from "@/src/constants/default-deck";
-import { StorageContextProps, StorageProviderProps, TDeck } from "@/src/types";
+import { Deck } from "@/src/models/Deck";
+import { StorageContextProps, StorageProviderProps } from "@/src/types";
 import * as SecureStore from "expo-secure-store";
 import { createContext, useEffect, useMemo, useState } from "react";
 
@@ -39,7 +40,7 @@ export async function saveResourceImpl<T>(
 
 export function StorageProvider({ children }: StorageProviderProps) {
   const [currentDeckIndex, setCurrentDeckIndex] = useState(0);
-  const [decks, setDecks] = useState<TDeck[]>([]);
+  const [decks, setDecks] = useState<Deck[]>([]);
   const [players, setPlayers] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,7 +54,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
         ]);
 
       setCurrentDeckIndex(loadedCurrentDeckIndex);
-      setDecks(loadedDecks);
+      setDecks(loadedDecks.map((deckData) => Deck.fromJson(deckData)));
       setPlayers(loadedPlayers);
 
       setIsLoading(false);
@@ -71,12 +72,12 @@ export function StorageProvider({ children }: StorageProviderProps) {
     setCurrentDeckIndex(idx);
   };
 
-  const _saveDecks = async (newDecks: TDeck[]) => {
+  const _saveDecks = async (newDecks: Deck[]) => {
     await saveResourceImpl(DECK_KEY, newDecks);
     setDecks(newDecks);
   };
 
-  const saveDeck = async (deckIdx: number, updatedDeck: TDeck) => {
+  const saveDeck = async (deckIdx: number, updatedDeck: Deck) => {
     const newDecks = decks.map((deck, idx) =>
       idx === deckIdx ? updatedDeck : deck,
     );

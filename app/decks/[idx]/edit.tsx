@@ -25,6 +25,7 @@ import {
   SPACING_MD,
   SPACING_SM,
 } from "@/src/constants/style-constants";
+import { Deck } from "@/src/models/Deck";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -59,10 +60,12 @@ export default function Edit() {
 
       const modifiedCards = [...currentDeck.cards, ...newCards];
 
-      saveDeck(parseInt(idx), {
-        name: currentDeck.name,
-        cards: modifiedCards,
-      });
+      let modifiedDeck = new Deck(
+        currentDeck.name,
+        modifiedCards,
+        currentDeck.id,
+      );
+      saveDeck(parseInt(idx), modifiedDeck);
     },
     [currentDeck, idx, saveDeck],
   );
@@ -77,12 +80,14 @@ export default function Edit() {
         return;
       }
 
-      const newCards = [...currentDeck.cards, newCard.trim()];
+      const modifiedCards = [...currentDeck.cards, newCard.trim()];
 
-      saveDeck(parseInt(idx), {
-        name: currentDeck.name,
-        cards: newCards,
-      });
+      let modifiedDeck = new Deck(
+        currentDeck.name,
+        modifiedCards,
+        currentDeck.id,
+      );
+      saveDeck(parseInt(idx), modifiedDeck);
 
       setNewCard("");
     },
@@ -93,12 +98,16 @@ export default function Edit() {
     (cardIndex: number) => {
       if (!currentDeck) return;
 
-      const newCards = currentDeck.cards.filter((_, idx) => idx !== cardIndex);
+      const modifiedCards = currentDeck.cards.filter(
+        (_, idx) => idx !== cardIndex,
+      );
 
-      saveDeck(parseInt(idx), {
-        name: currentDeck.name,
-        cards: newCards,
-      });
+      let modifiedDeck = new Deck(
+        currentDeck.name,
+        modifiedCards,
+        currentDeck.id,
+      );
+      saveDeck(parseInt(idx), modifiedDeck);
     },
     [currentDeck, idx, saveDeck],
   );

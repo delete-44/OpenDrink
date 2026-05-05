@@ -22,7 +22,7 @@ describe("Edit", () => {
 
   it("renders an error state when deck not found", () => {
     jest.spyOn(React, "useContext").mockReturnValue({
-      decks: [{ name: "Test Deck", cards: [] }],
+      decks: [{ id: "1", name: "Test Deck", cards: [] }],
       saveDeck: mockSaveDeck,
       isLoading: false,
     });
@@ -58,7 +58,7 @@ describe("Edit", () => {
     describe("with no cards initialised", () => {
       beforeEach(() => {
         jest.spyOn(React, "useContext").mockReturnValue({
-          decks: [{ name: "Test Deck", cards: [] }],
+          decks: [{ id: "1", name: "Test Deck", cards: [] }],
           saveDeck: mockSaveDeck,
           isLoading: false,
         });
@@ -84,6 +84,7 @@ describe("Edit", () => {
         );
 
         expect(mockSaveDeck).toHaveBeenCalledWith(0, {
+          id: "1",
           name: "Test Deck",
           cards: DEFAULT_DECK.cards,
         });
@@ -138,6 +139,7 @@ describe("Edit", () => {
         fireEvent.press(addButton);
 
         expect(mockSaveDeck).toHaveBeenCalledWith(0, {
+          id: "1",
           name: "Test Deck",
           cards: ["Drink up!"],
         });
@@ -149,7 +151,9 @@ describe("Edit", () => {
     describe("with existing cards", () => {
       beforeEach(() => {
         jest.spyOn(React, "useContext").mockReturnValue({
-          decks: [{ name: "Test Deck", cards: ["Drink up!", "Do a flip"] }],
+          decks: [
+            { id: "1", name: "Test Deck", cards: ["Drink up!", "Do a flip"] },
+          ],
           saveDeck: mockSaveDeck,
           isLoading: false,
         });
@@ -171,6 +175,7 @@ describe("Edit", () => {
 
         fireEvent.press(removeCardButton);
         expect(mockSaveDeck).toHaveBeenCalledWith(0, {
+          id: "1",
           name: "Test Deck",
           cards: ["Drink up!"],
         });

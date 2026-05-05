@@ -1,4 +1,5 @@
-import { GameState, TDeck, TPlayers } from "../types";
+import { GameState, TPlayers } from "../types";
+import { Deck } from "./Deck";
 
 export class Game {
   private readonly cards: string[];
@@ -7,7 +8,7 @@ export class Game {
   private currentCards: string[];
   private currentPlayers: string[];
 
-  constructor(startingDeck: TDeck, startingPlayers: TPlayers) {
+  constructor(startingDeck: Deck, startingPlayers: TPlayers) {
     if (startingDeck.cards.length === 0) {
       throw TypeError("Deck has no Cards");
     }

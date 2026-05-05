@@ -1,6 +1,9 @@
 // Game logic types
 
+import { Deck } from "./models/Deck";
+
 export type TDeck = {
+  id: string;
   name: string;
   cards: string[];
 };
@@ -19,11 +22,11 @@ export type StorageProviderProps = {
 };
 
 export type StorageContextProps = {
-  currentDeck: TDeck;
+  currentDeck: Deck;
   currentDeckIndex: number;
   saveCurrentDeckIndex: (idx: number) => void;
-  decks: TDeck[];
-  saveDeck: (idx: number, updatedDeck: TDeck) => void;
+  decks: Deck[];
+  saveDeck: (idx: number, updatedDeck: Deck) => void;
   players: string[];
   savePlayers: (newPlayers: string[]) => void;
   isLoading: boolean;
