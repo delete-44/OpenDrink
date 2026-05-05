@@ -24,16 +24,19 @@ import SVG from "./SVG";
 export default function DeckSelector() {
   const { selectedDeck, isLoading } = useContext(StorageContext);
 
+  if (isLoading) {
+    return (
+      <ActivityIndicator color="#fff" accessibilityLabel="Loading decks" />
+    );
+  }
+
   return (
     <View style={styles.deckSelector}>
       <View style={styles.logoBackground}>
         <Image source={require("../assets/icons/deck.png")} alt="" />
       </View>
-      {isLoading ? (
-        <ActivityIndicator color="#fff" accessibilityLabel="Loading decks" />
-      ) : (
-        <Text style={globalStyles.textLg}>{selectedDeck.name}</Text>
-      )}
+
+      <Text style={globalStyles.textLg}>{selectedDeck.name}</Text>
 
       <View style={styles.deckSelectorActions}>
         <Pressable
@@ -41,8 +44,8 @@ export default function DeckSelector() {
           style={globalStyles.buttonSm}
           onPress={() =>
             router.navigate({
-              pathname: "/decks/[idx]/edit",
-              params: { idx: 0 }, // FIXME - using ID
+              pathname: "/decks/[id]/edit",
+              params: { id: selectedDeck.id },
             })
           }
         >

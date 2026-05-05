@@ -84,7 +84,14 @@ describe("StorageContext", () => {
   });
 
   describe("StorageProvider", () => {
+    const decks = [
+      { id: "1", name: "Default", cards: ["Test card"] },
+      { id: "2", name: "Second Deck", cards: ["Test 2"] },
+    ] as TDeckData[];
+
     beforeEach(() => {
+      mockStore["decks"] = JSON.stringify(decks);
+
       mockSetItemAsync.mockResolvedValueOnce();
     });
 
@@ -107,13 +114,6 @@ describe("StorageContext", () => {
 
     describe("#saveSelectedDeckId", () => {
       it("saves current deck idx to SecureStore and updates context", async () => {
-        const decks = [
-          { id: "1", name: "Default", cards: ["Test card"] },
-          { id: "2", name: "Second Deck", cards: ["Test 2"] },
-        ] as TDeckData[];
-
-        mockStore["decks"] = JSON.stringify(decks);
-
         const storageContext = await renderStorageContext();
 
         const newId = decks[1].id;
@@ -133,15 +133,22 @@ describe("StorageContext", () => {
       });
     });
 
+    describe("#fetchDeck", () => {
+      it("returns deck if found", async () => {
+        const storageContext = await renderStorageContext();
+
+        expect(storageContext.current.fetchDeck(decks[0].id)).toEqual(decks[0]);
+      });
+
+      it("returns null if not", async () => {
+        const storageContext = await renderStorageContext();
+
+        expect(storageContext.current.fetchDeck("FAKE ID")).toBeNull();
+      });
+    });
+
     describe("#saveDeck", () => {
       it("saves single deck to SecureStore and updates context", async () => {
-        const decks = [
-          { id: "1", name: "Default", cards: ["Test card"] },
-          { id: "2", name: "Second Deck", cards: ["Test 2"] },
-        ] as TDeckData[];
-
-        mockStore["decks"] = JSON.stringify(decks);
-
         const storageContext = await renderStorageContext();
 
         const updatedDeck = new Deck(

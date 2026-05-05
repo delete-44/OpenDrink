@@ -28,7 +28,8 @@ describe("DeckSelector", () => {
 
     expect(screen.getByLabelText("Loading decks")).toBeVisible();
     expect(screen.queryByText("Default")).toBeNull();
-    expect(screen.getAllByRole("button")).toHaveLength(2);
+    expect(screen.queryByRole("button", { name: "Edit Deck" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "New Deck" })).toBeNull();
   });
 
   describe("once loaded", () => {
@@ -45,7 +46,8 @@ describe("DeckSelector", () => {
 
       expect(screen.queryByLabelText("Loading decks")).toBeNull();
       expect(screen.getByText("Default")).toBeVisible();
-      expect(screen.getAllByRole("button")).toHaveLength(2);
+      expect(screen.queryByRole("button", { name: "Edit Deck" })).toBeVisible();
+      expect(screen.queryByRole("button", { name: "New Deck" })).toBeVisible();
     });
 
     it("navigates to the edit page for a deck when edit clicked", () => {
@@ -53,8 +55,8 @@ describe("DeckSelector", () => {
 
       fireEvent.press(screen.getByRole("button", { name: "Edit Deck" }));
       expect(router.navigate).toHaveBeenCalledWith({
-        params: { idx: 0 },
-        pathname: "/decks/[idx]/edit",
+        params: { id: testDeck.id },
+        pathname: "/decks/[id]/edit",
       });
     });
   });

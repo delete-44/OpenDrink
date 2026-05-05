@@ -35,21 +35,20 @@ export default function Edit() {
   const [errorMessage, setErrorMessage] = useState("");
   const [pageLoadError, setPageLoadError] = useState("");
 
-  const { decks, saveDeck, isLoading } = useContext(StorageContext);
-  const { idx } = useLocalSearchParams<{ idx: string }>();
+  const { fetchDeck, saveDeck, isLoading } = useContext(StorageContext);
+  const { id } = useLocalSearchParams<{ id: string }>();
 
   const currentDeck = useMemo(() => {
     if (isLoading) return undefined;
 
-    const deckIdx = parseInt(idx);
-    const loadedDeck = decks[deckIdx];
+    const loadedDeck = fetchDeck(id);
 
     if (!loadedDeck?.cards) {
       setPageLoadError("Failed to load Deck.");
     }
 
     return loadedDeck;
-  }, [decks, idx, isLoading]);
+  }, [fetchDeck, id, isLoading]);
 
   // Callback for adding multiple cards to the deck; currently
   // used for inserting the default deck from the empty screen;

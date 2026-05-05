@@ -1,4 +1,4 @@
-import Edit from "@/app/decks/[idx]/edit";
+import Edit from "@/app/decks/[id]/edit";
 import DEFAULT_DECK from "@/src/constants/default-deck";
 import { Deck } from "@/src/models/Deck";
 import { fireEvent, render, screen } from "@testing-library/react-native";
@@ -10,6 +10,7 @@ jest.mock("expo-router", () => ({
 }));
 
 describe("Edit", () => {
+  const mockFetchDeck = jest.fn();
   const mockSaveDeck = jest.fn();
   const mockUseLocalSearchParams = useLocalSearchParams as jest.Mock;
 
@@ -19,14 +20,32 @@ describe("Edit", () => {
     jest.resetAllMocks();
   });
 
+  it("renders an error state when deck not found", () => {
+    jest.spyOn(React, "useContext").mockReturnValue({
+      fetchDeck: mockFetchDeck,
+      saveDeck: mockSaveDeck,
+      isLoading: false,
+    });
+
+    mockFetchDeck.mockReturnValue(null);
+    mockUseLocalSearchParams.mockReturnValue({ id: "faker" });
+
+    render(<Edit />);
+
+    expect(screen.queryByText("... or add your own here!")).toBeNull();
+    expect(screen.queryByLabelText("Loading Deck")).toBeNull();
+    expect(screen.getByText("Error: Failed to load Deck.")).toBeVisible();
+  });
+
   describe("when deck found", () => {
     beforeEach(() => {
-      mockUseLocalSearchParams.mockReturnValue({ idx: "0" });
+      mockFetchDeck.mockReturnValue(testDeck);
+      mockUseLocalSearchParams.mockReturnValue({ id: "abc123" });
     });
 
     it("renders a loading state", () => {
       jest.spyOn(React, "useContext").mockReturnValue({
-        decks: [testDeck],
+        fetchDeck: mockFetchDeck,
         saveDeck: mockSaveDeck,
         isLoading: true,
       });
@@ -41,20 +60,10 @@ describe("Edit", () => {
     describe("with no cards initialised", () => {
       beforeEach(() => {
         jest.spyOn(React, "useContext").mockReturnValue({
-          decks: [testDeck],
+          fetchDeck: mockFetchDeck,
           saveDeck: mockSaveDeck,
           isLoading: false,
         });
-      });
-
-      it("renders an error state when deck not found", () => {
-        mockUseLocalSearchParams.mockReturnValue({ idx: "500" });
-
-        render(<Edit />);
-
-        expect(screen.queryByText("... or add your own here!")).toBeNull();
-        expect(screen.queryByLabelText("Loading Deck")).toBeNull();
-        expect(screen.getByText("Error: Failed to load Deck.")).toBeVisible();
       });
 
       it("renders an empty state when no cards provided", () => {
@@ -147,8 +156,10 @@ describe("Edit", () => {
       );
 
       beforeEach(() => {
+        mockFetchDeck.mockReturnValue(testDeck);
+
         jest.spyOn(React, "useContext").mockReturnValue({
-          decks: [testDeck],
+          fetchDeck: mockFetchDeck,
           saveDeck: mockSaveDeck,
           isLoading: false,
         });
