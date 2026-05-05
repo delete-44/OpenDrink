@@ -3,12 +3,12 @@ import {
   KeyboardAvoidingView,
   Pressable,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 
 import globalStyles from "@/assets/global-styles";
 import { plus } from "@/assets/icons/plus";
+import DeckTitlebar from "@/components/DeckTitlebar";
 import HorizontalDivider from "@/components/HorizontalDivider";
 import RemovableListItem from "@/components/RemovableListItem";
 import CardListEmptyState from "@/components/status/CardListEmptyState";
@@ -21,7 +21,7 @@ import {
   DECORATION_COLOR,
   FORM_CONTROL_SIZE,
   FORM_LABEL_HEIGHT,
-  SPACING_MD,
+  SPACING_LG,
   SPACING_SM,
 } from "@/src/constants/style-constants";
 import { Deck } from "@/src/models/Deck";
@@ -92,9 +92,9 @@ export default function Edit() {
 
   return (
     <SafeAreaView style={globalStyles.backgroundGradient}>
-      <View style={styles.listContainer}>
-        <Text style={globalStyles.textLg}>{currentDeck.name}</Text>
+      <DeckTitlebar currentDeck={currentDeck} />
 
+      <View style={styles.listContainer}>
         <FlatList
           data={currentDeck.cards}
           renderItem={({ item, index }) => (
@@ -110,7 +110,7 @@ export default function Edit() {
       </View>
 
       <KeyboardAvoidingView behavior="padding">
-        <View style={styles.inputWrapper}>
+        <View style={styles.inputWrapper} role="form">
           <WrappedTextInput
             label="Card Content"
             value={newCard}
@@ -123,7 +123,7 @@ export default function Edit() {
 
           <Pressable
             role="button"
-            accessibilityLabel="Add Card"
+            accessibilityLabel="Add Card to Deck"
             style={styles.addButton}
             onPress={() => addCard(newCard)}
           >
@@ -137,9 +137,8 @@ export default function Edit() {
 
 const styles = StyleSheet.create({
   listContainer: {
-    maxWidth: "90%",
-    paddingHorizontal: SPACING_MD,
-    paddingVertical: SPACING_SM,
+    paddingHorizontal: SPACING_LG,
+    paddingVertical: SPACING_LG,
     marginInline: "auto",
     flex: 1,
 
@@ -155,8 +154,13 @@ const styles = StyleSheet.create({
     borderTopWidth: 5,
     borderTopColor: DECORATION_COLOR,
     backgroundColor: BACKGROUND_COLOR_HIGHLIGHT,
-    padding: SPACING_SM,
+    paddingHorizontal: SPACING_LG,
+    paddingBottom: SPACING_SM,
     paddingTop: SPACING_SM + FORM_LABEL_HEIGHT,
+  },
+  deckNameWrapper: {
+    flexDirection: "row",
+    alignItems: "flex-end",
   },
   addButton: {
     ...globalStyles.buttonHighlight,
