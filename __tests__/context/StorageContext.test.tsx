@@ -147,7 +147,7 @@ describe("StorageContext", () => {
       });
     });
 
-    describe("#saveDeck", () => {
+    describe("#updateDeck", () => {
       it("saves single deck to SecureStore and updates context", async () => {
         const storageContext = await renderStorageContext();
 
@@ -158,7 +158,7 @@ describe("StorageContext", () => {
         );
 
         await act(async () => {
-          await storageContext.current.saveDeck(decks[0].id, updatedDeck);
+          await storageContext.current.updateDeck(decks[0].id, updatedDeck);
         });
 
         expect(mockSetItemAsync).toHaveBeenCalledTimes(1);

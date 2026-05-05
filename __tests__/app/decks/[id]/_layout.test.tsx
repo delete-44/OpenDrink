@@ -13,7 +13,7 @@ jest.mock("expo-router", () => ({
 describe("DecksLayout", () => {
   const testDeck = new Deck("Test Deck", [], "abc123");
   const mockFetchDeck = jest.fn();
-  const mockSaveDeck = jest.fn();
+  const mockUpdateDeck = jest.fn();
   const mockUseLocalSearchParams = useLocalSearchParams as jest.Mock;
 
   const mockStorageContext = {
@@ -21,7 +21,7 @@ describe("DecksLayout", () => {
     saveSelectedDeckId: jest.fn(),
     decks: [testDeck],
     fetchDeck: mockFetchDeck,
-    saveDeck: mockSaveDeck,
+    updateDeck: mockUpdateDeck,
     players: ["Alice"],
     savePlayers: jest.fn(),
     isLoading: false,

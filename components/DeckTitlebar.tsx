@@ -27,7 +27,7 @@ type DeckTitlebarProps = {
 };
 
 export default function DeckTitlebar({ currentDeck }: DeckTitlebarProps) {
-  const { saveDeck } = useContext(StorageContext);
+  const { updateDeck } = useContext(StorageContext);
 
   const [editingDeckName, setEditingDeckName] = useState(
     currentDeck.name === "",
@@ -50,12 +50,12 @@ export default function DeckTitlebar({ currentDeck }: DeckTitlebarProps) {
         currentDeck.id,
       );
 
-      saveDeck(currentDeck.id, updatedDeck);
+      updateDeck(currentDeck.id, updatedDeck);
       setEditingDeckName(false);
 
       ToastAndroid.show("Name Saved", ToastAndroid.SHORT);
     },
-    [currentDeck, saveDeck],
+    [currentDeck, updateDeck],
   );
 
   if (editingDeckName) {

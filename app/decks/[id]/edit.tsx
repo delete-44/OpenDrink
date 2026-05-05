@@ -32,7 +32,7 @@ export default function Edit() {
   const [newCard, setNewCard] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const { saveDeck } = useContext(StorageContext);
+  const { updateDeck } = useContext(StorageContext);
   const currentDeck = useDeckFromLayout();
 
   // Callback for adding multiple cards to the deck; currently
@@ -47,9 +47,9 @@ export default function Edit() {
         modifiedCards,
         currentDeck.id,
       );
-      saveDeck(currentDeck.id, modifiedDeck);
+      updateDeck(currentDeck.id, modifiedDeck);
     },
-    [currentDeck, saveDeck],
+    [currentDeck, updateDeck],
   );
 
   const addCard = useCallback(
@@ -67,11 +67,11 @@ export default function Edit() {
         modifiedCards,
         currentDeck.id,
       );
-      saveDeck(currentDeck.id, modifiedDeck);
+      updateDeck(currentDeck.id, modifiedDeck);
 
       setNewCard("");
     },
-    [currentDeck, saveDeck],
+    [currentDeck, updateDeck],
   );
 
   const removeCardAt = useCallback(
@@ -85,9 +85,9 @@ export default function Edit() {
         modifiedCards,
         currentDeck.id,
       );
-      saveDeck(currentDeck.id, modifiedDeck);
+      updateDeck(currentDeck.id, modifiedDeck);
     },
-    [currentDeck, saveDeck],
+    [currentDeck, updateDeck],
   );
 
   return (

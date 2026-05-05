@@ -86,7 +86,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     return newDeck;
   };
 
-  const saveDeck = async (id: string, updatedDeck: Deck) => {
+  const updateDeck = async (id: string, updatedDeck: Deck) => {
     const newDecks = decks.map((deck) => (deck.id === id ? updatedDeck : deck));
 
     await saveResourceImpl(DECK_KEY, newDecks);
@@ -104,7 +104,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     decks,
     fetchDeck,
     createDeck,
-    saveDeck,
+    updateDeck,
     players,
     savePlayers,
     isLoading,
