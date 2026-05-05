@@ -11,7 +11,7 @@ type ErrorScreenProps = {
 export default function ErrorScreen({ message }: ErrorScreenProps) {
   return (
     <SafeAreaView
-      style={{ ...globalStyles.backgroundGradient, padding: SPACING_LG }}
+      style={[globalStyles.backgroundGradient, { padding: SPACING_LG }]}
     >
       <Text style={globalStyles.textLg}>Error: {message}</Text>
 

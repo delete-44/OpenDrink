@@ -50,11 +50,11 @@ export default function Play() {
         role="button"
         accessibilityLabel="Tap to draw next Card"
       >
-        <Text style={{ ...globalStyles.textLg, ...styles.screenTextMixin }}>
+        <Text style={[globalStyles.textLg, styles.screenTextMixin]}>
           {currentCard.player}&apos;s Turn
         </Text>
         <View style={styles.cardWrapper}>
-          <Text style={{ ...globalStyles.textHero, ...styles.screenTextMixin }}>
+          <Text style={[globalStyles.textHero, styles.screenTextMixin]}>
             {currentCard.card}
           </Text>
         </View>
