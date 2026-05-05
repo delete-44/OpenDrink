@@ -1,0 +1,103 @@
+import Play from "@/app/decks/[id]/play";
+import { DeckLayoutContext } from "@/context/DeckLayoutContext";
+import { StorageContext } from "@/context/StorageContext";
+import { Deck } from "@/src/models/Deck";
+import { fireEvent, render, screen } from "@testing-library/react-native";
+import { router } from "expo-router";
+import React from "react";
+
+jest.mock("expo-router", () => ({
+  router: {
+    back: jest.fn(),
+  },
+}));
+
+describe("Play", () => {
+  const testDeck = new Deck("Test Deck", ["Card 1", "Card 2"], "abc123");
+
+  const mockStorageContext = {
+    selectedDeck: testDeck,
+    saveSelectedDeckId: jest.fn(),
+    decks: [testDeck],
+    fetchDeck: jest.fn(),
+    saveDeck: jest.fn(),
+    players: [],
+    savePlayers: jest.fn(),
+    isLoading: false,
+  };
+
+  beforeEach(() => {
+    jest.spyOn(global.Math, "random").mockReturnValue(0.123456789);
+  });
+
+  afterEach(() => {
+    jest.spyOn(global.Math, "random").mockRestore();
+  });
+
+  it("shows a CTA to return home if the initialisation fails", () => {
+    render(
+      <DeckLayoutContext.Provider value={testDeck}>
+        <StorageContext.Provider value={mockStorageContext}>
+          <Play />
+        </StorageContext.Provider>
+      </DeckLayoutContext.Provider>,
+    );
+
+    expect(screen.getByText("Error: Game has no Players")).toBeVisible();
+    expect(screen.queryByLabelText("Loading Game")).toBeNull();
+
+    const homeButton = screen.getByRole("button", { name: "Back to Home" });
+    expect(homeButton).toBeVisible();
+
+    fireEvent.press(homeButton);
+    expect(router.back).toHaveBeenCalled();
+  });
+
+  describe("with a valid game", () => {
+    const mockStorageContext = {
+      selectedDeck: testDeck,
+      saveSelectedDeckId: jest.fn(),
+      decks: [testDeck],
+      fetchDeck: jest.fn(),
+      saveDeck: jest.fn(),
+      players: ["Sally", "Alice"],
+      savePlayers: jest.fn(),
+      isLoading: false,
+    };
+
+    beforeEach(() => {
+      render(
+        <DeckLayoutContext.Provider value={testDeck}>
+          <StorageContext.Provider value={mockStorageContext}>
+            <Play />
+          </StorageContext.Provider>
+        </DeckLayoutContext.Provider>,
+      );
+    });
+
+    it("renders a GameState on load", () => {
+      expect(screen.getByText("Sally's Turn")).toBeVisible();
+      expect(screen.getByText("Card 1")).toBeVisible();
+      expect(
+        screen.getByRole("button", { name: "Tap to draw next Card" }),
+      ).toBeVisible();
+
+      expect(screen.queryByLabelText("Loading Game")).toBeNull();
+      expect(screen.queryByRole("button", { name: "Back to Home" })).toBeNull();
+    });
+
+    it("cycles to the next GameState on click", () => {
+      const nextCardButton = screen.getByRole("button", {
+        name: "Tap to draw next Card",
+      });
+
+      expect(screen.getByText("Sally's Turn")).toBeVisible();
+      expect(screen.getByText("Card 1")).toBeVisible();
+
+      fireEvent.press(nextCardButton);
+
+      expect(screen.getByText("Alice's Turn")).toBeVisible();
+      expect(screen.getByText("Card 2")).toBeVisible();
+    });
+  });
+});

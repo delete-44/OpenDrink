@@ -18,7 +18,7 @@ jest.mock("expo-router", () => ({
 
 describe("Index", () => {
   beforeEach(() => {
-    const testDeck = new Deck("Default", ["Card 1"], "1");
+    const testDeck = new Deck("Default", ["Card 1"], "abc123");
     jest.spyOn(React, "useContext").mockReturnValue({
       selectedDeck: testDeck,
       isLoading: false,
@@ -71,6 +71,9 @@ describe("Index", () => {
     expect(getStartedButton).toBeVisible();
 
     fireEvent.press(getStartedButton);
-    expect(router.navigate).toHaveBeenCalledWith("/game");
+    expect(router.navigate).toHaveBeenCalledWith({
+      params: { id: "abc123" },
+      pathname: "/decks/[id]/play",
+    });
   });
 });

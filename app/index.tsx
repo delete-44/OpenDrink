@@ -11,6 +11,8 @@ import {
 import globalStyles from "@/assets/global-styles";
 import DeckSelector from "@/components/DeckSelector";
 import PlayerList from "@/components/PlayerList";
+import LoadingScreen from "@/components/status/LoadingScreen";
+import { StorageContext } from "@/context/StorageContext";
 import {
   BACKGROUND_COLOR,
   DECORATION_COLOR,
@@ -19,10 +21,11 @@ import {
   SPACING_SM,
 } from "@/src/constants/style-constants";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
+  const { selectedDeck, isLoading } = useContext(StorageContext);
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
   useEffect(() => {
@@ -39,8 +42,12 @@ export default function Index() {
     };
   }, []);
 
+  if (isLoading) {
+    return <LoadingScreen label="Loading Decks..." />;
+  }
+
   return (
-    <SafeAreaView style={{ ...globalStyles.backgroundPlain, gap: SPACING_MD }}>
+    <SafeAreaView style={[globalStyles.backgroundPlain, { gap: SPACING_MD }]}>
       <ImageBackground
         source={require("../assets/images/decorative/bg-pattern.png")}
         resizeMode="repeat"
@@ -55,7 +62,12 @@ export default function Index() {
           <Pressable
             style={styles.heroButton}
             role="button"
-            onPress={() => router.navigate("/game")}
+            onPress={() =>
+              router.navigate({
+                pathname: "/decks/[id]/play",
+                params: { id: selectedDeck.id },
+              })
+            }
           >
             <Text style={styles.heroButtonText}>Get Started!</Text>
           </Pressable>
