@@ -35,7 +35,7 @@ export default function DecksLayout() {
   return (
     <DeckLayoutContext.Provider value={currentDeck}>
       <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
-        <Stack.Screen name="edit" initialParams={{ deck: currentDeck }} />
+        <Stack.Screen name="edit" />
         <Stack.Screen name="play" />
       </Stack>
     </DeckLayoutContext.Provider>
