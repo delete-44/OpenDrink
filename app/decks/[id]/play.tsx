@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import globalStyles from "@/assets/global-styles";
 import ErrorScreen from "@/components/status/ErrorScreen";
-import LoadingScreen from "@/components/status/LoadingScreen";
+import { useDeckFromLayout } from "@/context/DeckLayoutContext";
 import { StorageContext } from "@/context/StorageContext";
 import { SPACING_MD } from "@/src/constants/style-constants";
 import { Game } from "@/src/models/Game";
@@ -11,32 +11,26 @@ import { useKeepAwake } from "expo-keep-awake";
 import { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function GameScreen() {
+export default function Play() {
   useKeepAwake();
 
-  // FIXME: Remove reliance on selectedDeck. Use /decks/{id}/game routing
-  const { selectedDeck, players, isLoading } = useContext(StorageContext);
+  const { players, isLoading } = useContext(StorageContext);
 
   const [game, setGame] = useState<Game>();
   const [currentCard, setCurrentCard] = useState<GameState>();
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  useEffect(() => {
-    if (isLoading) return;
+  const currentDeck = useDeckFromLayout();
 
+  useEffect(() => {
     try {
-      const newGame = new Game(selectedDeck, players);
+      const newGame = new Game(currentDeck, players);
       setGame(newGame);
       setCurrentCard(newGame.drawCard());
     } catch (e: any) {
       setErrorMessage(e.message);
     }
-  }, [isLoading, selectedDeck, players]);
-
-  // Loading screen
-  if (isLoading) {
-    return <LoadingScreen label="Loading Game" />;
-  }
+  }, [isLoading, currentDeck, players]);
 
   // Error screen
   if (!game || !currentCard || errorMessage) {

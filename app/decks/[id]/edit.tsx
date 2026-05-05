@@ -12,10 +12,9 @@ import { plus } from "@/assets/icons/plus";
 import HorizontalDivider from "@/components/HorizontalDivider";
 import RemovableListItem from "@/components/RemovableListItem";
 import CardListEmptyState from "@/components/status/CardListEmptyState";
-import ErrorScreen from "@/components/status/ErrorScreen";
-import LoadingScreen from "@/components/status/LoadingScreen";
 import SVG from "@/components/SVG";
 import WrappedTextInput from "@/components/WrappedTextInput";
+import { useDeckFromLayout } from "@/context/DeckLayoutContext";
 import { StorageContext } from "@/context/StorageContext";
 import {
   BACKGROUND_COLOR_HIGHLIGHT,
@@ -26,37 +25,21 @@ import {
   SPACING_SM,
 } from "@/src/constants/style-constants";
 import { Deck } from "@/src/models/Deck";
-import { useLocalSearchParams } from "expo-router";
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Edit() {
   const [newCard, setNewCard] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [pageLoadError, setPageLoadError] = useState("");
 
-  const { fetchDeck, saveDeck, isLoading } = useContext(StorageContext);
-  const { id } = useLocalSearchParams<{ id: string }>();
-
-  const currentDeck = useMemo(() => {
-    if (isLoading) return undefined;
-
-    const loadedDeck = fetchDeck(id);
-
-    if (!loadedDeck?.cards) {
-      setPageLoadError("Failed to load Deck.");
-    }
-
-    return loadedDeck;
-  }, [fetchDeck, id, isLoading]);
+  const { saveDeck } = useContext(StorageContext);
+  const currentDeck = useDeckFromLayout();
 
   // Callback for adding multiple cards to the deck; currently
   // used for inserting the default deck from the empty screen;
   // longer term could be useful for downloading/importing decks
   const addCards = useCallback(
     (newCards: string[]) => {
-      if (!currentDeck) return;
-
       const modifiedCards = [...currentDeck.cards, ...newCards];
 
       let modifiedDeck = new Deck(
@@ -71,8 +54,6 @@ export default function Edit() {
 
   const addCard = useCallback(
     (newCard: string) => {
-      if (!currentDeck) return;
-
       if (!newCard.trim()) {
         setErrorMessage("Card cannot be empty");
 
@@ -95,8 +76,6 @@ export default function Edit() {
 
   const removeCardAt = useCallback(
     (cardIndex: number) => {
-      if (!currentDeck) return;
-
       const modifiedCards = currentDeck.cards.filter(
         (_, idx) => idx !== cardIndex,
       );
@@ -110,14 +89,6 @@ export default function Edit() {
     },
     [currentDeck, saveDeck],
   );
-
-  if (isLoading) {
-    return <LoadingScreen label="Loading Deck" />;
-  }
-
-  if (pageLoadError || !currentDeck) {
-    return <ErrorScreen message={pageLoadError} />;
-  }
 
   return (
     <SafeAreaView style={globalStyles.backgroundGradient}>
