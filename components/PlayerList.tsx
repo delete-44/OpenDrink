@@ -110,10 +110,9 @@ export default function PlayerList() {
 
 const styles = StyleSheet.create({
   playerList: {
-    maxWidth: "90%",
     paddingHorizontal: SPACING_MD,
     paddingVertical: SPACING_SM,
-    marginInline: "auto",
+    marginInline: SPACING_LG,
     flex: 1,
 
     backgroundColor: CONTENT_BACKDROP,
