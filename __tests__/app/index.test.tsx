@@ -21,6 +21,7 @@ describe("Index", () => {
     const testDeck = new Deck("Default", ["Card 1"], "abc123");
     jest.spyOn(React, "useContext").mockReturnValue({
       selectedDeck: testDeck,
+      decks: [testDeck],
       isLoading: true,
     });
 
@@ -35,6 +36,7 @@ describe("Index", () => {
       const testDeck = new Deck("Default", ["Card 1"], "abc123");
       jest.spyOn(React, "useContext").mockReturnValue({
         selectedDeck: testDeck,
+        decks: [testDeck],
         isLoading: false,
       });
     });

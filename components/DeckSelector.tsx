@@ -88,7 +88,7 @@ export default function DeckSelector() {
         onClose={() => setIsModalVisible(false)}
       >
         {/* TODO: Use a list, add interactivity */}
-        {(decks || []).map((deck) => (
+        {decks.map((deck) => (
           <Text key={deck.id} style={globalStyles.textLg}>
             {deck.name || "Untitled Deck"}
           </Text>
