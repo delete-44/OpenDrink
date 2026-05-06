@@ -47,9 +47,12 @@ export default function ModalContainer({
           style={styles.modalContent}
           pointerEvents="box-none"
           accessibilityViewIsModal
+          role="dialog"
         >
           <View style={styles.titleContainer}>
-            <Text style={globalStyles.textMd}>{title}</Text>
+            <Text style={globalStyles.textMd} role="heading">
+              {title}
+            </Text>
             <Pressable
               onPress={onClose}
               role="button"

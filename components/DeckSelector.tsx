@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  FlatList,
   Image,
   Pressable,
   StyleSheet,
@@ -8,6 +9,7 @@ import {
 } from "react-native";
 
 import globalStyles from "@/assets/global-styles";
+import { chevronDown } from "@/assets/icons/chevronDown";
 import { pencil } from "@/assets/icons/pencil";
 import { plus } from "@/assets/icons/plus";
 import { StorageContext } from "@/context/StorageContext";
@@ -19,12 +21,14 @@ import {
 } from "@/src/constants/style-constants";
 import { router } from "expo-router";
 import { useContext, useState } from "react";
+import HorizontalDivider from "./HorizontalDivider";
 import ModalContainer from "./ModalContainer";
+import PressableListItem from "./PressableListItem";
 import SVG from "./SVG";
 
 export default function DeckSelector() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { selectedDeck, decks, createDeck, isLoading } =
+  const { selectedDeck, saveSelectedDeckIdx, decks, createDeck, isLoading } =
     useContext(StorageContext);
 
   if (isLoading) {
@@ -35,21 +39,29 @@ export default function DeckSelector() {
 
   return (
     <>
-      <View style={styles.deckSelector}>
+      <View style={styles.deckSelectorWrapper}>
         <View style={styles.logoBackground}>
           <Image source={require("../assets/icons/deck.png")} alt="" />
         </View>
 
-        {/* TODO: Add dropdown caret? Or other icon to indicate interactivity */}
         <Pressable
-          style={globalStyles.buttonHighlight}
+          style={[globalStyles.buttonPlain, styles.actionsContainer]}
           role="button"
           onPress={() => setIsModalVisible(true)}
         >
-          <Text style={globalStyles.buttonText}>{selectedDeck.name}</Text>
+          <Text style={globalStyles.textLg} numberOfLines={1}>
+            {selectedDeck.name}
+          </Text>
+
+          <SVG
+            icon={chevronDown}
+            width={24}
+            height={24}
+            color={CONTENT_COLOR}
+          />
         </Pressable>
 
-        <View style={styles.deckSelectorActions}>
+        <View style={styles.actionsContainer}>
           <Pressable
             role="button"
             style={globalStyles.buttonSm}
@@ -82,18 +94,29 @@ export default function DeckSelector() {
         </View>
       </View>
 
-      <ModalContainer
-        title="Select Deck"
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-      >
-        {/* TODO: Use a list, add interactivity */}
-        {(decks || []).map((deck) => (
-          <Text key={deck.id} style={globalStyles.textLg}>
-            {deck.name || "Untitled Deck"}
-          </Text>
-        ))}
-      </ModalContainer>
+      {isModalVisible && (
+        <ModalContainer
+          title="Select Deck"
+          isVisible={isModalVisible}
+          onClose={() => setIsModalVisible(false)}
+        >
+          <FlatList
+            data={decks}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => (
+              <PressableListItem
+                label={item.name}
+                idx={index}
+                onPressItem={(idx: number) => {
+                  saveSelectedDeckIdx(idx);
+                  setIsModalVisible(false);
+                }}
+              />
+            )}
+            ItemSeparatorComponent={HorizontalDivider}
+          />
+        </ModalContainer>
+      )}
     </>
   );
 }
@@ -104,9 +127,10 @@ const styles = StyleSheet.create({
     borderRadius: 99,
     padding: SPACING_MD,
   },
-  deckSelector: {
+  deckSelectorWrapper: {
     padding: SPACING_MD,
     marginInline: "auto",
+    maxWidth: "75%",
 
     backgroundColor: CONTENT_BACKDROP,
     borderRadius: SPACING_SM,
@@ -115,7 +139,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: SPACING_SM,
   },
-  deckSelectorActions: {
+  actionsContainer: {
     flexDirection: "row",
     gap: SPACING_SM,
     justifyContent: "space-between",
