@@ -23,7 +23,7 @@ export type StorageProviderProps = {
 
 export type StorageContextProps = {
   selectedDeck: Deck;
-  saveSelectedDeckId: (id: string) => void;
+  saveSelectedDeckIdx: (idx: number) => void;
   decks: Deck[];
   fetchDeck: (id: string) => Deck | null;
   createDeck: (name?: string) => Promise<Deck>;
