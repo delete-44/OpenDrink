@@ -42,7 +42,6 @@ export default function DeckTitlebar({
       } catch (e: any) {
         console.error(e);
 
-        console.log("HERE! setting error message to", e.message);
         setDeckNameErrorMessage(e.message);
       }
     },

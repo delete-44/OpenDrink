@@ -1,0 +1,150 @@
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
+
+import globalStyles from "@/assets/global-styles";
+import { plus } from "@/assets/icons/plus";
+import HorizontalDivider from "@/components/HorizontalDivider";
+import RemovableListItem from "@/components/RemovableListItem";
+import CardListEmptyState from "@/components/status/CardListEmptyState";
+import SVG from "@/components/SVG";
+import WrappedTextInput from "@/components/WrappedTextInput";
+import { StorageContext } from "@/context/StorageContext";
+import {
+  BACKGROUND_COLOR_HIGHLIGHT,
+  DECORATION_COLOR,
+  FORM_CONTROL_SIZE,
+  FORM_LABEL_HEIGHT,
+  SPACING_LG,
+  SPACING_SM,
+} from "@/src/constants/style-constants";
+import { Deck } from "@/src/models/Deck";
+import { useCallback, useContext, useState } from "react";
+
+type CardListProps = {
+  deck: Deck;
+};
+
+export default function CardList({ deck }: CardListProps) {
+  const [newCard, setNewCard] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const { updateDeck } = useContext(StorageContext);
+
+  // Callback for adding multiple cards to the deck; currently
+  // used for inserting the default deck from the empty screen;
+  // longer term could be useful for downloading/importing decks
+  const addCards = useCallback(
+    async (newCards: string[]) => {
+      const modifiedCards = [...deck.cards, ...newCards];
+
+      let modifiedDeck = new Deck(deck.name, modifiedCards, deck.id);
+      await updateDeck(deck.id, modifiedDeck);
+    },
+    [deck, updateDeck],
+  );
+
+  const addCard = useCallback(
+    async (newCard: string) => {
+      if (!newCard.trim()) {
+        setErrorMessage("Card cannot be empty");
+
+        return;
+      }
+
+      const modifiedCards = [...deck.cards, newCard.trim()];
+
+      let modifiedDeck = new Deck(deck.name, modifiedCards, deck.id);
+      await updateDeck(deck.id, modifiedDeck);
+
+      setNewCard("");
+    },
+    [deck, updateDeck],
+  );
+
+  const removeCardAt = useCallback(
+    async (cardIndex: number) => {
+      const modifiedCards = deck.cards.filter((_, idx) => idx !== cardIndex);
+
+      let modifiedDeck = new Deck(deck.name, modifiedCards, deck.id);
+      await updateDeck(deck.id, modifiedDeck);
+    },
+    [deck, updateDeck],
+  );
+
+  return (
+    <>
+      <View style={styles.listContainer}>
+        <FlatList
+          data={deck.cards}
+          renderItem={({ item, index }) => (
+            <RemovableListItem
+              label={item}
+              idx={index}
+              removeItemAt={removeCardAt}
+            />
+          )}
+          ListEmptyComponent={<CardListEmptyState addCards={addCards} />}
+          ItemSeparatorComponent={HorizontalDivider}
+        />
+      </View>
+
+      <KeyboardAvoidingView behavior="padding">
+        <View style={styles.inputWrapper} role="form">
+          <WrappedTextInput
+            label="Card Content"
+            value={newCard}
+            errorMessage={errorMessage}
+            onChange={(text) => {
+              setErrorMessage("");
+              setNewCard(text);
+            }}
+          />
+
+          <Pressable
+            role="button"
+            accessibilityLabel="Add Card to Deck"
+            style={styles.addButton}
+            onPress={() => addCard(newCard)}
+          >
+            <SVG icon={plus} width={24} height={24} />
+          </Pressable>
+        </View>
+      </KeyboardAvoidingView>
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  listContainer: {
+    paddingHorizontal: SPACING_LG,
+    paddingVertical: SPACING_LG,
+    marginInline: "auto",
+    flex: 1,
+
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  inputWrapper: {
+    gap: SPACING_SM,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+
+    borderTopWidth: 5,
+    borderTopColor: DECORATION_COLOR,
+    backgroundColor: BACKGROUND_COLOR_HIGHLIGHT,
+    paddingHorizontal: SPACING_LG,
+    paddingBottom: SPACING_SM,
+    paddingTop: SPACING_SM + FORM_LABEL_HEIGHT,
+  },
+  addButton: {
+    ...globalStyles.buttonHighlight,
+    marginBottom: FORM_LABEL_HEIGHT,
+    height: FORM_CONTROL_SIZE,
+  },
+});
