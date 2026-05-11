@@ -7,10 +7,6 @@ describe("Game", () => {
     jest.spyOn(global.Math, "random").mockReturnValue(0.123456789);
   });
 
-  afterEach(() => {
-    jest.spyOn(global.Math, "random").mockRestore();
-  });
-
   it("throws an error if deck is empty upon instantiation", () => {
     const deck = new Deck("Test deck", []);
     const players = ["Sally"];

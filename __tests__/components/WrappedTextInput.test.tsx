@@ -7,10 +7,6 @@ describe("WrappedTextInput", () => {
   const label = "Test Label";
   const onChange = jest.fn();
 
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
-
   it("renders a semantic label & text input", () => {
     render(
       <WrappedTextInput

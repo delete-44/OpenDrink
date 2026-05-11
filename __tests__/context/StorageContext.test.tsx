@@ -21,15 +21,20 @@ const mockSetItemAsync = jest.fn(async (key: string, value: string) => {
   mockStore[key] = value;
 });
 
-jest.spyOn(SecureStore, "getItemAsync").mockImplementation(mockGetItemAsync);
-jest.spyOn(SecureStore, "setItemAsync").mockImplementation(mockSetItemAsync);
-
 const storageKey = "players";
 const fallbackValue = [] as any;
 
 describe("StorageContext", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest
+      .spyOn(SecureStore, "getItemAsync")
+      .mockImplementation(mockGetItemAsync);
+
+    jest
+      .spyOn(SecureStore, "setItemAsync")
+      .mockImplementation(mockSetItemAsync);
+
+    // Reset your mock store
     Object.keys(mockStore).forEach((k) => delete mockStore[k]);
   });
 
