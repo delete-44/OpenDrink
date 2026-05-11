@@ -53,8 +53,6 @@ describe("Edit", () => {
 
     expect(mockUpdateDeck).toHaveBeenCalledWith("abc123", {
       name: "Renamed Deck",
-      cards: testDeck.cards,
-      id: testDeck.id,
     });
 
     await waitFor(() => {

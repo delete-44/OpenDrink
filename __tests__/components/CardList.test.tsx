@@ -46,10 +46,9 @@ describe("CardList", () => {
         screen.getByRole("button", { name: "Load Default Cards" }),
       );
 
-      expect(mockUpdateDeck).toHaveBeenCalledWith(
-        testDeck.id,
-        new Deck(testDeck.name, DEFAULT_DECK.cards, testDeck.id),
-      );
+      expect(mockUpdateDeck).toHaveBeenCalledWith(testDeck.id, {
+        cards: DEFAULT_DECK.cards,
+      });
     });
 
     it("prevents user adding empty cards", () => {
@@ -100,10 +99,9 @@ describe("CardList", () => {
       });
       fireEvent.press(addButton);
 
-      expect(mockUpdateDeck).toHaveBeenCalledWith(
-        testDeck.id,
-        new Deck(testDeck.name, ["Drink up!"], testDeck.id),
-      );
+      expect(mockUpdateDeck).toHaveBeenCalledWith(testDeck.id, {
+        cards: ["Drink up!"],
+      });
 
       await waitFor(() => {
         expect(input).toHaveProp("value", "");
@@ -137,10 +135,9 @@ describe("CardList", () => {
       });
 
       fireEvent.press(removeCardButton);
-      expect(mockUpdateDeck).toHaveBeenCalledWith(
-        testDeck.id,
-        new Deck(testDeck.name, ["Drink up!", "Go for a walk"], testDeck.id),
-      );
+      expect(mockUpdateDeck).toHaveBeenCalledWith(testDeck.id, {
+        cards: ["Drink up!", "Go for a walk"],
+      });
     });
   });
 });

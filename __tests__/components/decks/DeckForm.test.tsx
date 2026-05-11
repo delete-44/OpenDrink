@@ -10,10 +10,10 @@ import React from "react";
 
 describe("DeckForm", () => {
   const testDeck = new Deck("Test Deck", [], "abc123");
-  const mockUpdateDeck = jest.fn();
+  const mockSaveDeck = jest.fn();
 
   beforeEach(() => {
-    render(<DeckForm deck={testDeck} saveDeckCallback={mockUpdateDeck} />);
+    render(<DeckForm deck={testDeck} saveDeckCallback={mockSaveDeck} />);
   });
 
   it("composes the DeckTitleBar & CardList", () => {
@@ -36,7 +36,7 @@ describe("DeckForm", () => {
 
     fireEvent.press(screen.getByRole("button", { name: "Confirm Change" }));
 
-    expect(mockUpdateDeck).toHaveBeenCalledWith("Renamed Deck");
+    expect(mockSaveDeck).toHaveBeenCalledWith("Renamed Deck");
 
     await waitFor(() => {
       expect(screen.getByRole("button", { name: "Rename Deck" })).toBeVisible();

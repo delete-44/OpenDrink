@@ -42,8 +42,7 @@ export default function CardList({ deck }: CardListProps) {
     async (newCards: string[]) => {
       const modifiedCards = [...deck.cards, ...newCards];
 
-      let modifiedDeck = new Deck(deck.name, modifiedCards, deck.id);
-      await updateDeck(deck.id, modifiedDeck);
+      await updateDeck(deck.id, { cards: modifiedCards });
     },
     [deck, updateDeck],
   );
@@ -58,8 +57,7 @@ export default function CardList({ deck }: CardListProps) {
 
       const modifiedCards = [...deck.cards, newCard.trim()];
 
-      let modifiedDeck = new Deck(deck.name, modifiedCards, deck.id);
-      await updateDeck(deck.id, modifiedDeck);
+      await updateDeck(deck.id, { cards: modifiedCards });
 
       setNewCard("");
     },
@@ -70,8 +68,7 @@ export default function CardList({ deck }: CardListProps) {
     async (cardIndex: number) => {
       const modifiedCards = deck.cards.filter((_, idx) => idx !== cardIndex);
 
-      let modifiedDeck = new Deck(deck.name, modifiedCards, deck.id);
-      await updateDeck(deck.id, modifiedDeck);
+      await updateDeck(deck.id, { cards: modifiedCards });
     },
     [deck, updateDeck],
   );
