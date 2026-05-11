@@ -7,11 +7,6 @@ describe("Deck", () => {
     jest.spyOn(global.Date, "now").mockReturnValue(1);
   });
 
-  afterEach(() => {
-    jest.spyOn(global.Math, "random").mockRestore();
-    jest.spyOn(global.Date, "now").mockRestore();
-  });
-
   it("generates a unique ID on instantiation", () => {
     const deck = new Deck("Test deck", []);
 

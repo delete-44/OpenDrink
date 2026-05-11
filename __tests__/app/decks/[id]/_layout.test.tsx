@@ -19,10 +19,6 @@ describe("DecksLayout", () => {
     mockUseLocalSearchParams.mockReturnValue({ id: "abc123" });
   });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   it("renders a loading state", () => {
     const loadingContext = {
       ...BaseMockStorageContext,

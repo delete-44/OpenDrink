@@ -25,10 +25,6 @@ describe("Play", () => {
     jest.spyOn(global.Math, "random").mockReturnValue(0.123456789);
   });
 
-  afterEach(() => {
-    jest.spyOn(global.Math, "random").mockRestore();
-  });
-
   it("shows a CTA to return home if the initialisation fails", () => {
     render(
       <DeckLayoutContext.Provider value={testDeck}>

@@ -5,10 +5,6 @@ import { StyleSheet } from "react-native";
 describe("ModalContainer", () => {
   const mockOnClose = jest.fn();
 
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
-
   it("renders markup - backdrop + title bar + close button", () => {
     render(
       <ModalContainer title="Test Modal" isVisible onClose={mockOnClose} />,

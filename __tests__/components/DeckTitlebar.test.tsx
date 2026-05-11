@@ -26,10 +26,6 @@ describe("DeckTitlebar", () => {
     expect(screen.getByLabelText("Deck Name")).toBeVisible();
   };
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   it("renders in active state if deck name is empty", () => {
     const newDeck = new Deck("", []);
 
@@ -72,7 +68,7 @@ describe("DeckTitlebar", () => {
     });
 
     it("shows errors from the update callback in UI", async () => {
-      mockSaveDeckCallback.mockRejectedValue(new Error("test error"));
+      mockSaveDeckCallback.mockRejectedValueOnce(new Error("test error"));
 
       fireEvent.press(screen.getByRole("button", { name: "Rename Deck" }));
 

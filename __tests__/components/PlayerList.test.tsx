@@ -10,12 +10,8 @@ import React from "react";
 describe("PlayerList", () => {
   const mockSavePlayers = jest.fn();
 
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
-
   it("renders a loading state", () => {
-    jest.spyOn(React, "useContext").mockReturnValue({
+    jest.spyOn(React, "useContext").mockReturnValueOnce({
       players: [],
       savePlayers: mockSavePlayers,
       isLoading: true,

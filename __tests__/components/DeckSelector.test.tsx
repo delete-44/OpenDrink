@@ -19,10 +19,6 @@ describe("DeckSelector", () => {
   const testDeck = new Deck("Default", ["Card 1"], "1");
   const mockCreateDeck = jest.fn();
 
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
-
   it("renders loading spinner when fetching data", () => {
     jest.spyOn(React, "useContext").mockReturnValueOnce({
       decks: [testDeck],
