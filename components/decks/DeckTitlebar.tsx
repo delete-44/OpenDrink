@@ -81,7 +81,7 @@ export default function DeckTitlebar({
       <Pressable
         role="button"
         accessibilityLabel="Rename Deck"
-        style={globalStyles.buttonSm}
+        style={globalStyles.button}
         onPress={() => setEditingDeckName(true)}
       >
         <SVG icon={pencil} width={24} height={24} />

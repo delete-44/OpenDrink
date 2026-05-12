@@ -64,7 +64,7 @@ export default function DeckSelector() {
         <View style={styles.actionsContainer}>
           <Pressable
             role="button"
-            style={globalStyles.buttonSm}
+            style={globalStyles.button}
             onPress={() =>
               router.navigate({
                 pathname: "/decks/[id]/edit",
@@ -78,7 +78,7 @@ export default function DeckSelector() {
 
           <Pressable
             role="button"
-            style={globalStyles.buttonSm}
+            style={globalStyles.button}
             onPress={() => {
               router.navigate("/decks/new");
             }}

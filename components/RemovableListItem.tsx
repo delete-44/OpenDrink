@@ -22,7 +22,7 @@ export default function RemovableListItem({
       <Pressable
         role="button"
         accessibilityLabel={`Remove ${label}`}
-        style={globalStyles.buttonSm}
+        style={globalStyles.button}
         onPress={() => removeItemAt(idx)}
       >
         <SVG icon={minus} width={24} height={24} />

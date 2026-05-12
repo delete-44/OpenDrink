@@ -11,7 +11,6 @@ import {
   FONT_SIZE_SM,
   FORM_CONTROL_SIZE,
   HIGHLIGHT_COLOR,
-  SPACING_MD,
   SPACING_SM,
 } from "../src/constants/style-constants";
 
@@ -35,6 +34,7 @@ const baseButton = {
   minHeight: FORM_CONTROL_SIZE,
   justifyContent: "center",
   alignItems: "center",
+  padding: SPACING_SM,
 } as ViewStyle;
 
 export default StyleSheet.create({
@@ -83,22 +83,15 @@ export default StyleSheet.create({
   },
   buttonHighlight: {
     ...baseButton,
-    padding: SPACING_SM,
     backgroundColor: HIGHLIGHT_COLOR,
   },
   buttonPlain: {
     ...baseButton,
-    padding: SPACING_SM,
     backgroundColor: "transparent",
     borderWidth: 0,
   },
-  buttonSm: {
-    ...baseButton,
-    padding: SPACING_SM,
-  },
   button: {
     ...baseButton,
-    padding: SPACING_MD,
   },
   buttonText: {
     fontFamily: "JockeyOne",
