@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -20,6 +19,7 @@ import {
 } from "@/src/constants/style-constants";
 import { router } from "expo-router";
 import { useContext, useState } from "react";
+import Logo from "../Logo";
 import SVG from "../SVG";
 import DeckSelectorModal from "./DeckSelectorModal";
 
@@ -36,9 +36,7 @@ export default function DeckSelector() {
   return (
     <>
       <View style={styles.deckSelectorWrapper}>
-        <View style={styles.logoBackground}>
-          <Image source={require("../../assets/icons/deck.png")} alt="" />
-        </View>
+        <Logo />
 
         <Pressable
           style={[globalStyles.buttonPlain, styles.actionsContainer]}
@@ -96,11 +94,6 @@ export default function DeckSelector() {
 }
 
 const styles = StyleSheet.create({
-  logoBackground: {
-    backgroundColor: CONTENT_COLOR,
-    borderRadius: 99,
-    padding: SPACING_MD,
-  },
   deckSelectorWrapper: {
     padding: SPACING_MD,
     marginInline: "auto",
