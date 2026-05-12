@@ -4,10 +4,6 @@ import { fireEvent, render, screen } from "@testing-library/react-native";
 describe("RemovableListItem", () => {
   const mockRemoveItemAt = jest.fn();
 
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
-
   it("renders markup - player name and a remove button", () => {
     render(
       <RemovableListItem

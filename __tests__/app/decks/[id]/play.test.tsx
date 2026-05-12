@@ -2,6 +2,7 @@ import Play from "@/app/decks/[id]/play";
 import { DeckLayoutContext } from "@/context/DeckLayoutContext";
 import { StorageContext } from "@/context/StorageContext";
 import { Deck } from "@/src/models/Deck";
+import { BaseMockStorageContext } from "@/test-utils";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { router } from "expo-router";
 import React from "react";
@@ -16,22 +17,12 @@ describe("Play", () => {
   const testDeck = new Deck("Test Deck", ["Card 1", "Card 2"], "abc123");
 
   const mockStorageContext = {
-    selectedDeck: testDeck,
-    saveSelectedDeckId: jest.fn(),
-    decks: [testDeck],
-    fetchDeck: jest.fn(),
-    saveDeck: jest.fn(),
+    ...BaseMockStorageContext,
     players: [],
-    savePlayers: jest.fn(),
-    isLoading: false,
   };
 
   beforeEach(() => {
     jest.spyOn(global.Math, "random").mockReturnValue(0.123456789);
-  });
-
-  afterEach(() => {
-    jest.spyOn(global.Math, "random").mockRestore();
   });
 
   it("shows a CTA to return home if the initialisation fails", () => {
@@ -54,21 +45,10 @@ describe("Play", () => {
   });
 
   describe("with a valid game", () => {
-    const mockStorageContext = {
-      selectedDeck: testDeck,
-      saveSelectedDeckId: jest.fn(),
-      decks: [testDeck],
-      fetchDeck: jest.fn(),
-      saveDeck: jest.fn(),
-      players: ["Sally", "Alice"],
-      savePlayers: jest.fn(),
-      isLoading: false,
-    };
-
     beforeEach(() => {
       render(
         <DeckLayoutContext.Provider value={testDeck}>
-          <StorageContext.Provider value={mockStorageContext}>
+          <StorageContext.Provider value={BaseMockStorageContext}>
             <Play />
           </StorageContext.Provider>
         </DeckLayoutContext.Provider>,

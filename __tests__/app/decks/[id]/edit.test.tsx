@@ -3,6 +3,7 @@ import { DeckLayoutContext } from "@/context/DeckLayoutContext";
 import { StorageContext } from "@/context/StorageContext";
 import DEFAULT_DECK from "@/src/constants/default-deck";
 import { Deck } from "@/src/models/Deck";
+import { BaseMockStorageContext } from "@/test-utils";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import React from "react";
 
@@ -11,14 +12,10 @@ describe("Edit", () => {
   const mockSaveDeck = jest.fn();
 
   const mockStorageContext = {
+    ...BaseMockStorageContext,
     selectedDeck: testDeck,
-    saveSelectedDeckId: jest.fn(),
     decks: [testDeck],
-    fetchDeck: jest.fn(),
     saveDeck: mockSaveDeck,
-    players: ["Alice"],
-    savePlayers: jest.fn(),
-    isLoading: false,
   };
 
   beforeEach(() => {
