@@ -1,8 +1,8 @@
 import DeckForm from "@/components/decks/DeckForm";
+import LoadingScreen from "@/components/status/LoadingScreen";
 import { StorageContext } from "@/context/StorageContext";
 import { Deck } from "@/src/models/Deck";
 import { useCallback, useContext, useRef, useState } from "react";
-import { ActivityIndicator } from "react-native";
 
 export default function New() {
   const { createDeck, updateDeck, fetchDeck, isLoading } =
@@ -39,9 +39,7 @@ export default function New() {
   );
 
   if (isLoading) {
-    return (
-      <ActivityIndicator color="#fff" accessibilityLabel="Loading Decks" />
-    );
+    return <LoadingScreen label="Loading Deck" />;
   }
 
   const currentDeck = fetchDeck(currentDeckId || ""); // If not found, returns null

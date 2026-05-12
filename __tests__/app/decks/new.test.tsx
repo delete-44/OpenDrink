@@ -32,7 +32,7 @@ describe("New", () => {
       </StorageContext.Provider>,
     );
 
-    expect(screen.getByLabelText("Loading Decks")).toBeVisible();
+    expect(screen.getByLabelText("Loading Deck")).toBeVisible();
 
     expect(screen.queryByLabelText("Deck Name")).toBeNull();
     expect(screen.queryByRole("button", { name: "Confirm Change" })).toBeNull();
