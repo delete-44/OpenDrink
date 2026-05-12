@@ -24,7 +24,6 @@ export default function RootLayout() {
     <StorageProvider>
       <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
         <Stack.Screen name="index" />
-        <Stack.Screen name="game" />
       </Stack>
       <StatusBar barStyle="light-content" />
     </StorageProvider>

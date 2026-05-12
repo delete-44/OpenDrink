@@ -86,6 +86,12 @@ export default StyleSheet.create({
     padding: SPACING_SM,
     backgroundColor: HIGHLIGHT_COLOR,
   },
+  buttonPlain: {
+    ...baseButton,
+    padding: SPACING_SM,
+    backgroundColor: "transparent",
+    borderWidth: 0,
+  },
   buttonSm: {
     ...baseButton,
     padding: SPACING_SM,

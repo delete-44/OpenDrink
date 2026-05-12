@@ -6,7 +6,7 @@ import { createContext, useEffect, useMemo, useState } from "react";
 
 export const StorageContext = createContext({} as StorageContextProps);
 
-const SELECTED_DECK_KEY = "selected_deck_id";
+const SELECTED_DECK_KEY = "selected_deck_idx";
 const DECK_KEY = "decks";
 const PLAYER_KEY = "players";
 
@@ -39,21 +39,21 @@ export async function saveResourceImpl<T>(
 }
 
 export function StorageProvider({ children }: StorageProviderProps) {
-  const [selectedDeckId, setSelectedDeckId] = useState<string>();
+  const [selectedDeckIdx, setSelectedDeckIdx] = useState<number>(0);
   const [decks, setDecks] = useState<Deck[]>([]);
   const [players, setPlayers] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const [loadedSelectedDeckId, loadedDecks, loadedPlayers] =
+      const [loadedSelectedDeckIdx, loadedDecks, loadedPlayers] =
         await Promise.all([
-          loadResourceImpl(SELECTED_DECK_KEY, ""),
+          loadResourceImpl(SELECTED_DECK_KEY, 0),
           loadResourceImpl(DECK_KEY, [DEFAULT_DECK]),
           loadResourceImpl(PLAYER_KEY, [] as string[]),
         ]);
 
-      setSelectedDeckId(loadedSelectedDeckId);
+      setSelectedDeckIdx(loadedSelectedDeckIdx);
       setDecks(loadedDecks.map((deckData) => Deck.fromJson(deckData)));
       setPlayers(loadedPlayers);
 
@@ -64,16 +64,26 @@ export function StorageProvider({ children }: StorageProviderProps) {
   }, []);
 
   const selectedDeck = useMemo(() => {
-    return decks.find((d) => d.id === selectedDeckId) || decks[0];
-  }, [decks, selectedDeckId]);
+    return decks[selectedDeckIdx] || decks[0];
+  }, [decks, selectedDeckIdx]);
 
-  const saveSelectedDeckId = async (id: string) => {
-    await saveResourceImpl(SELECTED_DECK_KEY, id);
-    setSelectedDeckId(id);
+  const saveSelectedDeckIdx = async (idx: number) => {
+    await saveResourceImpl(SELECTED_DECK_KEY, idx);
+    setSelectedDeckIdx(idx);
   };
 
   const fetchDeck = (id: string) => {
     return decks.find((d) => d.id === id) || null;
+  };
+
+  const createDeck = async (name = "" as string): Promise<Deck> => {
+    const newDeck = new Deck(name, []);
+    const newDecks = [...decks, newDeck];
+
+    await saveResourceImpl(DECK_KEY, newDecks);
+    setDecks(newDecks);
+
+    return newDeck;
   };
 
   const saveDeck = async (id: string, updatedDeck: Deck) => {
@@ -90,9 +100,10 @@ export function StorageProvider({ children }: StorageProviderProps) {
 
   const value = {
     selectedDeck,
-    saveSelectedDeckId,
+    saveSelectedDeckIdx,
     decks,
     fetchDeck,
+    createDeck,
     saveDeck,
     players,
     savePlayers,
