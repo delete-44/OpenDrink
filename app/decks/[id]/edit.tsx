@@ -24,7 +24,6 @@ import {
   SPACING_MD,
   SPACING_SM,
 } from "@/src/constants/style-constants";
-import { Deck } from "@/src/models/Deck";
 import { useCallback, useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -32,7 +31,7 @@ export default function Edit() {
   const [newCard, setNewCard] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const { saveDeck } = useContext(StorageContext);
+  const { updateDeck } = useContext(StorageContext);
   const currentDeck = useDeckFromLayout();
 
   // Callback for adding multiple cards to the deck; currently
@@ -42,14 +41,9 @@ export default function Edit() {
     (newCards: string[]) => {
       const modifiedCards = [...currentDeck.cards, ...newCards];
 
-      let modifiedDeck = new Deck(
-        currentDeck.name,
-        modifiedCards,
-        currentDeck.id,
-      );
-      saveDeck(currentDeck.id, modifiedDeck);
+      updateDeck(currentDeck.id, { cards: modifiedCards });
     },
-    [currentDeck, saveDeck],
+    [currentDeck, updateDeck],
   );
 
   const addCard = useCallback(
@@ -62,16 +56,11 @@ export default function Edit() {
 
       const modifiedCards = [...currentDeck.cards, newCard.trim()];
 
-      let modifiedDeck = new Deck(
-        currentDeck.name,
-        modifiedCards,
-        currentDeck.id,
-      );
-      saveDeck(currentDeck.id, modifiedDeck);
+      updateDeck(currentDeck.id, { cards: modifiedCards });
 
       setNewCard("");
     },
-    [currentDeck, saveDeck],
+    [currentDeck, updateDeck],
   );
 
   const removeCardAt = useCallback(
@@ -80,14 +69,9 @@ export default function Edit() {
         (_, idx) => idx !== cardIndex,
       );
 
-      let modifiedDeck = new Deck(
-        currentDeck.name,
-        modifiedCards,
-        currentDeck.id,
-      );
-      saveDeck(currentDeck.id, modifiedDeck);
+      updateDeck(currentDeck.id, { cards: modifiedCards });
     },
-    [currentDeck, saveDeck],
+    [currentDeck, updateDeck],
   );
 
   return (

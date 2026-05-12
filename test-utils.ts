@@ -10,7 +10,7 @@ export const BaseMockStorageContext = {
   decks: [BaseTestDeck],
   fetchDeck: jest.fn(),
   createDeck: jest.fn(),
-  saveDeck: jest.fn(),
+  updateDeck: jest.fn(),
   players: BaseTestPlayers,
   savePlayers: jest.fn(),
   isLoading: false,

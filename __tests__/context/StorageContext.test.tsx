@@ -149,8 +149,63 @@ describe("StorageContext", () => {
       });
     });
 
-    describe("#saveDeck", () => {
-      it("saves single deck to SecureStore and updates context", async () => {
+    describe("#createDeck", () => {
+      it("creates a blank deck & adds it to context", async () => {
+        let newDeck;
+        const storageContext = await renderStorageContext();
+
+        await act(async () => {
+          newDeck = await storageContext.current.createDeck();
+        });
+
+        expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
+        expect(mockSetItemAsync).toHaveBeenCalledWith(
+          "decks",
+          JSON.stringify([...decks, newDeck]),
+        );
+
+        // Assert context state updated
+        expect(storageContext.current.decks).toEqual([...decks, newDeck]);
+
+        expect(newDeck!.name).toEqual("");
+        expect(newDeck!.cards).toEqual([]);
+      });
+
+      it("instantiates with a given name if provided", async () => {
+        let newDeck;
+        const storageContext = await renderStorageContext();
+
+        await act(async () => {
+          newDeck = await storageContext.current.createDeck("My Deck <3");
+        });
+
+        expect(newDeck!.name).toEqual("My Deck <3");
+        expect(newDeck!.cards).toEqual([]);
+      });
+    });
+
+    describe("#updateDeck", () => {
+      it("thorws an error if deck is not found", async () => {
+        const storageContext = await renderStorageContext();
+
+        try {
+          await act(async () => {
+            await storageContext.current.updateDeck("INVALID_ID", {
+              cards: ["Updated"],
+            });
+          });
+        } catch (e: any) {
+          expect(e.message).toEqual("Deck INVALID_ID not found");
+        }
+
+        expect(mockSetItemAsync).toHaveBeenCalledTimes(0);
+        expect(mockSetItemAsync).toHaveBeenCalledTimes(0);
+
+        // Assert context state not updated
+        expect(storageContext.current.decks).toEqual(decks);
+      });
+
+      it("saves complete deck to SecureStore and updates context", async () => {
         const storageContext = await renderStorageContext();
 
         const updatedDeck = new Deck(
@@ -160,7 +215,7 @@ describe("StorageContext", () => {
         );
 
         await act(async () => {
-          await storageContext.current.saveDeck(decks[0].id, updatedDeck);
+          await storageContext.current.updateDeck(decks[0].id, updatedDeck);
         });
 
         expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
@@ -171,6 +226,81 @@ describe("StorageContext", () => {
 
         // Assert context state updated
         expect(storageContext.current.decks).toEqual([updatedDeck, decks[1]]);
+      });
+
+      it("permits a partial update of just name", async () => {
+        const storageContext = await renderStorageContext();
+
+        await act(async () => {
+          await storageContext.current.updateDeck(decks[1].id, {
+            name: "Updated deck",
+          });
+        });
+
+        const expectedDeck = new Deck(
+          "Updated deck",
+          decks[1].cards,
+          decks[1].id,
+        );
+
+        expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
+        expect(mockSetItemAsync).toHaveBeenCalledWith(
+          "decks",
+          JSON.stringify([decks[0], expectedDeck]),
+        );
+
+        // Assert context state updated
+        expect(storageContext.current.decks).toEqual([decks[0], expectedDeck]);
+      });
+
+      it("permits a partial update of just cards", async () => {
+        const storageContext = await renderStorageContext();
+
+        await act(async () => {
+          await storageContext.current.updateDeck(decks[0].id, {
+            cards: ["Test card updated"],
+          });
+        });
+
+        const expectedDeck = new Deck(
+          decks[0].name,
+          ["Test card updated"],
+          decks[0].id,
+        );
+
+        expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
+        expect(mockSetItemAsync).toHaveBeenCalledWith(
+          "decks",
+          JSON.stringify([expectedDeck, decks[1]]),
+        );
+
+        // Assert context state updated
+        expect(storageContext.current.decks).toEqual([expectedDeck, decks[1]]);
+      });
+
+      it("ignores id in update", async () => {
+        const storageContext = await renderStorageContext();
+
+        await act(async () => {
+          await storageContext.current.updateDeck(decks[0].id, {
+            id: "INVALID ID",
+          });
+        });
+
+        const expectedDeck = new Deck(
+          decks[0].name,
+          decks[0].cards,
+          decks[0].id,
+        );
+
+        expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
+        expect(mockSetItemAsync).toHaveBeenCalledWith(
+          "decks",
+          JSON.stringify([expectedDeck, decks[1]]),
+        );
+
+        // Assert context state updated
+        expect(storageContext.current.decks).toEqual([expectedDeck, decks[1]]);
       });
     });
 

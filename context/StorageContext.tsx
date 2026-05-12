@@ -86,9 +86,18 @@ export function StorageProvider({ children }: StorageProviderProps) {
     return newDeck;
   };
 
-  const saveDeck = async (id: string, updatedDeck: Deck) => {
-    const newDecks = decks.map((deck) => (deck.id === id ? updatedDeck : deck));
+  const updateDeck = async (id: string, patch: Partial<Deck>) => {
+    const existing = decks.find((deck) => deck.id === id);
 
+    if (!existing) throw new Error(`Deck ${id} not found`);
+
+    const merged = new Deck(
+      patch.name ?? existing.name,
+      patch.cards ?? existing.cards,
+      existing.id,
+    );
+
+    const newDecks = decks.map((deck) => (deck.id === id ? merged : deck));
     await saveResourceImpl(DECK_KEY, newDecks);
     setDecks(newDecks);
   };
@@ -104,7 +113,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     decks,
     fetchDeck,
     createDeck,
-    saveDeck,
+    updateDeck,
     players,
     savePlayers,
     isLoading,
