@@ -1,6 +1,12 @@
 import globalStyles from "@/assets/global-styles";
-import { FORM_LABEL_HEIGHT } from "@/src/constants/style-constants";
+import { circleAlert } from "@/assets/icons/circleAlert";
+import {
+  DANGER_COLOR,
+  FORM_LABEL_HEIGHT,
+  SPACING_SM,
+} from "@/src/constants/style-constants";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import SVG from "./SVG";
 
 type WrappedTextInputProps = {
   label: string;
@@ -38,13 +44,23 @@ export default function WrappedTextInput({
 
       <View style={style.textWrapper}>
         {errorMessage && (
-          <Text
-            style={globalStyles.textDanger}
-            role="alert"
-            nativeID={`${label}-error`}
-          >
-            {errorMessage}
-          </Text>
+          <>
+            <SVG
+              icon={circleAlert}
+              color={DANGER_COLOR}
+              width={18}
+              height={18}
+            />
+
+            <Text
+              style={globalStyles.textDanger}
+              role="alert"
+              accessibilityLiveRegion="polite"
+              nativeID={`${label}-error`}
+            >
+              {errorMessage}
+            </Text>
+          </>
         )}
       </View>
     </View>
@@ -55,5 +71,8 @@ const style = StyleSheet.create({
   textWrapper: {
     height: FORM_LABEL_HEIGHT,
     marginLeft: 5,
+    gap: SPACING_SM,
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
