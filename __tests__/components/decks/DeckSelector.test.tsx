@@ -42,7 +42,7 @@ describe("DeckSelector", () => {
       });
     });
 
-    it("renders UI elements correctly", async () => {
+    it("renders UI elements correctly", () => {
       render(<DeckSelector />);
 
       expect(screen.queryByLabelText("Loading Decks")).toBeNull();

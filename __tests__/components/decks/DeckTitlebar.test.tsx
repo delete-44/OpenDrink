@@ -14,12 +14,14 @@ describe("DeckTitlebar", () => {
 
   const assertInert = () => {
     expect(screen.getByRole("button", { name: "Rename Deck" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Delete Deck" })).toBeVisible();
     expect(screen.queryByRole("button", { name: "Confirm Change" })).toBeNull();
     expect(screen.queryByLabelText("Deck Name")).toBeNull();
   };
 
   const assertActive = () => {
     expect(screen.queryByRole("button", { name: "Rename Deck" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Delete Deck" })).toBeNull();
     expect(
       screen.getByRole("button", { name: "Confirm Change" }),
     ).toBeVisible();
@@ -44,6 +46,16 @@ describe("DeckTitlebar", () => {
           saveDeckCallback={mockSaveDeckCallback}
         />,
       );
+    });
+
+    it("opens DeleteDeckModal on delete button press", () => {
+      assertInert();
+
+      fireEvent.press(screen.getByRole("button", { name: "Delete Deck" }));
+
+      expect(
+        screen.getByText(`This will delete the deck: "${BaseTestDeck.name}".`),
+      ).toBeVisible();
     });
 
     it("allows user to enter the active state by clicking the edit button", () => {
