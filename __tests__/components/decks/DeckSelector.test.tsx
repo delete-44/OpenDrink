@@ -27,7 +27,7 @@ describe("DeckSelector", () => {
 
     render(<DeckSelector />);
 
-    expect(screen.getByLabelText("Loading decks")).toBeVisible();
+    expect(screen.getByLabelText("Loading Decks")).toBeVisible();
     expect(screen.queryByText("Default")).toBeNull();
     expect(screen.queryByRole("button", { name: "Edit Deck" })).toBeNull();
     expect(screen.queryByRole("button", { name: "New Deck" })).toBeNull();
@@ -45,7 +45,7 @@ describe("DeckSelector", () => {
     it("renders UI elements correctly", async () => {
       render(<DeckSelector />);
 
-      expect(screen.queryByLabelText("Loading decks")).toBeNull();
+      expect(screen.queryByLabelText("Loading Decks")).toBeNull();
       expect(screen.getByText("Default")).toBeVisible();
       expect(screen.queryByRole("button", { name: "Edit Deck" })).toBeVisible();
       expect(screen.queryByRole("button", { name: "New Deck" })).toBeVisible();

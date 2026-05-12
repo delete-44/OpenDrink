@@ -1,7 +1,8 @@
 import DeckForm from "@/components/decks/DeckForm";
 import { StorageContext } from "@/context/StorageContext";
 import { Deck } from "@/src/models/Deck";
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
+import { ActivityIndicator } from "react-native";
 
 export default function New() {
   const { createDeck, updateDeck, fetchDeck, isLoading } =
@@ -11,34 +12,42 @@ export default function New() {
   const [workingDeckName, setWorkingDeckName] = useState("");
   const [currentDeckId, setCurrentDeckId] = useState<string | null>(null);
 
-  const workingDeck = useMemo(() => {
-    return new Deck(workingDeckName, [], currentDeckId || undefined);
-  }, [currentDeckId, workingDeckName]);
+  const isSaving = useRef(false);
+
+  const workingDeck = new Deck(workingDeckName, [], currentDeckId || undefined);
 
   const saveDeck = useCallback(
     async (name: string) => {
-      if (!currentDeckId) {
-        const newDeck = await createDeck(name);
+      if (isSaving.current) return;
 
-        setWorkingDeckName(name);
-        setCurrentDeckId(newDeck.id);
+      isSaving.current = true;
 
-        return;
+      try {
+        if (currentDeckId) {
+          await updateDeck(currentDeckId, { name });
+        } else {
+          const newDeck = await createDeck(name);
+
+          setWorkingDeckName(name);
+          setCurrentDeckId(newDeck.id);
+        }
+      } finally {
+        isSaving.current = false;
       }
-
-      await updateDeck(currentDeckId, { name });
     },
     [createDeck, currentDeckId, updateDeck],
   );
 
-  // Before deck is created
-  if (!currentDeckId) {
-    return <DeckForm deck={workingDeck} saveDeckCallback={saveDeck} />;
+  if (isLoading) {
+    return (
+      <ActivityIndicator color="#fff" accessibilityLabel="Loading Decks" />
+    );
   }
 
-  const currentDeck = fetchDeck(currentDeckId);
+  const currentDeck = fetchDeck(currentDeckId || ""); // If not found, returns null
 
-  if (isLoading || !currentDeck) {
+  // Before deck is created
+  if (!currentDeckId || !currentDeck) {
     return <DeckForm deck={workingDeck} saveDeckCallback={saveDeck} />;
   }
 

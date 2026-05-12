@@ -33,7 +33,7 @@ export default function DeckSelector() {
 
   if (isLoading) {
     return (
-      <ActivityIndicator color="#fff" accessibilityLabel="Loading decks" />
+      <ActivityIndicator color="#fff" accessibilityLabel="Loading Decks" />
     );
   }
 

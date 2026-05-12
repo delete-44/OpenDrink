@@ -25,28 +25,21 @@ describe("New", () => {
 
   const testDeck = new Deck("Created Deck", [], "abc123");
 
-  it("shows interstitial working deck with the same name whilst loading deck", async () => {
+  it("shows loading state whilst initialising data", async () => {
     render(
       <StorageContext.Provider value={mockStorageContext}>
         <New />
       </StorageContext.Provider>,
     );
 
-    mockCreateDeck.mockResolvedValueOnce(testDeck);
-    mockFetchDeck.mockReturnValueOnce(null);
+    expect(screen.getByLabelText("Loading Decks")).toBeVisible();
 
-    fireEvent.changeText(screen.getByLabelText("Deck Name"), "Test Deck");
-    fireEvent.press(screen.getByRole("button", { name: "Confirm Change" }));
+    expect(screen.queryByLabelText("Deck Name")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Confirm Change" })).toBeNull();
 
     expect(mockFetchDeck).not.toHaveBeenCalled();
-
-    await waitFor(() =>
-      expect(mockCreateDeck).toHaveBeenCalledWith("Test Deck"),
-    );
-
-    await screen.findByText("Test Deck");
-
-    expect(mockFetchDeck).toHaveBeenCalledWith("abc123");
+    expect(mockCreateDeck).not.toHaveBeenCalled();
+    expect(mockUpdateDeck).not.toHaveBeenCalled();
   });
 
   describe("once loaded", () => {
@@ -75,6 +68,34 @@ describe("New", () => {
         screen.getByRole("button", { name: "Load Default Cards" }),
       ).toBeVisible();
       expect(screen.getByText("... or add your own here!")).toBeVisible();
+    });
+
+    it("prevents duplicate submissions while saving", async () => {
+      jest.useFakeTimers();
+
+      // Slow promise so we can repeat the submission
+      mockCreateDeck.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            setTimeout(() => resolve(testDeck), 100);
+          }),
+      );
+
+      mockFetchDeck.mockReturnValueOnce(testDeck);
+
+      fireEvent.changeText(screen.getByLabelText("Deck Name"), "Test Deck");
+
+      fireEvent.press(screen.getByRole("button", { name: "Confirm Change" }));
+      fireEvent.press(screen.getByRole("button", { name: "Confirm Change" }));
+
+      expect(mockCreateDeck).toHaveBeenCalledTimes(1);
+
+      // Fast-forward time to let the promise resolve
+      jest.runAllTimers();
+
+      await waitFor(() => expect(mockFetchDeck).toHaveBeenCalledWith("abc123"));
+
+      jest.useRealTimers();
     });
 
     it("creates a deck on the first submission", async () => {
