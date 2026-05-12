@@ -11,6 +11,7 @@ export const BaseMockStorageContext = {
   fetchDeck: jest.fn(),
   createDeck: jest.fn(),
   updateDeck: jest.fn(),
+  destroyDeck: jest.fn(),
   players: BaseTestPlayers,
   savePlayers: jest.fn(),
   isLoading: false,

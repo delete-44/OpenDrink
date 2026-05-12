@@ -102,6 +102,17 @@ export function StorageProvider({ children }: StorageProviderProps) {
     setDecks(newDecks);
   };
 
+  const destroyDeck = async (id: string) => {
+    const deckExists = decks.some((deck) => deck.id === id);
+
+    if (!deckExists) throw new Error(`Deck ${id} not found`);
+
+    const newDecks = decks.filter((deck) => deck.id !== id);
+
+    await saveResourceImpl(DECK_KEY, newDecks);
+    setDecks(newDecks);
+  };
+
   const savePlayers = async (newPlayers: string[]) => {
     await saveResourceImpl(PLAYER_KEY, newPlayers);
     setPlayers(newPlayers);
@@ -114,6 +125,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     fetchDeck,
     createDeck,
     updateDeck,
+    destroyDeck,
     players,
     savePlayers,
     isLoading,

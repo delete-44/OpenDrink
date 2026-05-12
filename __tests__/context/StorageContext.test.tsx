@@ -185,7 +185,7 @@ describe("StorageContext", () => {
     });
 
     describe("#updateDeck", () => {
-      it("thorws an error if deck is not found", async () => {
+      it("throws an error if deck is not found", async () => {
         const storageContext = await renderStorageContext();
 
         try {
@@ -198,7 +198,6 @@ describe("StorageContext", () => {
           expect(e.message).toEqual("Deck INVALID_ID not found");
         }
 
-        expect(mockSetItemAsync).toHaveBeenCalledTimes(0);
         expect(mockSetItemAsync).toHaveBeenCalledTimes(0);
 
         // Assert context state not updated
@@ -301,6 +300,42 @@ describe("StorageContext", () => {
 
         // Assert context state updated
         expect(storageContext.current.decks).toEqual([expectedDeck, decks[1]]);
+      });
+    });
+
+    describe("#destroyDeck", () => {
+      it("throws an error if deck is not found", async () => {
+        const storageContext = await renderStorageContext();
+
+        try {
+          await act(async () => {
+            await storageContext.current.destroyDeck("INVALID_ID");
+          });
+        } catch (e: any) {
+          expect(e.message).toEqual("Deck INVALID_ID not found");
+        }
+
+        expect(mockSetItemAsync).toHaveBeenCalledTimes(0);
+
+        // Assert context state not updated
+        expect(storageContext.current.decks).toEqual(decks);
+      });
+
+      it("saves new deck list to SecureStore and updates context", async () => {
+        const storageContext = await renderStorageContext();
+
+        await act(async () => {
+          await storageContext.current.destroyDeck(decks[1].id);
+        });
+
+        expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
+        expect(mockSetItemAsync).toHaveBeenCalledWith(
+          "decks",
+          JSON.stringify([decks[0]]),
+        );
+
+        // Assert context state updated
+        expect(storageContext.current.decks).toEqual([decks[0]]);
       });
     });
 
