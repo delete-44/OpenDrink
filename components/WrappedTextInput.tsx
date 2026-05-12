@@ -6,6 +6,7 @@ type WrappedTextInputProps = {
   label: string;
   value: string;
   errorMessage: string;
+  autofocus?: boolean;
   onChange: (text: string) => void;
 };
 
@@ -13,6 +14,7 @@ export default function WrappedTextInput({
   label,
   value,
   errorMessage,
+  autofocus = false,
   onChange,
 }: WrappedTextInputProps) {
   return (
@@ -26,14 +28,21 @@ export default function WrappedTextInput({
       <TextInput
         autoCorrect={false}
         aria-labelledby={`${label}-label`}
+        aria-invalid={errorMessage !== ""}
+        aria-describedby={errorMessage ? `${label}-error` : undefined}
         style={globalStyles.textInput}
         value={value}
         onChangeText={onChange}
+        autoFocus={autofocus}
       />
 
       <View style={style.textWrapper}>
         {errorMessage && (
-          <Text style={globalStyles.textDanger} role="alert">
+          <Text
+            style={globalStyles.textDanger}
+            role="alert"
+            nativeID={`${label}-error`}
+          >
             {errorMessage}
           </Text>
         )}

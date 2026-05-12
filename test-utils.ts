@@ -1,6 +1,6 @@
 import { Deck } from "@/src/models/Deck";
 
-export const BaseTestDeck = new Deck("Test Deck", ["Card 1"]);
+export const BaseTestDeck = new Deck("Test Deck", ["Card 1"], "abc123");
 
 export const BaseTestPlayers = ["Sally", "Alice"];
 

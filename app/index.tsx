@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import globalStyles from "@/assets/global-styles";
-import DeckSelector from "@/components/DeckSelector";
+import DeckSelector from "@/components/decks/DeckSelector";
 import PlayerList from "@/components/PlayerList";
 import LoadingScreen from "@/components/status/LoadingScreen";
 import { StorageContext } from "@/context/StorageContext";
@@ -43,7 +43,7 @@ export default function Index() {
   }, []);
 
   if (isLoading) {
-    return <LoadingScreen label="Loading Decks..." />;
+    return <LoadingScreen label="Loading Decks" />;
   }
 
   return (

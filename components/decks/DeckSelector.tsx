@@ -21,19 +21,19 @@ import {
 } from "@/src/constants/style-constants";
 import { router } from "expo-router";
 import { useContext, useState } from "react";
-import HorizontalDivider from "./HorizontalDivider";
-import ModalContainer from "./ModalContainer";
-import PressableListItem from "./PressableListItem";
-import SVG from "./SVG";
+import HorizontalDivider from "../HorizontalDivider";
+import ModalContainer from "../ModalContainer";
+import PressableListItem from "../PressableListItem";
+import SVG from "../SVG";
 
 export default function DeckSelector() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { selectedDeck, saveSelectedDeckIdx, decks, createDeck, isLoading } =
+  const { selectedDeck, saveSelectedDeckIdx, decks, isLoading } =
     useContext(StorageContext);
 
   if (isLoading) {
     return (
-      <ActivityIndicator color="#fff" accessibilityLabel="Loading decks" />
+      <ActivityIndicator color="#fff" accessibilityLabel="Loading Decks" />
     );
   }
 
@@ -41,7 +41,7 @@ export default function DeckSelector() {
     <>
       <View style={styles.deckSelectorWrapper}>
         <View style={styles.logoBackground}>
-          <Image source={require("../assets/icons/deck.png")} alt="" />
+          <Image source={require("../../assets/icons/deck.png")} alt="" />
         </View>
 
         <Pressable
@@ -79,13 +79,8 @@ export default function DeckSelector() {
           <Pressable
             role="button"
             style={globalStyles.buttonSm}
-            onPress={async () => {
-              const newDeck = await createDeck();
-
-              router.navigate({
-                pathname: "/decks/[id]/edit",
-                params: { id: newDeck.id },
-              });
+            onPress={() => {
+              router.navigate("/decks/new");
             }}
           >
             <SVG icon={plus} width={24} height={24} />
@@ -107,8 +102,8 @@ export default function DeckSelector() {
               <PressableListItem
                 label={item.name}
                 idx={index}
-                onPressItem={(idx: number) => {
-                  saveSelectedDeckIdx(idx);
+                onPressItem={async (idx: number) => {
+                  await saveSelectedDeckIdx(idx);
                   setIsModalVisible(false);
                 }}
               />
@@ -143,5 +138,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: SPACING_SM,
     justifyContent: "space-between",
+    alignItems: "center",
   },
 });

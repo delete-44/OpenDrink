@@ -31,7 +31,7 @@ export default function PlayerList() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const addPlayer = useCallback(
-    (name: string) => {
+    async (name: string) => {
       if (!name.trim()) {
         setErrorMessage("Player name cannot be empty");
         return;
@@ -44,7 +44,7 @@ export default function PlayerList() {
 
       const newPlayers = [...players, name.trim()];
 
-      savePlayers(newPlayers);
+      await savePlayers(newPlayers);
 
       setNewPlayer("");
     },
@@ -52,17 +52,17 @@ export default function PlayerList() {
   );
 
   const removePlayerAt = useCallback(
-    (playerIndex: number) => {
+    async (playerIndex: number) => {
       const newPlayers = players.filter((_, idx) => idx !== playerIndex);
 
-      savePlayers(newPlayers);
+      await savePlayers(newPlayers);
     },
     [players, savePlayers],
   );
 
   return (
     <View style={styles.playerList}>
-      <View style={styles.playerInputWrapper}>
+      <View style={styles.playerInputWrapper} role="form">
         <WrappedTextInput
           label="Name"
           value={newPlayer}
@@ -110,10 +110,9 @@ export default function PlayerList() {
 
 const styles = StyleSheet.create({
   playerList: {
-    maxWidth: "90%",
     paddingHorizontal: SPACING_MD,
     paddingVertical: SPACING_SM,
-    marginInline: "auto",
+    marginInline: SPACING_LG,
     flex: 1,
 
     backgroundColor: CONTENT_BACKDROP,
@@ -127,7 +126,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    height: "auto",
     marginTop: SPACING_LG,
   },
   addPlayerButton: {

@@ -1,8 +1,5 @@
-import Edit from "@/app/decks/[id]/edit";
-import { DeckLayoutContext } from "@/context/DeckLayoutContext";
-import { StorageContext } from "@/context/StorageContext";
+import DeckForm from "@/components/decks/DeckForm";
 import { Deck } from "@/src/models/Deck";
-import { BaseMockStorageContext } from "@/test-utils";
 import {
   fireEvent,
   render,
@@ -11,24 +8,12 @@ import {
 } from "@testing-library/react-native";
 import React from "react";
 
-describe("Edit", () => {
+describe("DeckForm", () => {
   const testDeck = new Deck("Test Deck", [], "abc123");
-  const mockUpdateDeck = jest.fn();
-
-  const mockStorageContext = {
-    ...BaseMockStorageContext,
-    selectedDeck: testDeck,
-    updateDeck: mockUpdateDeck,
-  };
+  const mockSaveDeck = jest.fn();
 
   beforeEach(() => {
-    render(
-      <DeckLayoutContext.Provider value={testDeck}>
-        <StorageContext.Provider value={mockStorageContext}>
-          <Edit />
-        </StorageContext.Provider>
-      </DeckLayoutContext.Provider>,
-    );
+    render(<DeckForm deck={testDeck} saveDeckCallback={mockSaveDeck} />);
   });
 
   it("composes the DeckTitleBar & CardList", () => {
@@ -40,20 +25,18 @@ describe("Edit", () => {
     expect(screen.getByText("... or add your own here!")).toBeVisible();
   });
 
-  it("loads the deck from StorageContext#selectedDeck", () => {
+  it("renders the given deck", () => {
     expect(screen.getByText("Test Deck")).toBeVisible();
   });
 
-  it("creates deck & saves it on name change", async () => {
+  it("calls callback on name change", async () => {
     fireEvent.press(screen.getByRole("button", { name: "Rename Deck" }));
 
     fireEvent.changeText(screen.getByLabelText("Deck Name"), "Renamed Deck");
 
     fireEvent.press(screen.getByRole("button", { name: "Confirm Change" }));
 
-    expect(mockUpdateDeck).toHaveBeenCalledWith("abc123", {
-      name: "Renamed Deck",
-    });
+    expect(mockSaveDeck).toHaveBeenCalledWith("Renamed Deck");
 
     await waitFor(() => {
       expect(screen.getByRole("button", { name: "Rename Deck" })).toBeVisible();

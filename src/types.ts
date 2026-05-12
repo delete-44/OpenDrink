@@ -29,6 +29,6 @@ export type StorageContextProps = {
   createDeck: (name?: string) => Promise<Deck>;
   updateDeck: (id: string, patch: Partial<Deck>) => Promise<void>;
   players: string[];
-  savePlayers: (newPlayers: string[]) => void;
+  savePlayers: (newPlayers: string[]) => Promise<void>;
   isLoading: boolean;
 };

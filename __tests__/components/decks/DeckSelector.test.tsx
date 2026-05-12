@@ -1,4 +1,4 @@
-import DeckSelector from "@/components/DeckSelector";
+import DeckSelector from "@/components/decks/DeckSelector";
 import { Deck } from "@/src/models/Deck";
 import {
   fireEvent,
@@ -17,7 +17,6 @@ jest.mock("expo-router", () => ({
 
 describe("DeckSelector", () => {
   const testDeck = new Deck("Default", ["Card 1"], "1");
-  const mockCreateDeck = jest.fn();
 
   it("renders loading spinner when fetching data", () => {
     jest.spyOn(React, "useContext").mockReturnValueOnce({
@@ -28,7 +27,7 @@ describe("DeckSelector", () => {
 
     render(<DeckSelector />);
 
-    expect(screen.getByLabelText("Loading decks")).toBeVisible();
+    expect(screen.getByLabelText("Loading Decks")).toBeVisible();
     expect(screen.queryByText("Default")).toBeNull();
     expect(screen.queryByRole("button", { name: "Edit Deck" })).toBeNull();
     expect(screen.queryByRole("button", { name: "New Deck" })).toBeNull();
@@ -39,7 +38,6 @@ describe("DeckSelector", () => {
       jest.spyOn(React, "useContext").mockReturnValueOnce({
         decks: [testDeck],
         selectedDeck: testDeck,
-        createDeck: mockCreateDeck,
         isLoading: false,
       });
     });
@@ -47,7 +45,7 @@ describe("DeckSelector", () => {
     it("renders UI elements correctly", async () => {
       render(<DeckSelector />);
 
-      expect(screen.queryByLabelText("Loading decks")).toBeNull();
+      expect(screen.queryByLabelText("Loading Decks")).toBeNull();
       expect(screen.getByText("Default")).toBeVisible();
       expect(screen.queryByRole("button", { name: "Edit Deck" })).toBeVisible();
       expect(screen.queryByRole("button", { name: "New Deck" })).toBeVisible();
@@ -63,20 +61,13 @@ describe("DeckSelector", () => {
       });
     });
 
-    it("creates an empty deck & navigates to the edit page for it when create clicked", async () => {
-      const secondDeck = new Deck("", []);
-      mockCreateDeck.mockResolvedValueOnce(secondDeck);
-
+    it("navigates to create page when new clicked", async () => {
       render(<DeckSelector />);
 
       fireEvent.press(screen.getByRole("button", { name: "New Deck" }));
-      expect(mockCreateDeck).toHaveBeenCalledWith();
 
       await waitFor(() =>
-        expect(router.navigate).toHaveBeenCalledWith({
-          params: { id: secondDeck.id },
-          pathname: "/decks/[id]/edit",
-        }),
+        expect(router.navigate).toHaveBeenCalledWith("/decks/new"),
       );
     });
   });
@@ -102,7 +93,6 @@ describe("DeckSelector", () => {
       jest.spyOn(React, "useContext").mockReturnValue({
         decks: [testDeck, deck2, deck3],
         selectedDeck: deck3,
-        createDeck: mockCreateDeck,
         saveSelectedDeckIdx: mockSaveSelectedDeckIdx,
         isLoading: false,
       });
@@ -118,7 +108,7 @@ describe("DeckSelector", () => {
       assertModalHidden();
     });
 
-    it("opens the selection modal on click", () => {
+    it("opens the selection modal on click", async () => {
       render(<DeckSelector />);
 
       assertModalHidden();
@@ -136,6 +126,10 @@ describe("DeckSelector", () => {
       fireEvent.press(screen.getByRole("button", { name: "Test 2" }));
 
       expect(mockSaveSelectedDeckIdx).toHaveBeenCalledWith(1);
+
+      await waitFor(() => {
+        expect(screen.queryByText("Select Deck")).toBeNull();
+      });
 
       assertModalHidden();
     });
