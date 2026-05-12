@@ -63,7 +63,7 @@ export default function ModalContainer({
             </Pressable>
           </View>
 
-          <View style={styles.modalBody}>{children}</View>
+          {children}
         </View>
       </View>
     </Modal>
@@ -93,9 +93,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderBottomColor: DECORATION_COLOR,
     borderBottomWidth: 5,
-  },
-  modalBody: {
-    padding: SPACING_SM,
-    flex: 1,
   },
 });

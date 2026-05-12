@@ -95,21 +95,23 @@ export default function DeckSelector() {
           isVisible={isModalVisible}
           onClose={() => setIsModalVisible(false)}
         >
-          <FlatList
-            data={decks}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item, index }) => (
-              <PressableListItem
-                label={item.name}
-                idx={index}
-                onPressItem={async (idx: number) => {
-                  await saveSelectedDeckIdx(idx);
-                  setIsModalVisible(false);
-                }}
-              />
-            )}
-            ItemSeparatorComponent={HorizontalDivider}
-          />
+          <View style={styles.modalBody}>
+            <FlatList
+              data={decks}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item, index }) => (
+                <PressableListItem
+                  label={item.name}
+                  idx={index}
+                  onPressItem={async (idx: number) => {
+                    await saveSelectedDeckIdx(idx);
+                    setIsModalVisible(false);
+                  }}
+                />
+              )}
+              ItemSeparatorComponent={HorizontalDivider}
+            />
+          </View>
         </ModalContainer>
       )}
     </>
@@ -139,5 +141,9 @@ const styles = StyleSheet.create({
     gap: SPACING_SM,
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  modalBody: {
+    padding: SPACING_SM,
+    flex: 1, // To prevent long lists from overflowing out of the modal body
   },
 });
