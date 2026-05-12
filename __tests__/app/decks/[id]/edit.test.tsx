@@ -18,10 +18,6 @@ describe("Edit", () => {
     updateDeck: mockUpdateDeck,
   };
 
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
-
   describe("with no cards initialised", () => {
     beforeEach(() => {
       render(
