@@ -1,5 +1,5 @@
 import { type SQLiteDatabase } from "expo-sqlite";
-import { migrate__1CreateDb } from "./migrations/1-create-db.sql";
+import migration1 from "./migrations/001-initialise-db";
 import { seed } from "./seed";
 
 export async function migrate(db: SQLiteDatabase) {
@@ -18,7 +18,8 @@ export async function migrate(db: SQLiteDatabase) {
   }
 
   if (currentDbVersion === 0) {
-    await migrate__1CreateDb(db);
+    console.log("[DB] Executing migration: ", migration1.name);
+    await migration1.up(db);
 
     currentDbVersion = 1;
   }

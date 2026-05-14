@@ -2,9 +2,9 @@ import DEFAULT_DECK from "@/src/constants/default-deck";
 import { SQLiteDatabase } from "expo-sqlite";
 
 export async function seed(db: SQLiteDatabase) {
-  await db.withTransactionAsync(async () => {
-    console.log("[DB] Seeding default deck...");
+  console.log("[DB] Seeding default deck...");
 
+  await db.withTransactionAsync(async () => {
     const result = await db.runAsync(
       "INSERT INTO decks (name) VALUES (?)",
       DEFAULT_DECK.name,
