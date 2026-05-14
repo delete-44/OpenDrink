@@ -1,6 +1,8 @@
 import { type SQLiteDatabase } from "expo-sqlite";
 
 export async function migrate__1CreateDb(db: SQLiteDatabase) {
+  console.log("[DB] Migrating 1-create-db.sql.ts");
+
   await db.execAsync(`
     PRAGMA foreign_keys = ON;
 
@@ -29,6 +31,6 @@ export async function migrate__1CreateDb(db: SQLiteDatabase) {
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
     );
 
-    CREATE INDEX cardindex ON cards(deck_id);
+    CREATE INDEX IF NOT EXISTS cardindex ON cards(deck_id);
 `);
 }

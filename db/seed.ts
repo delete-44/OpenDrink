@@ -2,20 +2,21 @@ import DEFAULT_DECK from "@/src/constants/default-deck";
 import { SQLiteDatabase } from "expo-sqlite";
 
 export async function seed(db: SQLiteDatabase) {
-  const result = await db.runAsync(
-    "INSERT INTO decks (name) VALUES (?)",
-    DEFAULT_DECK.name,
-  );
+  await db.withTransactionAsync(async () => {
+    console.log("[DB] Seeding default deck...");
 
-  console.log("HERE!", result);
-  // await db.withTransactionAsync(async () => {
-  //   for (const card of DEFAULT_DECK.cards) {
-  //     await db.runAsync(
-  //       "INSERT INTO contacts (name, email, phone) VALUES (?, ?, ?)",
-  //       [contact.name, contact.email, contact.phone],
-  //     );
-  //   }
-  // });
+    const result = await db.runAsync(
+      "INSERT INTO decks (name) VALUES (?)",
+      DEFAULT_DECK.name,
+    );
 
-  await db.runAsync("INSERT INTO ");
+    for (const card of DEFAULT_DECK.cards) {
+      await db.runAsync("INSERT INTO cards (deck_id, content) VALUES (?, ?)", [
+        result.lastInsertRowId,
+        card,
+      ]);
+    }
+  });
+
+  console.log("[DB] ... Seeding complete");
 }
