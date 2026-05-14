@@ -1,42 +1,61 @@
-import { Deck, TDeckData } from "@/src/models/Deck";
+import { Deck } from "@/src/models/Deck";
+import { BaseMockDb } from "@/test-utils";
+import { SQLiteDatabase } from "expo-sqlite";
 
 describe("Deck", () => {
-  beforeEach(() => {
-    jest.spyOn(global.Math, "random").mockReturnValue(0.123456789);
-    jest.spyOn(global.Date, "now").mockReturnValue(1);
-  });
+  const mockGetAllAsync = jest.fn();
 
-  it("generates a unique ID on instantiation", () => {
-    const deck = new Deck("Test deck", []);
+  const mockDeckData = {
+    id: 1,
+    name: "Test Deck",
+    created_at: "0000000",
+    updated_at: "0000000",
+    cards: [],
+  };
 
-    expect(deck.id).toEqual("1_0.123456789");
-  });
+  const mockDeckData2 = {
+    id: 2,
+    name: "Test Deck 2",
+    created_at: "0000001",
+    updated_at: "0000001",
+    cards: [],
+  };
+
+  const db = {
+    ...BaseMockDb,
+    getAllAsync: mockGetAllAsync,
+  } as SQLiteDatabase;
 
   describe("#toJson", () => {
     it("converts a Deck to a JSON object", () => {
-      const deck = new Deck("Test Deck", [], "123");
+      const deck = new Deck("Test Deck", [], 1, "0000000", "0000000");
 
-      expect(deck.toJson()).toEqual({
-        id: "123",
-        name: "Test Deck",
-        cards: [],
-      });
+      expect(deck.toJson()).toEqual(mockDeckData);
     });
   });
 
   describe("#fromJson", () => {
     it("generates a Deck from a JSON object", () => {
-      const deckData = {
-        id: "123",
-        name: "Test Deck",
-        cards: [],
-      } as TDeckData;
+      const deck = Deck.fromJson(mockDeckData);
 
-      const deck = Deck.fromJson(deckData);
-
-      expect(deck.id).toEqual("123");
+      expect(deck.id).toEqual(1);
       expect(deck.name).toEqual("Test Deck");
       expect(deck.cards).toEqual([]);
+    });
+  });
+
+  describe("#index", () => {
+    it("queries DB correctly", async () => {
+      mockGetAllAsync.mockResolvedValueOnce([mockDeckData, mockDeckData2]);
+
+      const result = await Deck.index(db);
+
+      expect(mockGetAllAsync).toHaveBeenCalledWith("SELECT * FROM decks");
+
+      expect(result).toEqual([
+        Deck.fromJson(mockDeckData),
+        Deck.fromJson(mockDeckData2),
+      ]);
     });
   });
 });

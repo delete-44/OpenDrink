@@ -1,4 +1,5 @@
 import { Deck } from "@/src/models/Deck";
+import { SQLiteDatabase } from "expo-sqlite";
 
 export const BaseTestDeck = new Deck("Test Deck", ["Card 1"], "abc123");
 
@@ -15,4 +16,8 @@ export const BaseMockStorageContext = {
   players: BaseTestPlayers,
   savePlayers: jest.fn(),
   isLoading: false,
+};
+
+export const BaseMockDb: Partial<SQLiteDatabase> = {
+  getAllAsync: jest.fn(),
 };

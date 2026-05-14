@@ -1,30 +1,38 @@
+import { SQLiteDatabase } from "expo-sqlite";
+
 export type TDeckData = {
-  id: string;
+  id: number;
   name: string;
+  created_at: string;
+  updated_at: string;
   cards: string[];
 };
 
-export type TDeckEditableData = Pick<TDeckData, "name">;
+export type TDeckEditableData = Pick<TDeckData, "name" | "updated_at">;
 
 export class Deck {
-  readonly id: string;
+  readonly id: number;
   name: string;
+  created_at: string;
+  updated_at: string;
+
   cards: string[];
 
-  constructor(name: string, cards: string[], id?: string) {
-    this.id = id || `${Date.now()}_${Math.random()}`;
+  constructor(
+    name: string,
+    cards: string[],
+    id?: number,
+    created_at?: string,
+    updated_at?: string,
+  ) {
+    this.id = id || -1;
     this.name = name;
+    this.created_at = created_at || "";
+    this.updated_at = updated_at || "";
+
     this.cards = cards;
 
     // cards.map(() => Card.create() etc...)
-  }
-
-  toJson(): TDeckData {
-    return {
-      id: this.id,
-      name: this.name,
-      cards: this.cards,
-    };
   }
 
   xCards() {
@@ -32,15 +40,27 @@ export class Deck {
     // Find all cards that are associated with this deck
   }
 
+  toJson(): TDeckData {
+    return {
+      id: this.id,
+      name: this.name,
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+      cards: this.cards,
+    };
+  }
+
   static fromJson({ name, cards, id }: TDeckData): Deck {
     return new Deck(name, cards, id);
   }
 
-  static index() {
-    // Get all
+  static async index(db: SQLiteDatabase): Promise<Deck[]> {
+    const decks: TDeckData[] = await db.getAllAsync(`SELECT * FROM decks`);
+
+    return decks.map((deckData) => Deck.fromJson(deckData));
   }
 
-  static find(id: string) {
+  static find(id: number) {
     // Find deck by ID
     // Throw on missing
   }
@@ -52,13 +72,14 @@ export class Deck {
     // Throw on validation error
   }
 
-  static update(id: string, patch: TDeckEditableData) {
+  static update(id: number, patch: TDeckEditableData) {
     // Update object in DB
     // Throw on error
     // Return updated
+    // Set updated_at
   }
 
-  static destroy(id: string) {
+  static destroy(id: number) {
     // Find item
     // Throw on missing
     // Destroy in DB
