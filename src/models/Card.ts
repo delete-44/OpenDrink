@@ -49,6 +49,8 @@ export class Card {
     // Throw on validation error
   }
 
+  // Create many with one long `insert_into` statement?
+
   static destroy(id: string) {
     // Find item
     // Throw on missing

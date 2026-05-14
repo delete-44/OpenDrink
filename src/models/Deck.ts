@@ -4,7 +4,7 @@ export type TDeckData = {
   cards: string[];
 };
 
-export type TDeckEditableData = Pick<TDeckData, "name" | "cards">;
+export type TDeckEditableData = Pick<TDeckData, "name">;
 
 export class Deck {
   readonly id: string;
@@ -15,6 +15,8 @@ export class Deck {
     this.id = id || `${Date.now()}_${Math.random()}`;
     this.name = name;
     this.cards = cards;
+
+    // cards.map(() => Card.create() etc...)
   }
 
   toJson(): TDeckData {
@@ -43,7 +45,7 @@ export class Deck {
     // Throw on missing
   }
 
-  static create({ name, cards }: TDeckEditableData) {
+  static create({ name }: TDeckEditableData) {
     // Instantiate object
     // Add deck to DB
     // Return new deck
