@@ -1,7 +1,9 @@
 import { StorageProvider } from "@/context/StorageContext";
+import { migrate } from "@/db/migrate";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { SQLiteProvider } from "expo-sqlite";
 import { useEffect } from "react";
 import { StatusBar } from "react-native";
 
@@ -21,11 +23,13 @@ export default function RootLayout() {
   }
 
   return (
-    <StorageProvider>
-      <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
-        <Stack.Screen name="index" />
-      </Stack>
-      <StatusBar barStyle="light-content" />
-    </StorageProvider>
+    <SQLiteProvider databaseName="drinking_app.db" onInit={migrate}>
+      <StorageProvider>
+        <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
+          <Stack.Screen name="index" />
+        </Stack>
+        <StatusBar barStyle="light-content" />
+      </StorageProvider>
+    </SQLiteProvider>
   );
 }
