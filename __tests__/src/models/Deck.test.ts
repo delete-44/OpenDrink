@@ -1,5 +1,4 @@
-import { Deck } from "@/src/models/Deck";
-import { TDeckData } from "@/src/types";
+import { Deck, TDeckData } from "@/src/models/Deck";
 
 describe("Deck", () => {
   beforeEach(() => {

@@ -2,12 +2,6 @@
 
 import { Deck } from "./models/Deck";
 
-export type TDeckData = {
-  id: string;
-  name: string;
-  cards: string[];
-};
-
 export type TPlayers = string[];
 
 export type GameState = {

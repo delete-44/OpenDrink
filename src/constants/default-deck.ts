@@ -1,4 +1,4 @@
-import { TDeckData } from "../types";
+import { TDeckData } from "../models/Deck";
 
 const DEFAULT_DECK = {
   name: "Default",

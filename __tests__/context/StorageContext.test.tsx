@@ -4,8 +4,7 @@ import {
   StorageContext,
   StorageProvider,
 } from "@/context/StorageContext";
-import { Deck } from "@/src/models/Deck";
-import { TDeckData } from "@/src/types";
+import { Deck, TDeckData } from "@/src/models/Deck";
 import { renderHook, waitFor } from "@testing-library/react-native";
 import * as SecureStore from "expo-secure-store";
 import { act, useContext } from "react";
