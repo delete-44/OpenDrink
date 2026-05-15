@@ -1,14 +1,28 @@
 import { TDeckData } from "../types";
 
 export class Deck {
-  readonly id: string;
+  readonly id: number;
   name: string;
+  created_at: string;
+  updated_at: string;
+
+  // TODO: Remove
   cards: string[];
 
-  constructor(name: string, cards: string[], id?: string) {
-    this.id = id || `${Date.now()}_${Math.random()}`;
+  // TODO: Remove the defaults
+  constructor({
+    id = -1,
+    name,
+    created_at = "123",
+    updated_at = "456",
+    cards = [],
+  }: TDeckData) {
+    this.id = id;
     this.name = name;
     this.cards = cards;
+
+    this.created_at = created_at;
+    this.updated_at = updated_at;
   }
 
   toJson(): TDeckData {
@@ -16,10 +30,18 @@ export class Deck {
       id: this.id,
       name: this.name,
       cards: this.cards,
+      created_at: this.created_at,
+      updated_at: this.updated_at,
     };
   }
 
-  static fromJson({ name, cards, id }: TDeckData): Deck {
-    return new Deck(name, cards, id);
+  static fromJson({
+    id,
+    name,
+    created_at,
+    updated_at,
+    cards,
+  }: TDeckData): Deck {
+    return new Deck({ id, name, created_at, updated_at, cards });
   }
 }
