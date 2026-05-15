@@ -2,10 +2,20 @@
 
 import { Deck } from "./models/Deck";
 
+export type TRepositoryResponse<T> = {
+  ok: boolean;
+  payload?: Partial<T> | Partial<T>[];
+  message?: string;
+};
+
 export type TDeckData = {
-  id: string;
+  id: number;
   name: string;
-  cards: string[];
+  created_at: string;
+  updated_at: string;
+
+  // TODO: Remove
+  cards?: string[];
 };
 
 export type TPlayerData = {
