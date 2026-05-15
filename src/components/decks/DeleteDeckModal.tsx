@@ -23,7 +23,7 @@ export default function DeleteDeckModal({
   const isProcessing = useRef(false);
 
   const deleteDeck = useCallback(
-    async (id: string) => {
+    async (id: number) => {
       if (isProcessing.current) return;
       isProcessing.current = true;
 

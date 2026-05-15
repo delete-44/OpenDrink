@@ -1,7 +1,7 @@
 import Play from "@/app/decks/[id]/play";
+import { DeckFactory } from "@/factories/models/DeckFactory";
 import { DeckLayoutContext } from "@/src/context/DeckLayoutContext";
 import { StorageContext } from "@/src/context/StorageContext";
-import { Deck } from "@/src/models/Deck";
 import { BaseMockStorageContext } from "@/test-utils";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { router } from "expo-router";
@@ -14,7 +14,10 @@ jest.mock("expo-router", () => ({
 }));
 
 describe("Play", () => {
-  const testDeck = new Deck("Test Deck", ["Card 1", "Card 2"], "abc123");
+  const testDeck = DeckFactory({
+    name: "Test Deck",
+    cards: ["Card 1", "Card 2"],
+  });
 
   const mockStorageContext = {
     ...BaseMockStorageContext,

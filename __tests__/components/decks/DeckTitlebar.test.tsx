@@ -1,5 +1,5 @@
+import { DeckFactory } from "@/factories/models/DeckFactory";
 import DeckTitlebar from "@/src/components/decks/DeckTitlebar";
-import { Deck } from "@/src/models/Deck";
 import {
   fireEvent,
   render,
@@ -7,10 +7,11 @@ import {
   waitFor,
 } from "@testing-library/react-native";
 import React from "react";
-import { BaseTestDeck } from "../../../test-utils";
 
 describe("DeckTitlebar", () => {
   const mockSaveDeckCallback = jest.fn();
+
+  const deck = DeckFactory();
 
   const assertInert = () => {
     expect(screen.getByRole("button", { name: "Rename Deck" })).toBeVisible();
@@ -29,10 +30,10 @@ describe("DeckTitlebar", () => {
   };
 
   it("renders in active state if deck name is empty", () => {
-    const newDeck = new Deck("", []);
+    const deck = DeckFactory({ name: "" });
 
     render(
-      <DeckTitlebar deck={newDeck} saveDeckCallback={mockSaveDeckCallback} />,
+      <DeckTitlebar deck={deck} saveDeckCallback={mockSaveDeckCallback} />,
     );
 
     assertActive();
@@ -41,10 +42,7 @@ describe("DeckTitlebar", () => {
   describe("when deck name is populated", () => {
     beforeEach(() => {
       render(
-        <DeckTitlebar
-          deck={BaseTestDeck}
-          saveDeckCallback={mockSaveDeckCallback}
-        />,
+        <DeckTitlebar deck={deck} saveDeckCallback={mockSaveDeckCallback} />,
       );
     });
 
@@ -54,7 +52,7 @@ describe("DeckTitlebar", () => {
       fireEvent.press(screen.getByRole("button", { name: "Delete Deck" }));
 
       expect(
-        screen.getByText(`This will delete the deck: "${BaseTestDeck.name}".`),
+        screen.getByText(`This will delete the deck: "${deck.name}".`),
       ).toBeVisible();
     });
 
