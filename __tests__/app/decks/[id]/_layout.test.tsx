@@ -1,7 +1,7 @@
 import DecksLayout from "@/app/decks/[id]/_layout";
+import { DeckFactory } from "@/factories/models/DeckFactory";
 import { DeckLayoutContext } from "@/src/context/DeckLayoutContext";
 import { StorageContext } from "@/src/context/StorageContext";
-import { Deck } from "@/src/models/Deck";
 import { BaseMockStorageContext } from "@/test-utils";
 import { render, screen } from "@testing-library/react-native";
 import { useLocalSearchParams } from "expo-router";
@@ -12,7 +12,7 @@ jest.mock("expo-router", () => ({
 }));
 
 describe("DecksLayout", () => {
-  const testDeck = new Deck("Test Deck", [], "abc123");
+  const testDeck = DeckFactory();
   const mockUseLocalSearchParams = useLocalSearchParams as jest.Mock;
 
   beforeEach(() => {
