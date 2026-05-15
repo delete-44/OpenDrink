@@ -8,6 +8,13 @@ export type TDeckData = {
   cards: string[];
 };
 
+export type TPlayerData = {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export type TPlayers = string[];
 
 export type GameState = {
