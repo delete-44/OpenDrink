@@ -1,10 +1,11 @@
 import { type SQLiteDatabase } from "expo-sqlite";
-import migration1 from "./migrations/001-initialise-db";
-import { seed } from "./seed";
+import { allMigrations } from "./migrations";
+import { TDatabaseMigration } from "./migrations/TDatabaseMigration";
 
-export async function migrate(db: SQLiteDatabase) {
-  const DATABASE_VERSION = 1;
-
+export async function migrate(
+  db: SQLiteDatabase,
+  migrations: TDatabaseMigration[] = allMigrations,
+) {
   let pragmaUserVersion = await db.getFirstAsync<{
     user_version: number;
   }>("PRAGMA user_version");
@@ -13,21 +14,25 @@ export async function migrate(db: SQLiteDatabase) {
 
   console.log("[DB] Initialising DB at version:", currentDbVersion);
 
-  if (currentDbVersion >= DATABASE_VERSION) {
-    return;
+  const pendingMigrations = migrations.slice(currentDbVersion);
+  for (let i = 0; i < pendingMigrations.length; i++) {
+    const migration = pendingMigrations[i];
+
+    try {
+      console.log("[DB] Executing Migration:", migration.name);
+
+      await db.withTransactionAsync(async () => await migration.up(db));
+
+      // +1: SQL indices start at 1, JS at 0
+      currentDbVersion = currentDbVersion + 1;
+    } catch (e: any) {
+      console.error("[DB] Initialisation Failed:", e.message);
+
+      break;
+    }
   }
 
-  if (currentDbVersion === 0) {
-    console.log("[DB] Executing migration: ", migration1.name);
-    await migration1.up(db);
+  await db.execAsync(`PRAGMA user_version = ${currentDbVersion}`);
 
-    currentDbVersion = 1;
-  }
-
-  // Subsequent migrations go here
-
-  // Initialise default deck - required even in prod
-  await seed(db);
-
-  await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
+  console.log("[DB] Initialisation complete. DB at version:", currentDbVersion);
 }

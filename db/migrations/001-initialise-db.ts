@@ -1,5 +1,5 @@
 import { type SQLiteDatabase } from "expo-sqlite";
-import { TDatabaseMigration } from "../TDatabaseMigration";
+import { TDatabaseMigration } from "./TDatabaseMigration";
 
 const migration: TDatabaseMigration = {
   name: "Create Base DB",
