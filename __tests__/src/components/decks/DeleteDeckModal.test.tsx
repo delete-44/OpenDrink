@@ -1,3 +1,4 @@
+import { DeckFactory } from "@/factories/models/DeckFactory";
 import DeleteDeckModal from "@/src/components/decks/DeleteDeckModal";
 import { StorageContext } from "@/src/context/StorageContext";
 import {
@@ -8,7 +9,7 @@ import {
 } from "@testing-library/react-native";
 import { router } from "expo-router";
 import React from "react";
-import { BaseMockStorageContext, BaseTestDeck } from "../../../../test-utils";
+import { BaseMockStorageContext } from "../../../../test-utils";
 
 jest.mock("expo-router", () => ({
   router: {
@@ -28,11 +29,13 @@ describe("DeleteDeckModal", () => {
     saveSelectedDeckIdx: mockSaveSelectedDeckIdx,
   };
 
+  const deck = DeckFactory();
+
   beforeEach(() => {
     render(
       <StorageContext.Provider value={mockStorageContext}>
         <DeleteDeckModal
-          deck={BaseTestDeck}
+          deck={deck}
           isVisible
           setIsVisible={mockSetIsVisible}
         />
@@ -42,7 +45,7 @@ describe("DeleteDeckModal", () => {
 
   it("renders base markup; warning message including deck name, cancel + confirm buttons", () => {
     expect(
-      screen.getByText(`This will delete the deck: "${BaseTestDeck.name}".`),
+      screen.getByText(`This will delete the deck: "${deck.name}".`),
     ).toBeVisible();
 
     expect(
@@ -72,7 +75,7 @@ describe("DeleteDeckModal", () => {
     fireEvent.press(screen.getByRole("button", { name: "Delete Deck" }));
 
     await waitFor(() => {
-      expect(mockDestroyDeck).toHaveBeenCalledWith(BaseTestDeck.id);
+      expect(mockDestroyDeck).toHaveBeenCalledWith(deck.id);
     });
 
     expect(mockSaveSelectedDeckIdx).toHaveBeenCalledWith(0);
@@ -81,7 +84,7 @@ describe("DeleteDeckModal", () => {
 
     expect(router.navigate).toHaveBeenCalledWith({
       pathname: "/decks/[id]/edit",
-      params: { id: BaseTestDeck.id },
+      params: { id: deck.id },
     });
   });
 
@@ -89,7 +92,7 @@ describe("DeleteDeckModal", () => {
     fireEvent.press(screen.getByRole("button", { name: "Delete Deck" }));
 
     await waitFor(() => {
-      expect(mockDestroyDeck).toHaveBeenCalledWith(BaseTestDeck.id);
+      expect(mockDestroyDeck).toHaveBeenCalledWith(deck.id);
     });
 
     expect(mockSaveSelectedDeckIdx).toHaveBeenCalledWith(0);

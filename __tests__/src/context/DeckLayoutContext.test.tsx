@@ -1,8 +1,8 @@
+import { DeckFactory } from "@/factories/models/DeckFactory";
 import {
   DeckLayoutContext,
   useDeckFromLayout,
 } from "@/src/context/DeckLayoutContext";
-import { Deck } from "@/src/models/Deck";
 import { render, screen } from "@testing-library/react-native";
 import React from "react";
 import { Text } from "react-native";
@@ -30,7 +30,7 @@ describe("DeckLayoutContext / useDeckFromLayout", () => {
   });
 
   it("returns the deck when provided via provider", () => {
-    const mockDeck = new Deck("Test Deck", [], "abc123");
+    const mockDeck = DeckFactory();
 
     render(
       <DeckLayoutContext.Provider value={mockDeck}>
