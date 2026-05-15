@@ -22,18 +22,33 @@ import {
   SPACING_LG,
   SPACING_SM,
 } from "@/src/constants/style-constants";
+import { Card } from "@/src/models/Card";
 import { Deck } from "@/src/models/Deck";
-import { useCallback, useContext, useState } from "react";
+import { useSQLiteContext } from "expo-sqlite";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 type CardListProps = {
   deck: Deck;
 };
 
 export default function CardList({ deck }: CardListProps) {
+  const db = useSQLiteContext();
+
   const [newCard, setNewCard] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [cards, setCards] = useState<Card[]>([]);
+
   const { updateDeck } = useContext(StorageContext);
+
+  useEffect(() => {
+    const loadCards = async () => {
+      const cards = await deck.xCards(db);
+      setCards(cards);
+    };
+
+    loadCards();
+  }, [db, deck]);
 
   // Callback for adding multiple cards to the deck; currently
   // used for inserting the default deck from the empty screen;
@@ -77,10 +92,10 @@ export default function CardList({ deck }: CardListProps) {
     <>
       <View style={styles.listContainer}>
         <FlatList
-          data={deck.cards}
+          data={cards}
           renderItem={({ item, index }) => (
             <RemovableListItem
-              label={item}
+              label={item.content}
               idx={index}
               removeItemAt={removeCardAt}
             />

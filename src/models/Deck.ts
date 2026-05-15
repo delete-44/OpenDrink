@@ -1,4 +1,5 @@
 import { SQLiteDatabase } from "expo-sqlite";
+import { Card, TCardData } from "./Card";
 
 export type TDeckData = {
   id: number;
@@ -35,9 +36,13 @@ export class Deck {
     // cards.map(() => Card.create() etc...)
   }
 
-  xCards() {
-    // To replace .cards prop
-    // Find all cards that are associated with this deck
+  async xCards(db: SQLiteDatabase) {
+    const cards: TCardData[] = await db.getAllAsync(
+      `SELECT * FROM cards WHERE deck_id=?`,
+      this.id,
+    );
+
+    return cards.map((cardData) => Card.fromJson(cardData));
   }
 
   toJson(): TDeckData {
