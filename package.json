@@ -21,7 +21,12 @@
     ],
     "moduleNameMapper": {
       "^expo-modules-core(|/.*)$": "<rootDir>/node_modules/expo/node_modules/expo-modules-core$1"
-    }
+    },
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/test-utils",
+      "<rootDir>/factories",
+      "<rootDir>/db/migrations"
+    ]
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
