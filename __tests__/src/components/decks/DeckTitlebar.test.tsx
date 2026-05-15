@@ -7,7 +7,7 @@ import {
   waitFor,
 } from "@testing-library/react-native";
 import React from "react";
-import { BaseTestDeck } from "../../../test-utils";
+import { BaseTestDeck } from "../../../../test-utils";
 
 describe("DeckTitlebar", () => {
   const mockSaveDeckCallback = jest.fn();

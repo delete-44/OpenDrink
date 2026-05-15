@@ -8,7 +8,7 @@ import {
 } from "@testing-library/react-native";
 import { router } from "expo-router";
 import React from "react";
-import { BaseMockStorageContext, BaseTestDeck } from "../../../test-utils";
+import { BaseMockStorageContext, BaseTestDeck } from "../../../../test-utils";
 
 jest.mock("expo-router", () => ({
   router: {
