@@ -1,6 +1,6 @@
 import DecksLayout from "@/app/decks/[id]/_layout";
-import { DeckLayoutContext } from "@/context/DeckLayoutContext";
-import { StorageContext } from "@/context/StorageContext";
+import { DeckLayoutContext } from "@/src/context/DeckLayoutContext";
+import { StorageContext } from "@/src/context/StorageContext";
 import { Deck } from "@/src/models/Deck";
 import { BaseMockStorageContext } from "@/test-utils";
 import { render, screen } from "@testing-library/react-native";

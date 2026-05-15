@@ -1,7 +1,7 @@
 import {
   DeckLayoutContext,
   useDeckFromLayout,
-} from "@/context/DeckLayoutContext";
+} from "@/src/context/DeckLayoutContext";
 import { Deck } from "@/src/models/Deck";
 import { render, screen } from "@testing-library/react-native";
 import React from "react";

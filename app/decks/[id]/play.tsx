@@ -1,10 +1,10 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import globalStyles from "@/assets/global-styles";
-import { useDeckFromLayout } from "@/context/DeckLayoutContext";
-import { StorageContext } from "@/context/StorageContext";
 import ErrorScreen from "@/src/components/status/ErrorScreen";
 import { SPACING_MD } from "@/src/constants/style-constants";
+import { useDeckFromLayout } from "@/src/context/DeckLayoutContext";
+import { StorageContext } from "@/src/context/StorageContext";
 import { Game } from "@/src/models/Game";
 import { GameState } from "@/src/types";
 import { useKeepAwake } from "expo-keep-awake";

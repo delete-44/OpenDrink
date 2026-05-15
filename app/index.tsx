@@ -10,7 +10,6 @@ import {
 
 import globalStyles from "@/assets/global-styles";
 import { circleAlert } from "@/assets/icons/circleAlert";
-import { StorageContext } from "@/context/StorageContext";
 import DeckSelector from "@/src/components/decks/DeckSelector";
 import DeckSelectorEmptyState from "@/src/components/decks/DeckSelectorEmptyState";
 import PlayerList from "@/src/components/PlayerList";
@@ -25,6 +24,7 @@ import {
   SPACING_SM,
   WARNING_COLOR,
 } from "@/src/constants/style-constants";
+import { StorageContext } from "@/src/context/StorageContext";
 import { router } from "expo-router";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";

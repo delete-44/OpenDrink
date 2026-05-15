@@ -1,6 +1,6 @@
 import Play from "@/app/decks/[id]/play";
-import { DeckLayoutContext } from "@/context/DeckLayoutContext";
-import { StorageContext } from "@/context/StorageContext";
+import { DeckLayoutContext } from "@/src/context/DeckLayoutContext";
+import { StorageContext } from "@/src/context/StorageContext";
 import { Deck } from "@/src/models/Deck";
 import { BaseMockStorageContext } from "@/test-utils";
 import { fireEvent, render, screen } from "@testing-library/react-native";

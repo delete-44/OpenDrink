@@ -1,5 +1,5 @@
-import { StorageContext } from "@/context/StorageContext";
 import { SPACING_SM } from "@/src/constants/style-constants";
+import { StorageContext } from "@/src/context/StorageContext";
 import { useContext } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import HorizontalDivider from "../HorizontalDivider";

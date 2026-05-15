@@ -10,13 +10,13 @@ import globalStyles from "@/assets/global-styles";
 import { chevronDown } from "@/assets/icons/chevronDown";
 import { pencil } from "@/assets/icons/pencil";
 import { plus } from "@/assets/icons/plus";
-import { StorageContext } from "@/context/StorageContext";
 import {
   CONTENT_BACKDROP,
   CONTENT_COLOR,
   SPACING_MD,
   SPACING_SM,
 } from "@/src/constants/style-constants";
+import { StorageContext } from "@/src/context/StorageContext";
 import { router } from "expo-router";
 import { useContext, useState } from "react";
 import Logo from "../Logo";

@@ -8,7 +8,6 @@ import {
 
 import globalStyles from "@/assets/global-styles";
 import { plus } from "@/assets/icons/plus";
-import { StorageContext } from "@/context/StorageContext";
 import HorizontalDivider from "@/src/components/HorizontalDivider";
 import RemovableListItem from "@/src/components/RemovableListItem";
 import CardListEmptyState from "@/src/components/status/CardListEmptyState";
@@ -22,6 +21,7 @@ import {
   SPACING_LG,
   SPACING_SM,
 } from "@/src/constants/style-constants";
+import { StorageContext } from "@/src/context/StorageContext";
 import { Deck } from "@/src/models/Deck";
 import { useCallback, useContext, useState } from "react";
 

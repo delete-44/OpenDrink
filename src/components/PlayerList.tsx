@@ -8,7 +8,6 @@ import {
 
 import globalStyles from "@/assets/global-styles";
 import { plus } from "@/assets/icons/plus";
-import { StorageContext } from "@/context/StorageContext";
 import {
   CONTENT_BACKDROP,
   FORM_CONTROL_SIZE,
@@ -17,6 +16,7 @@ import {
   SPACING_MD,
   SPACING_SM,
 } from "@/src/constants/style-constants";
+import { StorageContext } from "@/src/context/StorageContext";
 import { useCallback, useContext, useState } from "react";
 import HorizontalDivider from "./HorizontalDivider";
 import RemovableListItem from "./RemovableListItem";

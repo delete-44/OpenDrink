@@ -1,6 +1,6 @@
-import { useDeckFromLayout } from "@/context/DeckLayoutContext";
-import { StorageContext } from "@/context/StorageContext";
 import DeckForm from "@/src/components/decks/DeckForm";
+import { useDeckFromLayout } from "@/src/context/DeckLayoutContext";
+import { StorageContext } from "@/src/context/StorageContext";
 import { useCallback, useContext } from "react";
 
 export default function Edit() {
