@@ -29,7 +29,34 @@ Migrations are stored in `./migrations` and must be of type `./TDataBaseMigratio
 
 ## Running queries in code
 
-// TODO
+We use the Repository pattern to abstract the data layer from the UI, and use a global StorageContext to maintain reactivity over it.
+
+Repositories (under `/src/repositories`) exist for each model on the DB.
+
+- These handle CRUD operations for the model
+- These are static, to avoid us passing around `db` instances
+- As such, they are instantiated with a db instance on load in the StorageContext `init` method
+
+```
+                                                                   ┌─────────────────────────┐
+                                                                   │                         │
+                      ┌──────────────────────────────┐             │ Repository              │
+                      │                              │      ───────│ - Interacts with the DB │
+┌────────────┐        │  StorageContext              │      │      │                         │
+│            │        │                              │      │      └─────────────────────────┘
+│ View layer │────────│  - Initialises Repositories  │──────│
+│            │        │  - Stores data in state      │      │
+└────────────┘        │  - CRUD helpers              │      │
+                      │                              │      │      ┌─────────────────────────────┐
+                      └──────────────────────────────┘      │      │                             │
+                                                            │      │  Model                      │
+                                                            ───────│  - Stores business logic    │
+                                                                   │                             │
+                                                                   └─────────────────────────────┘
+
+
+Edit/view: https://cascii.app/6dbb8
+```
 
 ## Debugging
 
