@@ -1,0 +1,125 @@
+import { PlayerFactory } from "@/factories/models/PlayerFactory";
+import SQLiteDatabaseFactory from "@/factories/SQLiteDatabaseFactory";
+import { PlayerRepository } from "@/src/repositories/PlayerRepository";
+
+describe("PlayerRepository", () => {
+  const mockGetAllAsync = jest.fn();
+  const mockRunAsync = jest.fn();
+
+  const db = SQLiteDatabaseFactory({
+    getAllAsync: mockGetAllAsync,
+    runAsync: mockRunAsync,
+  });
+
+  describe("before initialisation", () => {
+    it("errors out on index", async () => {
+      const result = await PlayerRepository.index();
+
+      expect(result.ok).toEqual(false);
+      expect(result.message).toEqual("Error loading Players");
+      expect(result.payload).toEqual(undefined);
+    });
+
+    it("errors out on create", async () => {
+      const result = await PlayerRepository.create({ name: "Alice" });
+
+      expect(result.ok).toEqual(false);
+      expect(result.message).toEqual("Error creating Player");
+      expect(result.payload).toEqual(undefined);
+    });
+
+    it("errors out on index", async () => {
+      const result = await PlayerRepository.delete(1);
+
+      expect(result.ok).toEqual(false);
+      expect(result.message).toEqual("Error deleting Player");
+      expect(result.payload).toEqual(undefined);
+    });
+  });
+
+  describe("once initialised", () => {
+    beforeEach(() => {
+      PlayerRepository.initialise(db);
+    });
+
+    describe("when db call fails", () => {
+      it("errors out on index", async () => {
+        mockGetAllAsync.mockRejectedValueOnce(new Error("test error"));
+
+        const result = await PlayerRepository.index();
+
+        expect(result.ok).toEqual(false);
+        expect(result.message).toEqual("Error loading Players");
+        expect(result.payload).toEqual(undefined);
+      });
+
+      it("errors out on create", async () => {
+        mockRunAsync.mockRejectedValueOnce(new Error("test error"));
+
+        const result = await PlayerRepository.create({ name: "Alice" });
+
+        expect(result.ok).toEqual(false);
+        expect(result.message).toEqual("Error creating Player");
+        expect(result.payload).toEqual(undefined);
+      });
+
+      it("errors out on index", async () => {
+        mockRunAsync.mockRejectedValueOnce(new Error("test error"));
+
+        const result = await PlayerRepository.delete(1);
+
+        expect(result.ok).toEqual(false);
+        expect(result.message).toEqual("Error deleting Player");
+        expect(result.payload).toEqual(undefined);
+      });
+    });
+
+    describe("on success", () => {
+      const player1 = PlayerFactory({ id: 1, name: "Sally" });
+      const player2 = PlayerFactory({ id: 2, name: "Alice" });
+      const player3 = PlayerFactory({ id: 3, name: "Rincewind" });
+
+      it("#index returns a collection of players", async () => {
+        mockGetAllAsync.mockResolvedValueOnce([player1, player2, player3]);
+
+        const result = await PlayerRepository.index();
+
+        expect(mockGetAllAsync).toHaveBeenCalledWith("SELECT * FROM players");
+
+        expect(result.ok).toEqual(true);
+        expect(result.message).toEqual(undefined);
+        expect(result.payload).toEqual([player1, player2, player3]);
+      });
+
+      it("#create returns the new players id + name", async () => {
+        mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 4 });
+
+        const result = await PlayerRepository.create({ name: "Agnes" });
+
+        expect(mockRunAsync).toHaveBeenCalledWith(
+          'INSERT INTO players ("name") VALUES (?)',
+          "Agnes",
+        );
+
+        expect(result.ok).toEqual(true);
+        expect(result.message).toEqual(undefined);
+        expect(result.payload).toEqual({ id: 4, name: "Agnes" });
+      });
+
+      it("#delete returns the deleted players id", async () => {
+        mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 1 });
+
+        const result = await PlayerRepository.delete(1);
+
+        expect(mockRunAsync).toHaveBeenCalledWith(
+          "DELETE FROM players WHERE id=?",
+          1,
+        );
+
+        expect(result.ok).toEqual(true);
+        expect(result.message).toEqual(undefined);
+        expect(result.payload).toEqual({ id: 1 });
+      });
+    });
+  });
+});

@@ -2,7 +2,9 @@ import DEFAULT_DECK from "@/src/constants/default-deck";
 import { Deck } from "@/src/models/Deck";
 import { StorageContextProps, StorageProviderProps } from "@/src/types";
 import * as SecureStore from "expo-secure-store";
+import { useSQLiteContext } from "expo-sqlite";
 import { createContext, useEffect, useMemo, useState } from "react";
+import { PlayerRepository } from "../repositories/PlayerRepository";
 
 export const StorageContext = createContext({} as StorageContextProps);
 
@@ -44,6 +46,8 @@ export function StorageProvider({ children }: StorageProviderProps) {
   const [players, setPlayers] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const db = useSQLiteContext();
+
   useEffect(() => {
     const fetchData = async () => {
       const [loadedSelectedDeckIdx, loadedDecks, loadedPlayers] =
@@ -60,8 +64,13 @@ export function StorageProvider({ children }: StorageProviderProps) {
       setIsLoading(false);
     };
 
+    const init = async () => {
+      PlayerRepository.initialise(db);
+    };
+
     fetchData();
-  }, []);
+    init();
+  }, [db]);
 
   const selectedDeck = useMemo(() => {
     return decks[selectedDeckIdx] || decks[0];
