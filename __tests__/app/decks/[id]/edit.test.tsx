@@ -1,7 +1,7 @@
 import Edit from "@/app/decks/[id]/edit";
+import { DeckFactory } from "@/factories/models/DeckFactory";
 import { DeckLayoutContext } from "@/src/context/DeckLayoutContext";
 import { StorageContext } from "@/src/context/StorageContext";
-import { Deck } from "@/src/models/Deck";
 import { BaseMockStorageContext } from "@/test-utils";
 import {
   fireEvent,
@@ -12,7 +12,7 @@ import {
 import React from "react";
 
 describe("Edit", () => {
-  const testDeck = new Deck("Test Deck", [], "abc123");
+  const testDeck = DeckFactory({ cards: [] });
   const mockUpdateDeck = jest.fn();
 
   const mockStorageContext = {
@@ -51,7 +51,7 @@ describe("Edit", () => {
 
     fireEvent.press(screen.getByRole("button", { name: "Confirm Change" }));
 
-    expect(mockUpdateDeck).toHaveBeenCalledWith("abc123", {
+    expect(mockUpdateDeck).toHaveBeenCalledWith(testDeck.id, {
       name: "Renamed Deck",
     });
 

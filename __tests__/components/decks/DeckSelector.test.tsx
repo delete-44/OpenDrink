@@ -1,5 +1,5 @@
+import { DeckFactory } from "@/factories/models/DeckFactory";
 import DeckSelector from "@/src/components/decks/DeckSelector";
-import { Deck } from "@/src/models/Deck";
 import {
   fireEvent,
   render,
@@ -16,7 +16,7 @@ jest.mock("expo-router", () => ({
 }));
 
 describe("DeckSelector", () => {
-  const testDeck = new Deck("Default", ["Card 1"], "1");
+  const testDeck = DeckFactory();
 
   it("renders loading spinner when fetching data", () => {
     jest.spyOn(React, "useContext").mockReturnValueOnce({
@@ -28,7 +28,7 @@ describe("DeckSelector", () => {
     render(<DeckSelector />);
 
     expect(screen.getByLabelText("Loading Decks")).toBeVisible();
-    expect(screen.queryByText("Default")).toBeNull();
+    expect(screen.queryByText(testDeck.name)).toBeNull();
     expect(screen.queryByRole("button", { name: "Edit Deck" })).toBeNull();
     expect(screen.queryByRole("button", { name: "New Deck" })).toBeNull();
   });
@@ -46,7 +46,7 @@ describe("DeckSelector", () => {
       render(<DeckSelector />);
 
       expect(screen.queryByLabelText("Loading Decks")).toBeNull();
-      expect(screen.getByText("Default")).toBeVisible();
+      expect(screen.getByText(testDeck.name)).toBeVisible();
       expect(screen.queryByRole("button", { name: "Edit Deck" })).toBeVisible();
       expect(screen.queryByRole("button", { name: "New Deck" })).toBeVisible();
     });
@@ -73,8 +73,8 @@ describe("DeckSelector", () => {
   });
 
   describe("selecting decks", () => {
-    const deck2 = new Deck("Test 2", []);
-    const deck3 = new Deck("Test 3", []);
+    const testDeck2 = DeckFactory({ name: "Test 2" });
+    const testDeck3 = DeckFactory({ name: "Test 3" });
     const mockSaveSelectedDeckIdx = jest.fn();
 
     const assertModalHidden = () => {
@@ -91,8 +91,8 @@ describe("DeckSelector", () => {
 
     beforeEach(() => {
       jest.spyOn(React, "useContext").mockReturnValue({
-        decks: [testDeck, deck2, deck3],
-        selectedDeck: deck3,
+        decks: [testDeck, testDeck2, testDeck3],
+        selectedDeck: testDeck3,
         saveSelectedDeckIdx: mockSaveSelectedDeckIdx,
         isLoading: false,
       });
@@ -101,7 +101,7 @@ describe("DeckSelector", () => {
     it("renders only the currently selected deck as a trigger", () => {
       render(<DeckSelector />);
 
-      expect(screen.queryByRole("button", { name: "Default" })).toBeNull();
+      expect(screen.queryByRole("button", { name: testDeck.name })).toBeNull();
       expect(screen.queryByRole("button", { name: "Test 2" })).toBeNull();
       expect(screen.getByRole("button", { name: "Test 3" })).toBeVisible();
 
@@ -117,7 +117,7 @@ describe("DeckSelector", () => {
 
       assertModalVisible();
 
-      expect(screen.getByRole("button", { name: "Default" })).toBeVisible();
+      expect(screen.getByRole("button", { name: testDeck.name })).toBeVisible();
       expect(screen.getByRole("button", { name: "Test 2" })).toBeVisible();
       expect(screen.getAllByRole("button", { name: "Test 3" }).length).toEqual(
         2,

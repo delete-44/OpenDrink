@@ -1,5 +1,5 @@
+import { DeckFactory } from "@/factories/models/DeckFactory";
 import DeckForm from "@/src/components/decks/DeckForm";
-import { Deck } from "@/src/models/Deck";
 import {
   fireEvent,
   render,
@@ -9,7 +9,7 @@ import {
 import React from "react";
 
 describe("DeckForm", () => {
-  const testDeck = new Deck("Test Deck", [], "abc123");
+  const testDeck = DeckFactory({ cards: [] });
   const mockSaveDeck = jest.fn();
 
   beforeEach(() => {

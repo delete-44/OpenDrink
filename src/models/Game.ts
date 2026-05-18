@@ -9,7 +9,7 @@ export class Game {
   private currentPlayers: string[];
 
   constructor(startingDeck: Deck, startingPlayers: TPlayers) {
-    if (startingDeck.cards.length === 0) {
+    if ((startingDeck.cards || []).length === 0) {
       throw TypeError("Deck has no Cards");
     }
 
@@ -17,8 +17,8 @@ export class Game {
       throw TypeError("Game has no Players");
     }
 
-    this.cards = startingDeck.cards;
-    this.currentCards = [...startingDeck.cards];
+    this.cards = startingDeck.cards || [];
+    this.currentCards = [...(startingDeck.cards || [])];
 
     this.players = startingPlayers;
     this.currentPlayers = [...startingPlayers];

@@ -1,4 +1,4 @@
-import { Deck } from "@/src/models/Deck";
+import { DeckFactory } from "@/factories/models/DeckFactory";
 import { Game } from "@/src/models/Game";
 import { TPlayers } from "@/src/types";
 
@@ -8,7 +8,7 @@ describe("Game", () => {
   });
 
   it("throws an error if deck is empty upon instantiation", () => {
-    const deck = new Deck("Test deck", []);
+    const deck = DeckFactory({ cards: [] });
     const players = ["Sally"];
 
     try {
@@ -19,7 +19,7 @@ describe("Game", () => {
   });
 
   it("throws an error if player list is empty upon instantiation", () => {
-    const deck = new Deck("Test deck", ["Test card"]);
+    const deck = DeckFactory();
     const players = [] as TPlayers;
 
     try {
@@ -30,7 +30,7 @@ describe("Game", () => {
   });
 
   it("shuffles players once it reaches the end of the list", () => {
-    const deck = new Deck("Test deck", ["Card", "Card 2", "Card 3", "Card 4"]);
+    const deck = DeckFactory({ cards: ["Card", "Card 2", "Card 3", "Card 4"] });
     const players = ["Sally", "Alice"];
 
     const game = new Game(deck, players);
@@ -41,7 +41,7 @@ describe("Game", () => {
   });
 
   it("shuffles deck once it reaches the end of the list", () => {
-    const deck = new Deck("Test deck", ["Card", "Card 2"]);
+    const deck = DeckFactory({ cards: ["Card", "Card 2"] });
     const players = ["Sally", "Alice", "Rincewind", "The Dean"];
 
     const game = new Game(deck, players);

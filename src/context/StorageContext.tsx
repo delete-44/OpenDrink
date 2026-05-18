@@ -72,12 +72,12 @@ export function StorageProvider({ children }: StorageProviderProps) {
     setSelectedDeckIdx(idx);
   };
 
-  const fetchDeck = (id: string) => {
+  const fetchDeck = (id: number) => {
     return decks.find((d) => d.id === id) || null;
   };
 
   const createDeck = async (name = "" as string): Promise<Deck> => {
-    const newDeck = new Deck(name, []);
+    const newDeck = new Deck({ name });
     const newDecks = [...decks, newDeck];
 
     await saveResourceImpl(DECK_KEY, newDecks);
@@ -86,23 +86,23 @@ export function StorageProvider({ children }: StorageProviderProps) {
     return newDeck;
   };
 
-  const updateDeck = async (id: string, patch: Partial<Deck>) => {
+  const updateDeck = async (id: number, patch: Partial<Deck>) => {
     const existing = decks.find((deck) => deck.id === id);
 
     if (!existing) throw new Error(`Deck ${id} not found`);
 
-    const merged = new Deck(
-      patch.name ?? existing.name,
-      patch.cards ?? existing.cards,
-      existing.id,
-    );
+    const merged = new Deck({
+      name: patch.name ?? existing.name,
+      cards: patch.cards ?? existing.cards,
+      id: existing.id,
+    });
 
     const newDecks = decks.map((deck) => (deck.id === id ? merged : deck));
     await saveResourceImpl(DECK_KEY, newDecks);
     setDecks(newDecks);
   };
 
-  const destroyDeck = async (id: string) => {
+  const destroyDeck = async (id: number) => {
     const deckExists = decks.some((deck) => deck.id === id);
 
     if (!deckExists) throw new Error(`Deck ${id} not found`);

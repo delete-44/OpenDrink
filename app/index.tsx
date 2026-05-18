@@ -81,7 +81,7 @@ export default function Index() {
       return;
     }
 
-    if (selectedDeck.cards.length === 0) {
+    if ((selectedDeck.cards || []).length === 0) {
       setTimedWarning("Selected Deck has no Cards");
       return;
     }

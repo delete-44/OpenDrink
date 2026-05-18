@@ -2,10 +2,20 @@
 
 import { Deck } from "./models/Deck";
 
+export type TRepositoryResponse<T> = {
+  ok: boolean;
+  payload?: Partial<T> | Partial<T>[];
+  message?: string;
+};
+
 export type TDeckData = {
-  id: string;
+  id?: number;
   name: string;
-  cards: string[];
+  created_at?: string;
+  updated_at?: string;
+
+  // TODO: Remove
+  cards?: string[];
 };
 
 export type TPlayers = string[];
@@ -25,10 +35,10 @@ export type StorageContextProps = {
   selectedDeck: Deck;
   saveSelectedDeckIdx: (idx: number) => Promise<void>;
   decks: Deck[];
-  fetchDeck: (id: string) => Deck | null;
+  fetchDeck: (id: number) => Deck | null;
   createDeck: (name?: string) => Promise<Deck>;
-  updateDeck: (id: string, patch: Partial<Deck>) => Promise<void>;
-  destroyDeck: (id: string) => Promise<void>;
+  updateDeck: (id: number, patch: Partial<Deck>) => Promise<void>;
+  destroyDeck: (id: number) => Promise<void>;
   players: string[];
   savePlayers: (newPlayers: string[]) => Promise<void>;
   isLoading: boolean;

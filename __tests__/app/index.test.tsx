@@ -1,4 +1,4 @@
-import { Deck } from "@/src/models/Deck";
+import { DeckFactory } from "@/factories/models/DeckFactory";
 import {
   fireEvent,
   render,
@@ -18,7 +18,7 @@ jest.mock("expo-router", () => ({
 
 describe("Index", () => {
   it("shows loading spinner whilst fetching data", () => {
-    const testDeck = new Deck("Default", ["Card 1"], "abc123");
+    const testDeck = DeckFactory();
     jest.spyOn(React, "useContext").mockReturnValue({
       selectedDeck: testDeck,
       decks: [testDeck],
@@ -28,7 +28,7 @@ describe("Index", () => {
 
     render(<Index />);
 
-    expect(screen.queryByText("Default")).toBeNull();
+    expect(screen.queryByText(testDeck.name)).toBeNull();
     expect(screen.getByLabelText("Loading Decks")).toBeVisible();
   });
 
@@ -101,7 +101,7 @@ describe("Index", () => {
 
     describe("when deck has no cards", () => {
       beforeEach(() => {
-        const testDeck = new Deck("Default", [], "abc123");
+        const testDeck = DeckFactory({ cards: [] });
         jest.spyOn(React, "useContext").mockReturnValue({
           selectedDeck: testDeck,
           decks: [testDeck],
@@ -137,7 +137,7 @@ describe("Index", () => {
 
     describe("when missing players", () => {
       beforeEach(() => {
-        const testDeck = new Deck("Default", ["Test Card"], "abc123");
+        const testDeck = DeckFactory();
         jest.spyOn(React, "useContext").mockReturnValue({
           selectedDeck: testDeck,
           decks: [testDeck],
@@ -165,8 +165,9 @@ describe("Index", () => {
     });
 
     describe("with a valid game state", () => {
+      const testDeck = DeckFactory();
+
       beforeEach(() => {
-        const testDeck = new Deck("Default", ["Card 1"], "abc123");
         jest.spyOn(React, "useContext").mockReturnValue({
           selectedDeck: testDeck,
           decks: [testDeck],
@@ -178,7 +179,9 @@ describe("Index", () => {
       it("hides DeckSelector when keyboard shows", async () => {
         render(<Index />);
 
-        await waitFor(() => expect(screen.getByText("Default")).toBeVisible());
+        await waitFor(() =>
+          expect(screen.getByText(testDeck.name)).toBeVisible(),
+        );
 
         // Simulate keyboard show
         act(() => {
@@ -186,21 +189,23 @@ describe("Index", () => {
         });
 
         await waitFor(() => {
-          expect(screen.queryByText("Default")).toBeNull();
+          expect(screen.queryByText(testDeck.name)).toBeNull();
         });
       });
 
       it("shows DeckSelector when keyboard hides", async () => {
         render(<Index />);
 
-        await waitFor(() => expect(screen.getByText("Default")).toBeVisible());
+        await waitFor(() =>
+          expect(screen.getByText(testDeck.name)).toBeVisible(),
+        );
 
         act(() => {
           DeviceEventEmitter.emit("keyboardDidShow");
         });
 
         await waitFor(() => {
-          expect(screen.queryByText("Default")).toBeNull();
+          expect(screen.queryByText(testDeck.name)).toBeNull();
         });
 
         act(() => {
@@ -208,7 +213,7 @@ describe("Index", () => {
         });
 
         await waitFor(() => {
-          expect(screen.getByText("Default")).toBeVisible();
+          expect(screen.getByText(testDeck.name)).toBeVisible();
         });
       });
 
@@ -227,7 +232,7 @@ describe("Index", () => {
         expect(screen.queryByText("No Players added")).toBeNull();
 
         expect(router.navigate).toHaveBeenCalledWith({
-          params: { id: "abc123" },
+          params: { id: testDeck.id },
           pathname: "/decks/[id]/play",
         });
       });

@@ -10,11 +10,15 @@ export default function New() {
 
   // Store working title to prevent layout flicker when switching to the deck from storage
   const [workingDeckName, setWorkingDeckName] = useState("");
-  const [currentDeckId, setCurrentDeckId] = useState<string | null>(null);
+  const [currentDeckId, setCurrentDeckId] = useState<number | null>(null);
 
   const isSaving = useRef(false);
 
-  const workingDeck = new Deck(workingDeckName, [], currentDeckId || undefined);
+  const workingDeck = new Deck({
+    name: workingDeckName,
+    cards: [],
+    id: currentDeckId || undefined,
+  });
 
   const saveDeck = useCallback(
     async (name: string) => {
@@ -42,7 +46,7 @@ export default function New() {
     return <LoadingScreen label="Loading Deck" />;
   }
 
-  const currentDeck = fetchDeck(currentDeckId || ""); // If not found, returns null
+  const currentDeck = fetchDeck(currentDeckId || -1); // If not found, returns null
 
   // Before deck is created
   if (!currentDeckId || !currentDeck) {

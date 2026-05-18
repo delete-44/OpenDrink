@@ -1,7 +1,7 @@
+import { DeckFactory } from "@/factories/models/DeckFactory";
 import CardList from "@/src/components/CardList";
 import DEFAULT_DECK from "@/src/constants/default-deck";
 import { StorageContext } from "@/src/context/StorageContext";
-import { Deck } from "@/src/models/Deck";
 import { BaseMockStorageContext } from "@/test-utils";
 import {
   fireEvent,
@@ -12,7 +12,7 @@ import {
 import React from "react";
 
 describe("CardList", () => {
-  const testDeck = new Deck("Test Deck", [], "abc123");
+  const testDeck = DeckFactory({ cards: [] });
   const mockUpdateDeck = jest.fn();
 
   const mockStorageContext = {
@@ -110,11 +110,9 @@ describe("CardList", () => {
   });
 
   describe("with existing cards", () => {
-    const testDeck = new Deck(
-      "Test Deck",
-      ["Drink up!", "Do a flip", "Go for a walk"],
-      "abc123",
-    );
+    const testDeck = DeckFactory({
+      cards: ["Drink up!", "Do a flip", "Go for a walk"],
+    });
 
     beforeEach(() => {
       render(

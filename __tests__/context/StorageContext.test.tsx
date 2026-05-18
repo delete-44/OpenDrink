@@ -1,10 +1,10 @@
+import { DeckFactory } from "@/factories/models/DeckFactory";
 import {
   loadResourceImpl,
   saveResourceImpl,
   StorageContext,
   StorageProvider,
 } from "@/src/context/StorageContext";
-import { Deck } from "@/src/models/Deck";
 import { TDeckData } from "@/src/types";
 import { renderHook, waitFor } from "@testing-library/react-native";
 import * as SecureStore from "expo-secure-store";
@@ -89,10 +89,19 @@ describe("StorageContext", () => {
   });
 
   describe("StorageProvider", () => {
-    const decks = [
-      { id: "1", name: "Default", cards: ["Test card"] },
-      { id: "2", name: "Second Deck", cards: ["Test 2"] },
-    ] as TDeckData[];
+    const deck1 = DeckFactory({
+      id: 1,
+      name: "Default",
+      cards: ["Test card"],
+    });
+
+    const deck2 = DeckFactory({
+      id: 2,
+      name: "Second Deck",
+      cards: ["Test 2"],
+    });
+
+    const decks = [deck1, deck2] as TDeckData[];
 
     beforeEach(() => {
       mockStore["decks"] = JSON.stringify(decks);
@@ -145,7 +154,7 @@ describe("StorageContext", () => {
       it("returns null if not", async () => {
         const storageContext = await renderStorageContext();
 
-        expect(storageContext.current.fetchDeck("FAKE ID")).toBeNull();
+        expect(storageContext.current.fetchDeck(-1)).toBeNull();
       });
     });
 
@@ -190,12 +199,12 @@ describe("StorageContext", () => {
 
         try {
           await act(async () => {
-            await storageContext.current.updateDeck("INVALID_ID", {
+            await storageContext.current.updateDeck(-1, {
               cards: ["Updated"],
             });
           });
         } catch (e: any) {
-          expect(e.message).toEqual("Deck INVALID_ID not found");
+          expect(e.message).toEqual("Deck -1 not found");
         }
 
         expect(mockSetItemAsync).toHaveBeenCalledTimes(0);
@@ -207,11 +216,11 @@ describe("StorageContext", () => {
       it("saves complete deck to SecureStore and updates context", async () => {
         const storageContext = await renderStorageContext();
 
-        const updatedDeck = new Deck(
-          decks[0].name,
-          ["Test card updated"],
-          decks[0].id,
-        );
+        const updatedDeck = DeckFactory({
+          name: decks[0].name,
+          cards: ["Test card updated"],
+          id: decks[0].id,
+        });
 
         await act(async () => {
           await storageContext.current.updateDeck(decks[0].id, updatedDeck);
@@ -236,11 +245,11 @@ describe("StorageContext", () => {
           });
         });
 
-        const expectedDeck = new Deck(
-          "Updated deck",
-          decks[1].cards,
-          decks[1].id,
-        );
+        const expectedDeck = DeckFactory({
+          name: "Updated deck",
+          cards: decks[1].cards,
+          id: decks[1].id,
+        });
 
         expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
         expect(mockSetItemAsync).toHaveBeenCalledWith(
@@ -261,11 +270,11 @@ describe("StorageContext", () => {
           });
         });
 
-        const expectedDeck = new Deck(
-          decks[0].name,
-          ["Test card updated"],
-          decks[0].id,
-        );
+        const expectedDeck = DeckFactory({
+          name: decks[0].name,
+          cards: ["Test card updated"],
+          id: decks[0].id,
+        });
 
         expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
         expect(mockSetItemAsync).toHaveBeenCalledWith(
@@ -282,15 +291,15 @@ describe("StorageContext", () => {
 
         await act(async () => {
           await storageContext.current.updateDeck(decks[0].id, {
-            id: "INVALID ID",
+            id: -1,
           });
         });
 
-        const expectedDeck = new Deck(
-          decks[0].name,
-          decks[0].cards,
-          decks[0].id,
-        );
+        const expectedDeck = DeckFactory({
+          name: decks[0].name,
+          cards: decks[0].cards,
+          id: decks[0].id,
+        });
 
         expect(mockSetItemAsync).toHaveBeenCalledTimes(1);
         expect(mockSetItemAsync).toHaveBeenCalledWith(
@@ -309,10 +318,10 @@ describe("StorageContext", () => {
 
         try {
           await act(async () => {
-            await storageContext.current.destroyDeck("INVALID_ID");
+            await storageContext.current.destroyDeck(-1);
           });
         } catch (e: any) {
-          expect(e.message).toEqual("Deck INVALID_ID not found");
+          expect(e.message).toEqual("Deck -1 not found");
         }
 
         expect(mockSetItemAsync).toHaveBeenCalledTimes(0);
