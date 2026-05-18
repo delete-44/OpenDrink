@@ -5,10 +5,17 @@ import {
   StorageContext,
   StorageProvider,
 } from "@/src/context/StorageContext";
+import { CardRepository } from "@/src/repositories/CardRepository";
+import { DeckRepository } from "@/src/repositories/DeckRepository";
+import { PlayerRepository } from "@/src/repositories/PlayerRepository";
 import { TDeckData } from "@/src/types";
 import { renderHook, waitFor } from "@testing-library/react-native";
 import * as SecureStore from "expo-secure-store";
 import { act, useContext } from "react";
+
+jest.mock("expo-sqlite", () => ({
+  useSQLiteContext: jest.fn(),
+}));
 
 const mockStore: Record<string, string> = {};
 const mockGetItemAsync = jest.fn(
@@ -125,6 +132,18 @@ describe("StorageContext", () => {
 
       return result;
     };
+
+    it("initialises repositories", async () => {
+      jest.spyOn(PlayerRepository, "initialise");
+      jest.spyOn(DeckRepository, "initialise");
+      jest.spyOn(CardRepository, "initialise");
+
+      await renderStorageContext();
+
+      expect(PlayerRepository.initialise).toHaveBeenCalledTimes(1);
+      expect(DeckRepository.initialise).toHaveBeenCalledTimes(1);
+      expect(CardRepository.initialise).toHaveBeenCalledTimes(1);
+    });
 
     describe("#saveSelectedDeckIdx", () => {
       it("saves current deck idx to SecureStore and updates context", async () => {

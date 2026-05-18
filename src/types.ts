@@ -2,10 +2,25 @@
 
 import { Deck } from "./models/Deck";
 
-export type TRepositoryResponse<T> = {
+type ResponseMeta = {
   ok: boolean;
-  payload?: Partial<T> | Partial<T>[];
   message?: string;
+};
+
+export type TItemResponse<T> = ResponseMeta & {
+  payload?: T;
+};
+
+export type TCollectionResponse<T> = ResponseMeta & {
+  payload?: T[];
+};
+
+export type TPartialResponse<T> = ResponseMeta & {
+  payload?: Partial<T>;
+};
+
+export type TPatchResponse = ResponseMeta & {
+  changes?: number;
 };
 
 export type TDeckData = {
@@ -16,6 +31,21 @@ export type TDeckData = {
 
   // TODO: Remove
   cards?: string[];
+};
+
+export type TCardData = {
+  id: number;
+  deck_id: number;
+  content: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TPlayerData = {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
 };
 
 export type TPlayers = string[];

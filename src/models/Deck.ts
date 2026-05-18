@@ -1,3 +1,4 @@
+import { CardRepository } from "../repositories/CardRepository";
 import { TDeckData } from "../types";
 
 export class Deck {
@@ -25,6 +26,14 @@ export class Deck {
     this.updated_at = updated_at;
   }
 
+  // For consideration - make this sync instead?
+  // What are the risks of this?
+  async fetchCards() {
+    const resp = await CardRepository.index(this.id);
+
+    return resp.payload;
+  }
+
   toJson(): TDeckData {
     return {
       id: this.id,
@@ -35,13 +44,7 @@ export class Deck {
     };
   }
 
-  static fromJson({
-    id,
-    name,
-    created_at,
-    updated_at,
-    cards,
-  }: TDeckData): Deck {
-    return new Deck({ id, name, created_at, updated_at, cards });
+  static fromJson(jsonData: TDeckData): Deck {
+    return new Deck(jsonData);
   }
 }
