@@ -5,6 +5,8 @@ import {
   StorageContext,
   StorageProvider,
 } from "@/src/context/StorageContext";
+import { CardRepository } from "@/src/repositories/CardRepository";
+import { DeckRepository } from "@/src/repositories/DeckRepository";
 import { PlayerRepository } from "@/src/repositories/PlayerRepository";
 import { TDeckData } from "@/src/types";
 import { renderHook, waitFor } from "@testing-library/react-native";
@@ -133,10 +135,14 @@ describe("StorageContext", () => {
 
     it("initialises repositories", async () => {
       jest.spyOn(PlayerRepository, "initialise");
+      jest.spyOn(DeckRepository, "initialise");
+      jest.spyOn(CardRepository, "initialise");
 
       await renderStorageContext();
 
       expect(PlayerRepository.initialise).toHaveBeenCalledTimes(1);
+      expect(DeckRepository.initialise).toHaveBeenCalledTimes(1);
+      expect(CardRepository.initialise).toHaveBeenCalledTimes(1);
     });
 
     describe("#saveSelectedDeckIdx", () => {
