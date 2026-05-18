@@ -22,7 +22,7 @@ export class Player {
     };
   }
 
-  static fromJson({ id, name, created_at, updated_at }: TPlayerData): Player {
-    return new Player({ id, name, created_at, updated_at });
+  static fromJson(jsonData: TPlayerData): Player {
+    return new Player(jsonData);
   }
 }

@@ -35,13 +35,7 @@ export class Deck {
     };
   }
 
-  static fromJson({
-    id,
-    name,
-    created_at,
-    updated_at,
-    cards,
-  }: TDeckData): Deck {
-    return new Deck({ id, name, created_at, updated_at, cards });
+  static fromJson(jsonData: TDeckData): Deck {
+    return new Deck(jsonData);
   }
 }

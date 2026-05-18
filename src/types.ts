@@ -24,6 +24,14 @@ export type TDeckData = {
   cards?: string[];
 };
 
+export type TCardData = {
+  id: number;
+  deck_id: number;
+  content: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export type TPlayerData = {
   id: number;
   name: string;
