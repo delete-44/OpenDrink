@@ -1,11 +1,11 @@
 import { Deck } from "../models/Deck";
-import { TDeckData, TRepositoryResponse } from "../types";
+import { TDeckData, TPatchResponse, TPayloadResponse } from "../types";
 import { BaseRepository } from "./BaseRepository";
 
 export type DeckPermittedFields = Pick<TDeckData, "name" | "updated_at">;
 
 export class DeckRepository extends BaseRepository {
-  static async index(): Promise<TRepositoryResponse<Deck>> {
+  static async index(): Promise<TPayloadResponse<Deck>> {
     try {
       const result: TDeckData[] = await this.db.getAllAsync(
         "SELECT * FROM decks",
@@ -25,7 +25,7 @@ export class DeckRepository extends BaseRepository {
     }
   }
 
-  static async find(id: number): Promise<TRepositoryResponse<Deck>> {
+  static async find(id: number): Promise<TPayloadResponse<Deck>> {
     try {
       const result: TDeckData | null = await this.db.getFirstAsync(
         "SELECT * FROM decks WHERE id=?",
@@ -48,14 +48,14 @@ export class DeckRepository extends BaseRepository {
 
       return {
         ok: false,
-        message: "Error loading Decks",
+        message: "Error loading Deck",
       };
     }
   }
 
   static async create({
     name,
-  }: DeckPermittedFields): Promise<TRepositoryResponse<Deck>> {
+  }: DeckPermittedFields): Promise<TPayloadResponse<Deck>> {
     try {
       const result = await this.db.runAsync(
         `INSERT INTO decks ("name") VALUES (?)`,
@@ -75,6 +75,67 @@ export class DeckRepository extends BaseRepository {
       return {
         ok: false,
         message: "Error creating Deck",
+      };
+    }
+  }
+
+  static async update(
+    id: number,
+    { name }: DeckPermittedFields,
+  ): Promise<TPatchResponse> {
+    try {
+      const result = await this.db.runAsync(
+        `UPDATE decks SET name=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`,
+        name,
+        id,
+      );
+
+      if (result.changes === 0) {
+        return {
+          ok: false,
+          message: `Deck ${id} not found`,
+          changes: result.changes,
+        };
+      }
+
+      return {
+        ok: true,
+        changes: result.changes,
+      };
+    } catch (e: any) {
+      console.log("Error updating Deck:", e.message);
+
+      return {
+        ok: false,
+        message: "Error updating Deck",
+        changes: 0,
+      };
+    }
+  }
+
+  static async delete(id: number): Promise<TPatchResponse> {
+    try {
+      const result = await this.db.runAsync(`DELETE FROM decks WHERE id=?`, id);
+
+      if (result.changes === 0) {
+        return {
+          ok: false,
+          message: `Deck ${id} not found`,
+          changes: result.changes,
+        };
+      }
+
+      return {
+        ok: true,
+        changes: result.changes,
+      };
+    } catch (e: any) {
+      console.log("Error deleting Deck:", e.message);
+
+      return {
+        ok: false,
+        message: "Error deleting Deck",
+        changes: 0,
       };
     }
   }
