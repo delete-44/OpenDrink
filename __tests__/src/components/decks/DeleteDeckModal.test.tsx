@@ -1,6 +1,7 @@
 import { DeckFactory } from "@/factories/models/DeckFactory";
 import DeleteDeckModal from "@/src/components/decks/DeleteDeckModal";
 import { StorageContext } from "@/src/context/StorageContext";
+import { BaseMockStorageContext } from "@/test-utils";
 import {
   fireEvent,
   render,
@@ -9,7 +10,6 @@ import {
 } from "@testing-library/react-native";
 import { router } from "expo-router";
 import React from "react";
-import { BaseMockStorageContext } from "../../../../test-utils";
 
 jest.mock("expo-router", () => ({
   router: {
