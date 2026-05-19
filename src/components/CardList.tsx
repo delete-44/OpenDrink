@@ -81,8 +81,7 @@ export default function CardList({ deck }: CardListProps) {
           renderItem={({ item, index }) => (
             <RemovableListItem
               label={item}
-              idx={index}
-              removeItemAt={removeCardAt}
+              removeItemCb={() => removeCardAt(index)}
             />
           )}
           ListEmptyComponent={<CardListEmptyState addCards={addCards} />}

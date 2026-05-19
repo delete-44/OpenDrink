@@ -7,14 +7,12 @@ import SVG from "./SVG";
 
 type RemovableListItemProps = {
   label: string;
-  idx: number;
-  removeItemAt: (idx: number) => void;
+  removeItemCb: () => void;
 };
 
 export default function RemovableListItem({
   label,
-  idx,
-  removeItemAt,
+  removeItemCb,
 }: RemovableListItemProps) {
   return (
     <View style={styles.listItemWrapper}>
@@ -23,7 +21,7 @@ export default function RemovableListItem({
         role="button"
         accessibilityLabel={`Remove ${label}`}
         style={globalStyles.button}
-        onPress={() => removeItemAt(idx)}
+        onPress={removeItemCb}
       >
         <SVG icon={minus} width={24} height={24} />
       </Pressable>

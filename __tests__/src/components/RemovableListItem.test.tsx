@@ -2,16 +2,10 @@ import RemovableListItem from "@/src/components/RemovableListItem";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 
 describe("RemovableListItem", () => {
-  const mockRemoveItemAt = jest.fn();
+  const mockRemoveItemCb = jest.fn();
 
   it("renders markup - player name and a remove button", () => {
-    render(
-      <RemovableListItem
-        label="Sally"
-        idx={5}
-        removeItemAt={mockRemoveItemAt}
-      />,
-    );
+    render(<RemovableListItem label="Sally" removeItemCb={mockRemoveItemCb} />);
 
     const name = screen.getByText("Sally");
     const removeButton = screen.getByRole("button", { name: "Remove Sally" });
@@ -21,17 +15,11 @@ describe("RemovableListItem", () => {
   });
 
   it("allows users to remove the item", () => {
-    render(
-      <RemovableListItem
-        label="Sally"
-        idx={5}
-        removeItemAt={mockRemoveItemAt}
-      />,
-    );
+    render(<RemovableListItem label="Sally" removeItemCb={mockRemoveItemCb} />);
 
     const removeButton = screen.getByRole("button", { name: "Remove Sally" });
     fireEvent.press(removeButton);
 
-    expect(mockRemoveItemAt).toHaveBeenCalledWith(5);
+    expect(mockRemoveItemCb).toHaveBeenCalledTimes(1);
   });
 });
