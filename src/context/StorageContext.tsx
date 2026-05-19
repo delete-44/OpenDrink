@@ -3,6 +3,7 @@ import { StorageContextProps, StorageProviderProps } from "@/src/types";
 import * as SecureStore from "expo-secure-store";
 import { useSQLiteContext } from "expo-sqlite";
 import { createContext, useEffect, useMemo, useState } from "react";
+import { Card } from "../models/Card";
 import { Player } from "../models/Player";
 import { CardRepository } from "../repositories/CardRepository";
 import {
@@ -50,10 +51,32 @@ export async function saveResourceImpl<T>(
 export function StorageProvider({ children }: StorageProviderProps) {
   const [selectedDeckIdx, setSelectedDeckIdx] = useState<number>(0);
   const [decks, setDecks] = useState<Deck[]>([]);
+  const [deckCards, setDeckCards] = useState<Card[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const db = useSQLiteContext();
+
+  const selectedDeck = useMemo(() => {
+    return decks[selectedDeckIdx] || decks[0];
+  }, [decks, selectedDeckIdx]);
+
+  // Load cards whenever selected deck changes
+  useEffect(() => {
+    if (!selectedDeck) return;
+
+    const loadCards = async () => {
+      try {
+        const cards = selectedDeck.ncards();
+        setDeckCards(cards);
+      } catch (err) {
+        console.error("Failed to load cards:", err);
+        setDeckCards([]);
+      }
+    };
+
+    loadCards();
+  }, [selectedDeck]);
 
   useEffect(() => {
     const init = () => {
@@ -80,10 +103,6 @@ export function StorageProvider({ children }: StorageProviderProps) {
     init();
     fetchData();
   }, [db]);
-
-  const selectedDeck = useMemo(() => {
-    return decks[selectedDeckIdx] || decks[0];
-  }, [decks, selectedDeckIdx]);
 
   const saveSelectedDeckIdx = async (idx: number) => {
     await saveResourceImpl(SELECTED_DECK_KEY, idx);
@@ -165,6 +184,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     createDeck,
     updateDeck,
     destroyDeck,
+    deckCards,
     players,
     createPlayer,
     deletePlayer,
