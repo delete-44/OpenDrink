@@ -3,6 +3,7 @@
 import { Card } from "./models/Card";
 import { Deck } from "./models/Deck";
 import { Player } from "./models/Player";
+import { CardPermittedFields } from "./repositories/CardRepository";
 import { DeckPermittedFields } from "./repositories/DeckRepository";
 import { PlayerPermittedFields } from "./repositories/PlayerRepository";
 
@@ -72,6 +73,7 @@ export type StorageContextProps = {
   updateDeck: (id: number, patch: DeckPermittedFields) => Promise<void>;
   destroyDeck: (id: number) => Promise<void>;
   deckCards: Card[];
+  createCard: (deckId: number, patch: CardPermittedFields) => Promise<void>;
   players: Player[];
   createPlayer: (patch: PlayerPermittedFields) => Promise<void>;
   deletePlayer: (id: number) => Promise<void>;

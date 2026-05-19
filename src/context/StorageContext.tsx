@@ -5,7 +5,10 @@ import { useSQLiteContext } from "expo-sqlite";
 import { createContext, useEffect, useMemo, useState } from "react";
 import { Card } from "../models/Card";
 import { Player } from "../models/Player";
-import { CardRepository } from "../repositories/CardRepository";
+import {
+  CardPermittedFields,
+  CardRepository,
+} from "../repositories/CardRepository";
 import {
   DeckPermittedFields,
   DeckRepository,
@@ -153,6 +156,22 @@ export function StorageProvider({ children }: StorageProviderProps) {
     setDecks(newDecks);
   };
 
+  const createCard = async (deckId: number, patch: CardPermittedFields) => {
+    const resp = await CardRepository.create(deckId, patch);
+
+    if (!resp.ok || !resp.payload) {
+      throw new Error(resp.message);
+    }
+
+    const newDeckCards = [...deckCards, resp.payload];
+
+    setDeckCards(newDeckCards);
+  };
+
+  // createCard
+  // destroyCard
+  // create many cards
+
   const createPlayer = async (patch: PlayerPermittedFields) => {
     const resp = await PlayerRepository.create(patch);
 
@@ -185,6 +204,7 @@ export function StorageProvider({ children }: StorageProviderProps) {
     updateDeck,
     destroyDeck,
     deckCards,
+    createCard,
     players,
     createPlayer,
     deletePlayer,

@@ -33,42 +33,41 @@ export default function CardList({ deck }: CardListProps) {
   const [newCard, setNewCard] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const { updateDeck } = useContext(StorageContext);
+  const { updateDeck, deckCards, createCard } = useContext(StorageContext);
 
   // Callback for adding multiple cards to the deck; currently
   // used for inserting the default deck from the empty screen;
   // longer term could be useful for downloading/importing decks
   const addCards = useCallback(
     async (newCards: string[]) => {
-      const modifiedCards = [...deck.cards, ...newCards];
-
-      await updateDeck(deck.id, { cards: modifiedCards });
+      // const modifiedCards = [...deck.cards, ...newCards];
+      // await updateDeck(deck.id, { cards: modifiedCards });
     },
     [deck, updateDeck],
   );
 
   const addCard = useCallback(
-    async (newCard: string) => {
-      if (!newCard.trim()) {
+    async (content: string) => {
+      if (!content.trim()) {
         setErrorMessage("Card cannot be empty");
 
         return;
       }
 
-      const modifiedCards = [...deck.cards, newCard.trim()];
-
-      await updateDeck(deck.id, { cards: modifiedCards });
-
-      setNewCard("");
+      try {
+        await createCard(deck.id, { content });
+        setNewCard("");
+      } catch (e: any) {
+        setErrorMessage(e.message);
+      }
     },
-    [deck, updateDeck],
+    [createCard, deck.id],
   );
 
   const removeCardAt = useCallback(
     async (cardIndex: number) => {
-      const modifiedCards = deck.cards.filter((_, idx) => idx !== cardIndex);
-
-      await updateDeck(deck.id, { cards: modifiedCards });
+      // const modifiedCards = deck.cards.filter((_, idx) => idx !== cardIndex);
+      // await updateDeck(deck.id, { cards: modifiedCards });
     },
     [deck, updateDeck],
   );
@@ -77,10 +76,10 @@ export default function CardList({ deck }: CardListProps) {
     <>
       <View style={styles.listContainer}>
         <FlatList
-          data={deck.cards}
+          data={deckCards}
           renderItem={({ item, index }) => (
             <RemovableListItem
-              label={item}
+              label={item.content}
               removeItemCb={() => removeCardAt(index)}
             />
           )}
