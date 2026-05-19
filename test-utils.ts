@@ -17,6 +17,7 @@ export const BaseMockStorageContext = {
   updateDeck: jest.fn(),
   destroyDeck: jest.fn(),
   deckCards: [],
+  createCard: jest.fn(),
   players: BaseTestPlayers,
   createPlayer: jest.fn(),
   deletePlayer: jest.fn(),

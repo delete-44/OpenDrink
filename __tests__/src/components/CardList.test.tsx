@@ -1,3 +1,4 @@
+import { CardFactory } from "@/factories/models/CardFactory";
 import { DeckFactory } from "@/factories/models/DeckFactory";
 import CardList from "@/src/components/CardList";
 import DEFAULT_DECK from "@/src/constants/default-deck";
@@ -13,6 +14,7 @@ import React from "react";
 
 describe("CardList", () => {
   const testDeck = DeckFactory({ cards: [] });
+  const mockCreateCard = jest.fn();
   const mockUpdateDeck = jest.fn();
 
   const mockStorageContext = {
@@ -20,6 +22,7 @@ describe("CardList", () => {
     selectedDeck: testDeck,
     decks: [testDeck],
     updateDeck: mockUpdateDeck,
+    createCard: mockCreateCard,
   };
 
   describe("with no cards initialised", () => {
@@ -68,6 +71,30 @@ describe("CardList", () => {
       expect(errorMessage).toBeVisible();
     });
 
+    it("surfaces errors from StorageContext on create", async () => {
+      mockCreateCard.mockRejectedValueOnce(new Error("test error"));
+
+      let errorMessage = screen.queryByText("test error");
+      expect(errorMessage).toBeNull();
+
+      const input = screen.getByLabelText("Card Content");
+      fireEvent.changeText(input, "New card <3");
+
+      const addButton = screen.getByRole("button", {
+        name: "Add Card to Deck",
+      });
+      fireEvent.press(addButton);
+
+      expect(mockCreateCard).toHaveBeenCalledWith(testDeck.id, {
+        content: "New card <3",
+      });
+      expect(input).toHaveProp("value", "New card <3");
+
+      await waitFor(() => {
+        expect(screen.getByText("test error")).toBeVisible();
+      });
+    });
+
     it("clears error message on new input", () => {
       let errorMessage = screen.queryByText("Card cannot be empty");
       expect(errorMessage).toBeNull();
@@ -90,7 +117,7 @@ describe("CardList", () => {
       expect(errorMessage).toBeNull();
     });
 
-    it.skip("trims whitespace from card contents", async () => {
+    it("trims whitespace from card contents", async () => {
       const input = screen.getByLabelText("Card Content");
       fireEvent.changeText(input, " Drink up!  ");
 
@@ -99,8 +126,8 @@ describe("CardList", () => {
       });
       fireEvent.press(addButton);
 
-      expect(mockUpdateDeck).toHaveBeenCalledWith(testDeck.id, {
-        cards: ["Drink up!"],
+      expect(mockCreateCard).toHaveBeenCalledWith(testDeck.id, {
+        content: "Drink up!",
       });
 
       await waitFor(() => {
@@ -110,9 +137,18 @@ describe("CardList", () => {
   });
 
   describe("with existing cards", () => {
-    const testDeck = DeckFactory({
-      cards: ["Drink up!", "Do a flip", "Go for a walk"],
-    });
+    const card1 = CardFactory({ id: 1, content: "Drink up!" });
+    const card2 = CardFactory({ id: 2, content: "Do a flip" });
+    const card3 = CardFactory({ id: 3, content: "Go for a walk" });
+
+    const mockStorageContext = {
+      ...BaseMockStorageContext,
+      selectedDeck: testDeck,
+      decks: [testDeck],
+      deckCards: [card1, card2, card3],
+      updateDeck: mockUpdateDeck,
+      createCard: mockCreateCard,
+    };
 
     beforeEach(() => {
       render(
@@ -122,9 +158,10 @@ describe("CardList", () => {
       );
     });
 
-    it.skip("renders a list of cards from storage", () => {
-      expect(screen.getByText("Drink up!")).toBeVisible();
-      expect(screen.getByText("Do a flip")).toBeVisible();
+    it("renders a list of cards from storage", () => {
+      expect(screen.getByText(card1.content)).toBeVisible();
+      expect(screen.getByText(card2.content)).toBeVisible();
+      expect(screen.getByText(card3.content)).toBeVisible();
     });
 
     it.skip("allows user to remove cards", () => {

@@ -55,7 +55,7 @@ export default function CardList({ deck }: CardListProps) {
       }
 
       try {
-        await createCard(deck.id, { content });
+        await createCard(deck.id, { content: content.trim() });
         setNewCard("");
       } catch (e: any) {
         setErrorMessage(e.message);

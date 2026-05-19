@@ -1,3 +1,4 @@
+import { CardFactory } from "@/factories/models/CardFactory";
 import { DeckFactory } from "@/factories/models/DeckFactory";
 import { PlayerFactory } from "@/factories/models/PlayerFactory";
 import {
@@ -344,6 +345,61 @@ describe("StorageContext", () => {
 
           // Assert context state updated
           expect(storageContext.current.decks).toEqual([decks[0]]);
+        });
+      });
+
+      describe("#createCard", () => {
+        const card = CardFactory();
+
+        it("surfaces errors on unsuccessful response", async () => {
+          jest.spyOn(CardRepository, "create").mockResolvedValueOnce({
+            ok: false,
+            message: "test error",
+          });
+
+          const storageContext = await renderStorageContext();
+
+          try {
+            await act(async () => {
+              await storageContext.current.createCard(deck1.id, {
+                content: card.content,
+              });
+            });
+          } catch (e: any) {
+            expect(e.message).toEqual("test error");
+          }
+
+          expect(CardRepository.create).toHaveBeenCalledTimes(1);
+          expect(CardRepository.create).toHaveBeenCalledWith(deck1.id, {
+            content: card.content,
+          });
+
+          // Assert context state has not updated
+          expect(storageContext.current.deckCards).toEqual([]);
+        });
+
+        it("creates card using the repository and updates context", async () => {
+          jest
+            .spyOn(CardRepository, "create")
+            .mockResolvedValueOnce({ ok: true, payload: card });
+
+          const storageContext = await renderStorageContext();
+
+          expect(storageContext.current.deckCards).toEqual([]);
+
+          await act(async () => {
+            await storageContext.current.createCard(deck1.id, {
+              content: card.content,
+            });
+          });
+
+          expect(CardRepository.create).toHaveBeenCalledTimes(1);
+          expect(CardRepository.create).toHaveBeenCalledWith(deck1.id, {
+            content: card.content,
+          });
+
+          // Assert context state updated
+          expect(storageContext.current.deckCards).toEqual([card]);
         });
       });
     });
