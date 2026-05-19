@@ -2,7 +2,7 @@ import { Card } from "../models/Card";
 import {
   TCardData,
   TCollectionResponse,
-  TPartialResponse,
+  TItemResponse,
   TPatchResponse,
 } from "../types";
 import { BaseRepository } from "./BaseRepository";
@@ -35,20 +35,29 @@ export class CardRepository extends BaseRepository {
   static async create(
     deckId: number,
     { content }: CardPermittedFields,
-  ): Promise<TPartialResponse<Card>> {
+  ): Promise<TItemResponse<Card>> {
     try {
-      const result = await this.db.runAsync(
+      const created = await this.db.runAsync(
         `INSERT INTO cards ("deck_id", "content") VALUES (?, ?)`,
         deckId,
         content,
       );
 
+      const result: TCardData | null = await this.db.getFirstAsync(
+        "SELECT * FROM cards WHERE id=?",
+        created.lastInsertRowId,
+      );
+
+      if (!result) {
+        return {
+          ok: false,
+          message: `Card not found`,
+        };
+      }
+
       return {
         ok: true,
-        payload: {
-          id: result.lastInsertRowId,
-          content,
-        },
+        payload: Card.fromJson(result),
       };
     } catch (e: any) {
       console.log("Error creating Card:", e.message);
