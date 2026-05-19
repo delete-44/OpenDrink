@@ -76,6 +76,17 @@ describe("PlayerRepository", () => {
           expect(result.message).toEqual("Error creating Player");
           expect(result.payload).toEqual(undefined);
         });
+
+        it("returns friendly message if player not found", async () => {
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 1 });
+          mockGetFirstAsync.mockResolvedValueOnce(null);
+
+          const result = await PlayerRepository.create({ name: "Alice" });
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Player not found");
+          expect(result.payload).toEqual(undefined);
+        });
       });
 
       it("errors out on delete", async () => {

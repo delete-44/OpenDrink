@@ -39,8 +39,6 @@ export class PlayerRepository extends BaseRepository {
         name,
       );
 
-      console.log("HERE! created", created);
-
       const result: TPlayerData | null = await this.db.getFirstAsync(
         "SELECT * FROM players WHERE id=?",
         created.lastInsertRowId,
