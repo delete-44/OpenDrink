@@ -234,7 +234,7 @@ describe("StorageContext", () => {
         });
 
         afterEach(() => {
-          CardRepository.index.mockRestore();
+          (CardRepository.index as jest.Mock).mockRestore();
         });
 
         it("saves current deck idx to SecureStore and updates context", async () => {
