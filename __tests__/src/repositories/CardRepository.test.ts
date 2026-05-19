@@ -20,7 +20,7 @@ describe("CardRepository", () => {
 
       expect(result.ok).toEqual(false);
       expect(result.message).toEqual("Error loading Cards");
-      expect(result.payload).toEqual(undefined);
+      expect(result.payload).toEqual([]);
     });
 
     it("errors out on create", async () => {
@@ -55,7 +55,7 @@ describe("CardRepository", () => {
 
         expect(result.ok).toEqual(false);
         expect(result.message).toEqual("Error loading Cards");
-        expect(result.payload).toEqual(undefined);
+        expect(result.payload).toEqual([]);
       });
 
       it("errors out on create", async () => {

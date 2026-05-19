@@ -1,5 +1,6 @@
 // Game logic types
 
+import { Card } from "./models/Card";
 import { Deck } from "./models/Deck";
 import { Player } from "./models/Player";
 import { DeckPermittedFields } from "./repositories/DeckRepository";
@@ -15,7 +16,7 @@ export type TItemResponse<T> = ResponseMeta & {
 };
 
 export type TCollectionResponse<T> = ResponseMeta & {
-  payload?: T[];
+  payload: T[];
 };
 
 export type TPartialResponse<T> = ResponseMeta & {
@@ -70,6 +71,7 @@ export type StorageContextProps = {
   createDeck: (patch: DeckPermittedFields) => Promise<Deck>;
   updateDeck: (id: number, patch: DeckPermittedFields) => Promise<void>;
   destroyDeck: (id: number) => Promise<void>;
+  deckCards: Card[];
   players: Player[];
   createPlayer: (patch: PlayerPermittedFields) => Promise<void>;
   deletePlayer: (id: number) => Promise<void>;

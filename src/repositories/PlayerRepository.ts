@@ -26,6 +26,7 @@ export class PlayerRepository extends BaseRepository {
       return {
         ok: false,
         message: "Error loading Players",
+        payload: [],
       };
     }
   }

@@ -19,7 +19,7 @@ describe("PlayerRepository", () => {
 
       expect(result.ok).toEqual(false);
       expect(result.message).toEqual("Error loading Players");
-      expect(result.payload).toEqual(undefined);
+      expect(result.payload).toEqual([]);
     });
 
     it("errors out on create", async () => {
@@ -52,7 +52,7 @@ describe("PlayerRepository", () => {
 
         expect(result.ok).toEqual(false);
         expect(result.message).toEqual("Error loading Players");
-        expect(result.payload).toEqual(undefined);
+        expect(result.payload).toEqual([]);
       });
 
       describe("#create", () => {

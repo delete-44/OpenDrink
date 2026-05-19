@@ -26,6 +26,7 @@ export class DeckRepository extends BaseRepository {
       return {
         ok: false,
         message: "Error loading Decks",
+        payload: [],
       };
     }
   }

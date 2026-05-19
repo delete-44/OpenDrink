@@ -27,6 +27,7 @@ export class CardRepository extends BaseRepository {
       return {
         ok: false,
         message: "Error loading Cards",
+        payload: [],
       };
     }
   }

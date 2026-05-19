@@ -19,7 +19,7 @@ describe("DeckRepository", () => {
 
       expect(result.ok).toEqual(false);
       expect(result.message).toEqual("Error loading Decks");
-      expect(result.payload).toEqual(undefined);
+      expect(result.payload).toEqual([]);
     });
 
     it("errors out on find", async () => {
@@ -68,7 +68,7 @@ describe("DeckRepository", () => {
 
         expect(result.ok).toEqual(false);
         expect(result.message).toEqual("Error loading Decks");
-        expect(result.payload).toEqual(undefined);
+        expect(result.payload).toEqual([]);
       });
 
       it("errors out on find", async () => {
