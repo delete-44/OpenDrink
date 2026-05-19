@@ -42,7 +42,6 @@ export default function PlayerList() {
         await createPlayer(name.trim());
         setNewPlayer("");
       } catch (e: any) {
-        console.log("HERE! setting error");
         setErrorMessage(e.message);
       }
     },
@@ -51,9 +50,7 @@ export default function PlayerList() {
 
   const removePlayer = useCallback(
     async (playerId: number) => {
-      console.log("HERE!", playerId);
       try {
-        console.log("HERE2. delete...");
         await deletePlayer(playerId);
         setNewPlayer("");
       } catch (e: any) {
