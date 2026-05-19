@@ -81,14 +81,38 @@ describe("DeckRepository", () => {
         expect(result.payload).toEqual(undefined);
       });
 
-      it("errors out on create", async () => {
-        mockRunAsync.mockRejectedValueOnce(new Error("test error"));
+      describe("#create", () => {
+        it("errors out on create request", async () => {
+          mockRunAsync.mockRejectedValueOnce(new Error("test error"));
 
-        const result = await DeckRepository.create({ name: "Default" });
+          const result = await DeckRepository.create({ name: "Default" });
 
-        expect(result.ok).toEqual(false);
-        expect(result.message).toEqual("Error creating Deck");
-        expect(result.payload).toEqual(undefined);
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Error creating Deck");
+          expect(result.payload).toEqual(undefined);
+        });
+
+        it("errors out on find request", async () => {
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 1 });
+          mockGetFirstAsync.mockRejectedValueOnce(new Error("test error"));
+
+          const result = await DeckRepository.create({ name: "Default" });
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Error creating Deck");
+          expect(result.payload).toEqual(undefined);
+        });
+
+        it("returns friendly message if player not found", async () => {
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 1 });
+          mockGetFirstAsync.mockResolvedValueOnce(null);
+
+          const result = await DeckRepository.create({ name: "Default" });
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Deck not found");
+          expect(result.payload).toEqual(undefined);
+        });
       });
 
       it("errors out on update", async () => {
@@ -161,19 +185,25 @@ describe("DeckRepository", () => {
         });
       });
 
-      it("#create returns the created decks name + id", async () => {
-        mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 4 });
+      it("#create creates the new player & fetches it", async () => {
+        mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: deck3.id });
+        mockGetFirstAsync.mockResolvedValueOnce(deck3);
 
-        const result = await DeckRepository.create({ name: "My deck" });
+        const result = await DeckRepository.create({ name: deck3.name });
 
         expect(mockRunAsync).toHaveBeenCalledWith(
           'INSERT INTO decks ("name") VALUES (?)',
-          "My deck",
+          deck3.name,
+        );
+
+        expect(mockGetFirstAsync).toHaveBeenCalledWith(
+          "SELECT * FROM decks WHERE id=?",
+          deck3.id,
         );
 
         expect(result.ok).toEqual(true);
         expect(result.message).toEqual(undefined);
-        expect(result.payload).toEqual({ id: 4, name: "My deck" });
+        expect(result.payload).toEqual(deck3);
       });
 
       describe("#update", () => {

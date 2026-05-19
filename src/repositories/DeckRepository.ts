@@ -3,7 +3,6 @@ import {
   TCollectionResponse,
   TDeckData,
   TItemResponse,
-  TPartialResponse,
   TPatchResponse,
 } from "../types";
 import { BaseRepository } from "./BaseRepository";
@@ -61,19 +60,28 @@ export class DeckRepository extends BaseRepository {
 
   static async create({
     name,
-  }: DeckPermittedFields): Promise<TPartialResponse<Deck>> {
+  }: DeckPermittedFields): Promise<TItemResponse<Deck>> {
     try {
-      const result = await this.db.runAsync(
+      const created = await this.db.runAsync(
         `INSERT INTO decks ("name") VALUES (?)`,
         name,
       );
 
+      const result: TDeckData | null = await this.db.getFirstAsync(
+        "SELECT * FROM decks WHERE id=?",
+        created.lastInsertRowId,
+      );
+
+      if (!result) {
+        return {
+          ok: false,
+          message: `Deck not found`,
+        };
+      }
+
       return {
         ok: true,
-        payload: {
-          id: result.lastInsertRowId,
-          name,
-        },
+        payload: Deck.fromJson(result),
       };
     } catch (e: any) {
       console.log("Error creating Deck:", e.message);
