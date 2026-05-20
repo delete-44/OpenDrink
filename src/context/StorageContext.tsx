@@ -1,7 +1,7 @@
 import { Deck } from "@/src/models/Deck";
 import { StorageContextProps, StorageProviderProps } from "@/src/types";
-import * as SecureStore from "expo-secure-store";
 import { useSQLiteContext } from "expo-sqlite";
+import Storage from "expo-sqlite/kv-store";
 import { createContext, useEffect, useMemo, useState } from "react";
 import { Player } from "../models/Player";
 import { CardRepository } from "../repositories/CardRepository";
@@ -17,35 +17,6 @@ import {
 export const StorageContext = createContext({} as StorageContextProps);
 
 const SELECTED_DECK_KEY = "selected_deck_idx";
-const DECK_KEY = "decks";
-
-export async function loadResourceImpl<T>(
-  storageKey: string,
-  fallback: T,
-): Promise<T> {
-  try {
-    const data = await SecureStore.getItemAsync(storageKey);
-
-    return data ? JSON.parse(data) : fallback;
-  } catch (error) {
-    // TODO: Error handling
-    console.error("Failed to load data: ", error);
-
-    return fallback;
-  }
-}
-
-export async function saveResourceImpl<T>(
-  storageKey: string,
-  newVal: T,
-): Promise<void> {
-  try {
-    await SecureStore.setItemAsync(storageKey, JSON.stringify(newVal));
-  } catch (error) {
-    // TODO: Error handling
-    console.error(`Failed to save ${storageKey}:`, error);
-  }
-}
 
 export function StorageProvider({ children }: StorageProviderProps) {
   const [selectedDeckIdx, setSelectedDeckIdx] = useState<number>(0);
@@ -65,12 +36,14 @@ export function StorageProvider({ children }: StorageProviderProps) {
     const fetchData = async () => {
       const [loadedSelectedDeckIdx, loadedDecks, loadedPlayers] =
         await Promise.all([
-          loadResourceImpl(SELECTED_DECK_KEY, 0),
+          Storage.getItemAsync(SELECTED_DECK_KEY),
           DeckRepository.index(),
           PlayerRepository.index(),
         ]);
 
-      setSelectedDeckIdx(loadedSelectedDeckIdx);
+      setSelectedDeckIdx(
+        loadedSelectedDeckIdx ? JSON.parse(loadedSelectedDeckIdx) : 0,
+      );
       setDecks(loadedDecks.payload);
       setPlayers(loadedPlayers.payload);
 
@@ -86,7 +59,8 @@ export function StorageProvider({ children }: StorageProviderProps) {
   }, [decks, selectedDeckIdx]);
 
   const saveSelectedDeckIdx = async (idx: number) => {
-    await saveResourceImpl(SELECTED_DECK_KEY, idx);
+    await Storage.setItemAsync(SELECTED_DECK_KEY, JSON.stringify(idx));
+
     setSelectedDeckIdx(idx);
   };
 
@@ -119,7 +93,6 @@ export function StorageProvider({ children }: StorageProviderProps) {
       deck.id === id ? new Deck({ ...deck, ...patch }) : deck,
     );
 
-    await saveResourceImpl(DECK_KEY, newDecks);
     setDecks(newDecks);
   };
 
@@ -133,10 +106,6 @@ export function StorageProvider({ children }: StorageProviderProps) {
     const newDecks = decks.filter((deck) => deck.id !== id);
     setDecks(newDecks);
   };
-
-  // createCard
-  // destroyCard
-  // create many cards
 
   const createPlayer = async (patch: PlayerPermittedFields) => {
     const resp = await PlayerRepository.create(patch);
