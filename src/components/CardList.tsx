@@ -21,10 +21,10 @@ import {
   SPACING_LG,
   SPACING_SM,
 } from "@/src/constants/style-constants";
-import { StorageContext } from "@/src/context/StorageContext";
 import { Deck } from "@/src/models/Deck";
 import { useCallback, useContext, useState } from "react";
 import { CardContext } from "../context/CardContext";
+import { CardPermittedFields } from "../repositories/CardRepository";
 
 type CardListProps = {
   deck: Deck;
@@ -34,18 +34,17 @@ export default function CardList({ deck }: CardListProps) {
   const [newCard, setNewCard] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const { updateDeck } = useContext(StorageContext);
-  const { cards, createCard, deleteCard } = useContext(CardContext);
+  const { cards, createCard, createManyCards, deleteCard } =
+    useContext(CardContext);
 
   // Callback for adding multiple cards to the deck; currently
   // used for inserting the default deck from the empty screen;
   // longer term could be useful for downloading/importing decks
   const addCards = useCallback(
-    async (newCards: string[]) => {
-      // const modifiedCards = [...deck.cards, ...newCards];
-      // await updateDeck(deck.id, { cards: modifiedCards });
+    async (newCards: CardPermittedFields[]) => {
+      await createManyCards(deck.id, newCards);
     },
-    [deck, updateDeck],
+    [createManyCards, deck.id],
   );
 
   const addCard = useCallback(

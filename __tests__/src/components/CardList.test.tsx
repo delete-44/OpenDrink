@@ -2,7 +2,7 @@ import { CardContextFactory } from "@/factories/context/CardContextFactory";
 import { CardFactory } from "@/factories/models/CardFactory";
 import { DeckFactory } from "@/factories/models/DeckFactory";
 import CardList from "@/src/components/CardList";
-import DEFAULT_DECK from "@/src/constants/default-deck";
+import { DEFAULT_CARDS } from "@/src/constants/default-deck";
 import { CardContext } from "@/src/context/CardContext";
 import { StorageContext } from "@/src/context/StorageContext";
 import { BaseMockStorageContext } from "@/test-utils";
@@ -17,20 +17,14 @@ import React from "react";
 describe("CardList", () => {
   const testDeck = DeckFactory({ cards: [] });
   const mockCreateCard = jest.fn();
+  const mockCreateManyCards = jest.fn();
   const mockDeleteCard = jest.fn();
-  const mockUpdateDeck = jest.fn();
-
-  const mockStorageContext = {
-    ...BaseMockStorageContext,
-    selectedDeck: testDeck,
-    decks: [testDeck],
-    updateDeck: mockUpdateDeck,
-  };
 
   const mockCardContext = CardContextFactory({
     deck: testDeck,
     cards: [],
     createCard: mockCreateCard,
+    createManyCards: mockCreateManyCards,
     deleteCard: mockDeleteCard,
   });
 
@@ -38,9 +32,7 @@ describe("CardList", () => {
     beforeEach(() => {
       render(
         <CardContext.Provider value={mockCardContext}>
-          <StorageContext.Provider value={mockStorageContext}>
-            <CardList deck={testDeck} />
-          </StorageContext.Provider>
+          <CardList deck={testDeck} />
         </CardContext.Provider>,
       );
     });
@@ -55,14 +47,15 @@ describe("CardList", () => {
       expect(screen.queryByText("Error: Failed to load Deck.")).toBeNull();
     });
 
-    it.skip("allows the user to load the default deck", () => {
+    it("allows the user to load the default deck", () => {
       fireEvent.press(
         screen.getByRole("button", { name: "Load Default Cards" }),
       );
 
-      expect(mockUpdateDeck).toHaveBeenCalledWith(testDeck.id, {
-        cards: DEFAULT_DECK.cards,
-      });
+      expect(mockCreateManyCards).toHaveBeenCalledWith(
+        testDeck.id,
+        DEFAULT_CARDS,
+      );
     });
 
     it("prevents user adding empty cards", () => {
@@ -75,7 +68,7 @@ describe("CardList", () => {
       });
       fireEvent.press(addButton);
 
-      expect(mockUpdateDeck).not.toHaveBeenCalled();
+      expect(mockCreateCard).not.toHaveBeenCalled();
       expect(input).toHaveProp("value", "");
 
       errorMessage = screen.getByText("Card cannot be empty");
@@ -116,7 +109,7 @@ describe("CardList", () => {
       });
       fireEvent.press(addButton);
 
-      expect(mockUpdateDeck).not.toHaveBeenCalled();
+      expect(mockCreateCard).not.toHaveBeenCalled();
       expect(input).toHaveProp("value", "");
 
       errorMessage = screen.getByText("Card cannot be empty");
@@ -156,7 +149,6 @@ describe("CardList", () => {
       ...BaseMockStorageContext,
       selectedDeck: testDeck,
       decks: [testDeck],
-      updateDeck: mockUpdateDeck,
     };
 
     const mockCardContext = CardContextFactory({
