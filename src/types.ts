@@ -65,11 +65,8 @@ export type CardProviderProps = {
 export type CardContextProps = {
   deck: Deck | null;
   cards: Card[];
-  createCard: (deckId: number, patch: CardPermittedFields) => Promise<void>;
-  createManyCards: (
-    deckId: number,
-    patches: CardPermittedFields[],
-  ) => Promise<void>;
+  createCard: (patch: CardPermittedFields) => Promise<void>;
+  createManyCards: (patches: CardPermittedFields[]) => Promise<void>;
   deleteCard: (id: number) => Promise<void>;
 };
 

@@ -42,9 +42,9 @@ export default function CardList({ deck }: CardListProps) {
   // longer term could be useful for downloading/importing decks
   const addCards = useCallback(
     async (newCards: CardPermittedFields[]) => {
-      await createManyCards(deck.id, newCards);
+      await createManyCards(newCards);
     },
-    [createManyCards, deck.id],
+    [createManyCards],
   );
 
   const addCard = useCallback(
@@ -56,13 +56,13 @@ export default function CardList({ deck }: CardListProps) {
       }
 
       try {
-        await createCard(deck.id, { content: content.trim() });
+        await createCard({ content: content.trim() });
         setNewCard("");
       } catch (e: any) {
         setErrorMessage(e.message);
       }
     },
-    [createCard, deck.id],
+    [createCard],
   );
 
   const removeCard = useCallback(

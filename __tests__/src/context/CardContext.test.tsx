@@ -29,6 +29,46 @@ describe("CardContext", () => {
     expect(cardContext.current.cards).toEqual([]);
   });
 
+  it("errors out if createCard is called", async () => {
+    const card = CardFactory();
+
+    const cardContext = renderCardContext();
+
+    try {
+      await act(async () => {
+        await cardContext.current.createCard({
+          content: card.content,
+        });
+      });
+    } catch (e: any) {
+      expect(e.message).toEqual("CardContext must be initialised with a Deck");
+    }
+
+    // Assert context state has not updated
+    expect(cardContext.current.cards).toEqual([]);
+  });
+
+  it("errors out if createManyCards is called", async () => {
+    const card = CardFactory();
+
+    const cardContext = renderCardContext();
+
+    try {
+      await act(async () => {
+        await cardContext.current.createManyCards([
+          {
+            content: card.content,
+          },
+        ]);
+      });
+    } catch (e: any) {
+      expect(e.message).toEqual("CardContext must be initialised with a Deck");
+    }
+
+    // Assert context state has not updated
+    expect(cardContext.current.cards).toEqual([]);
+  });
+
   describe("with deck provided", () => {
     const deck = DeckFactory();
 
@@ -67,7 +107,7 @@ describe("CardContext", () => {
 
         try {
           await act(async () => {
-            await cardContext.current.createCard(deck.id, {
+            await cardContext.current.createCard({
               content: card.content,
             });
           });
@@ -94,7 +134,7 @@ describe("CardContext", () => {
         expect(cardContext.current.cards).toEqual([card1, card2, card3]);
 
         await act(async () => {
-          await cardContext.current.createCard(deck.id, {
+          await cardContext.current.createCard({
             content: card.content,
           });
         });
@@ -144,7 +184,7 @@ describe("CardContext", () => {
 
         try {
           await act(async () => {
-            await cardContext.current.createManyCards(deck.id, cardPatches);
+            await cardContext.current.createManyCards(cardPatches);
           });
         } catch (e: any) {
           expect(e.message).toEqual("test error");
@@ -174,7 +214,7 @@ describe("CardContext", () => {
         expect(cardContext.current.cards).toEqual([card1, card2, card3]);
 
         await act(async () => {
-          await cardContext.current.createManyCards(deck.id, cardPatches);
+          await cardContext.current.createManyCards(cardPatches);
         });
 
         expect(CardRepository.createMany).toHaveBeenCalledTimes(1);

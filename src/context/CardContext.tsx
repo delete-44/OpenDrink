@@ -22,8 +22,12 @@ export function CardProvider({ deck, children }: CardProviderProps) {
     setCards(deck!.cards());
   }, [deck]);
 
-  const createCard = async (deckId: number, patch: CardPermittedFields) => {
-    const resp = await CardRepository.create(deckId, patch);
+  const createCard = async (patch: CardPermittedFields) => {
+    if (!deck) {
+      throw new Error("CardContext must be initialised with a Deck");
+    }
+
+    const resp = await CardRepository.create(deck.id, patch);
 
     if (!resp.ok || !resp.payload) {
       throw new Error(resp.message);
@@ -34,11 +38,12 @@ export function CardProvider({ deck, children }: CardProviderProps) {
     setCards(newCards);
   };
 
-  const createManyCards = async (
-    deckId: number,
-    patches: CardPermittedFields[],
-  ) => {
-    const resp = await CardRepository.createMany(deckId, patches);
+  const createManyCards = async (patches: CardPermittedFields[]) => {
+    if (!deck) {
+      throw new Error("CardContext must be initialised with a Deck");
+    }
+
+    const resp = await CardRepository.createMany(deck.id, patches);
 
     if (resp.changes === 0 || !resp.ok) {
       throw new Error(resp.message);

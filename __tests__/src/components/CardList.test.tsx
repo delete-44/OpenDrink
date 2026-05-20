@@ -52,10 +52,7 @@ describe("CardList", () => {
         screen.getByRole("button", { name: "Load Default Cards" }),
       );
 
-      expect(mockCreateManyCards).toHaveBeenCalledWith(
-        testDeck.id,
-        DEFAULT_CARDS,
-      );
+      expect(mockCreateManyCards).toHaveBeenCalledWith(DEFAULT_CARDS);
     });
 
     it("prevents user adding empty cards", () => {
@@ -89,7 +86,7 @@ describe("CardList", () => {
       });
       fireEvent.press(addButton);
 
-      expect(mockCreateCard).toHaveBeenCalledWith(testDeck.id, {
+      expect(mockCreateCard).toHaveBeenCalledWith({
         content: "New card <3",
       });
       expect(input).toHaveProp("value", "New card <3");
@@ -130,7 +127,7 @@ describe("CardList", () => {
       });
       fireEvent.press(addButton);
 
-      expect(mockCreateCard).toHaveBeenCalledWith(testDeck.id, {
+      expect(mockCreateCard).toHaveBeenCalledWith({
         content: "Drink up!",
       });
 
