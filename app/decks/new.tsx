@@ -1,5 +1,6 @@
 import DeckForm from "@/src/components/decks/DeckForm";
 import LoadingScreen from "@/src/components/status/LoadingScreen";
+import { CardProvider } from "@/src/context/CardContext";
 import { StorageContext } from "@/src/context/StorageContext";
 import { useCallback, useContext, useRef, useState } from "react";
 
@@ -44,16 +45,22 @@ export default function New() {
   // Before deck is created
   if (!currentDeckId || !currentDeck) {
     return (
-      <DeckForm
-        // We provide a stub Deck object containing just the WIP name
-        // This is to prevent the UI flickering in the split-second where
-        // we commit the deck to the DB. Therefore:
-        // @ts-expect-error
-        deck={{ name: workingDeckName }}
-        saveDeckCallback={saveDeck}
-      />
+      <CardProvider deck={null}>
+        <DeckForm
+          // We provide a stub Deck object containing just the WIP name
+          // This is to prevent the UI flickering in the split-second where
+          // we commit the deck to the DB. Therefore:
+          // @ts-expect-error
+          deck={{ name: workingDeckName }}
+          saveDeckCallback={saveDeck}
+        />
+      </CardProvider>
     );
   }
 
-  return <DeckForm deck={currentDeck} saveDeckCallback={saveDeck} />;
+  return (
+    <CardProvider deck={currentDeck}>
+      <DeckForm deck={currentDeck} saveDeckCallback={saveDeck} />
+    </CardProvider>
+  );
 }
