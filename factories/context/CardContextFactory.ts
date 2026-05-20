@@ -16,6 +16,7 @@ export function CardContextFactory(
     deck: _deck,
     cards: _cards,
     createCard: jest.fn(),
+    createManyCards: jest.fn(),
     deleteCard: jest.fn(),
     ...overrides,
   };

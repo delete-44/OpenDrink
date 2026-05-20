@@ -7,6 +7,7 @@ describe("CardRepository", () => {
   const mockGetAllSync = jest.fn();
   const mockGetFirstAsync = jest.fn();
   const mockRunAsync = jest.fn();
+  const mockWithTransactionAsync = jest.fn((callback) => callback());
 
   const deck = DeckFactory();
 
@@ -14,6 +15,7 @@ describe("CardRepository", () => {
     getAllSync: mockGetAllSync,
     getFirstAsync: mockGetFirstAsync,
     runAsync: mockRunAsync,
+    withTransactionAsync: mockWithTransactionAsync,
   });
 
   describe("before initialisation", () => {
@@ -33,6 +35,19 @@ describe("CardRepository", () => {
       expect(result.ok).toEqual(false);
       expect(result.message).toEqual("Error creating Card");
       expect(result.payload).toEqual(undefined);
+    });
+
+    it("errors out on createMany", async () => {
+      const result = await CardRepository.createMany(deck.id, [
+        {
+          content: "Drink twice",
+        },
+        { content: "Drink thrice" },
+      ]);
+
+      expect(result.ok).toEqual(false);
+      expect(result.message).toEqual("Error creating Cards");
+      expect(result.changes).toEqual(0);
     });
 
     it("errors out on delete", async () => {
@@ -99,6 +114,68 @@ describe("CardRepository", () => {
           expect(result.payload).toEqual(undefined);
         });
       });
+
+      describe("#createMany", () => {
+        it("errors out on transaction initialisation", async () => {
+          mockWithTransactionAsync.mockRejectedValueOnce(
+            new Error("test error"),
+          );
+
+          const result = await CardRepository.createMany(deck.id, [
+            {
+              content: "Drink 1",
+            },
+          ]);
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Error creating Cards");
+          expect(result.changes).toEqual(0);
+        });
+
+        it("errors out on first create request", async () => {
+          mockRunAsync.mockRejectedValueOnce(new Error("test error"));
+
+          const result = await CardRepository.createMany(deck.id, [
+            {
+              content: "Drink 1",
+            },
+          ]);
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Error creating Cards");
+          expect(result.changes).toEqual(0);
+        });
+
+        it("errors out on subsequent create request", async () => {
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 1 });
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 2 });
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 3 });
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 4 });
+          mockRunAsync.mockRejectedValueOnce(new Error("test error"));
+
+          const result = await CardRepository.createMany(deck.id, [
+            { content: "Drink 1" },
+            { content: "Drink 2" },
+            { content: "Drink 3" },
+            { content: "Drink 4" },
+            { content: "Error card!" },
+          ]);
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Error creating Cards");
+          expect(result.changes).toEqual(0);
+        });
+      });
+
+      it("errors out on delete", async () => {
+        mockRunAsync.mockRejectedValueOnce(new Error("test error"));
+
+        const result = await CardRepository.delete(1);
+
+        expect(result.ok).toEqual(false);
+        expect(result.message).toEqual("Error deleting Card");
+        expect(result.changes).toEqual(0);
+      });
     });
 
     describe("on success", () => {
@@ -121,7 +198,7 @@ describe("CardRepository", () => {
         expect(result.payload).toEqual([card1, card2, card3]);
       });
 
-      it("#create creates the new player & fetches it", async () => {
+      it("#create creates the new card & fetches it", async () => {
         mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: card3.id });
         mockGetFirstAsync.mockResolvedValueOnce(card3);
 
@@ -143,6 +220,42 @@ describe("CardRepository", () => {
         expect(result.ok).toEqual(true);
         expect(result.message).toEqual(undefined);
         expect(result.payload).toEqual(card3);
+      });
+
+      it("#createMany creates the new cards & returns sum of changes", async () => {
+        mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 1 });
+        mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 2 });
+        mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: 3 });
+
+        const result = await CardRepository.createMany(deck.id, [
+          { content: card1.content },
+          { content: card2.content },
+          { content: card3.content },
+        ]);
+
+        expect(mockRunAsync).toHaveBeenCalledTimes(3);
+
+        expect(mockRunAsync).toHaveBeenCalledWith(
+          'INSERT INTO cards ("deck_id", "content") VALUES (?, ?)',
+          deck.id,
+          card1.content,
+        );
+
+        expect(mockRunAsync).toHaveBeenCalledWith(
+          'INSERT INTO cards ("deck_id", "content") VALUES (?, ?)',
+          deck.id,
+          card2.content,
+        );
+
+        expect(mockRunAsync).toHaveBeenCalledWith(
+          'INSERT INTO cards ("deck_id", "content") VALUES (?, ?)',
+          deck.id,
+          card3.content,
+        );
+
+        expect(result.ok).toEqual(true);
+        expect(result.message).toEqual(undefined);
+        expect(result.changes).toEqual(3);
       });
 
       describe("#delete", () => {

@@ -69,6 +69,39 @@ export class CardRepository extends BaseRepository {
     }
   }
 
+  static async createMany(
+    deckId: number,
+    patches: CardPermittedFields[],
+  ): Promise<TPatchResponse> {
+    try {
+      let changes = 0;
+      await this.db.withTransactionAsync(async () => {
+        for (const patch of patches) {
+          await this.db.runAsync(
+            `INSERT INTO cards ("deck_id", "content") VALUES (?, ?)`,
+            deckId,
+            patch.content,
+          );
+
+          changes++;
+        }
+      });
+
+      return {
+        ok: true,
+        changes,
+      };
+    } catch (e: any) {
+      console.log("Error creating Cards:", e.message);
+
+      return {
+        ok: false,
+        message: "Error creating Cards",
+        changes: 0,
+      };
+    }
+  }
+
   static async delete(id: number): Promise<TPatchResponse> {
     try {
       const result = await this.db.runAsync(`DELETE FROM cards WHERE id=?`, id);
