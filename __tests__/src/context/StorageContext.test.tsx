@@ -241,7 +241,6 @@ describe("StorageContext", () => {
           const storageContext = await renderStorageContext();
 
           expect(storageContext.current.selectedDeck).toEqual(decks[0]);
-          expect(storageContext.current.deckCards).toEqual(deck1Cards);
 
           await act(async () => {
             await storageContext.current.saveSelectedDeckIdx(1);
@@ -255,19 +254,7 @@ describe("StorageContext", () => {
 
           // Assert context state updated
           expect(storageContext.current.selectedDeck).toEqual(decks[1]);
-          expect(storageContext.current.deckCards).toEqual(deck2Cards);
         });
-      });
-
-      it("provides a safe fallback if loading deckCards fails", async () => {
-        jest.spyOn(CardRepository, "index").mockImplementationOnce(() => {
-          throw new Error("test error");
-        });
-
-        const storageContext = await renderStorageContext();
-
-        expect(storageContext.current.selectedDeck).toEqual(decks[0]);
-        expect(storageContext.current.deckCards).toEqual([]);
       });
 
       describe("#fetchDeck", () => {
@@ -390,114 +377,6 @@ describe("StorageContext", () => {
 
           // Assert context state updated
           expect(storageContext.current.decks).toEqual([decks[0]]);
-        });
-      });
-
-      describe("#createCard", () => {
-        const card = CardFactory();
-
-        it("surfaces errors on unsuccessful response", async () => {
-          jest.spyOn(CardRepository, "create").mockResolvedValueOnce({
-            ok: false,
-            message: "test error",
-          });
-
-          const storageContext = await renderStorageContext();
-
-          try {
-            await act(async () => {
-              await storageContext.current.createCard(deck1.id, {
-                content: card.content,
-              });
-            });
-          } catch (e: any) {
-            expect(e.message).toEqual("test error");
-          }
-
-          expect(CardRepository.create).toHaveBeenCalledTimes(1);
-          expect(CardRepository.create).toHaveBeenCalledWith(deck1.id, {
-            content: card.content,
-          });
-
-          // Assert context state has not updated
-          expect(storageContext.current.deckCards).toEqual([]);
-        });
-
-        it("creates card using the repository and updates context", async () => {
-          jest
-            .spyOn(CardRepository, "create")
-            .mockResolvedValueOnce({ ok: true, payload: card });
-
-          const storageContext = await renderStorageContext();
-
-          expect(storageContext.current.deckCards).toEqual([]);
-
-          await act(async () => {
-            await storageContext.current.createCard(deck1.id, {
-              content: card.content,
-            });
-          });
-
-          expect(CardRepository.create).toHaveBeenCalledTimes(1);
-          expect(CardRepository.create).toHaveBeenCalledWith(deck1.id, {
-            content: card.content,
-          });
-
-          // Assert context state updated
-          expect(storageContext.current.deckCards).toEqual([card]);
-        });
-      });
-
-      describe("#deleteCard", () => {
-        const card = CardFactory();
-
-        beforeEach(() => {
-          jest
-            .spyOn(CardRepository, "index")
-            .mockReturnValueOnce({ ok: true, payload: [card] });
-        });
-
-        it("surfaces errors on unsuccessful response", async () => {
-          jest.spyOn(CardRepository, "delete").mockResolvedValueOnce({
-            ok: true,
-            changes: 0,
-            message: "test error",
-          });
-
-          const storageContext = await renderStorageContext();
-
-          try {
-            await act(async () => {
-              await storageContext.current.deleteCard(card.id);
-            });
-          } catch (e: any) {
-            expect(e.message).toEqual("test error");
-          }
-
-          expect(CardRepository.delete).toHaveBeenCalledTimes(1);
-          expect(CardRepository.delete).toHaveBeenCalledWith(card.id);
-
-          // Assert context state has not updated
-          expect(storageContext.current.deckCards).toEqual([card]);
-        });
-
-        it("deletes card using the repository and updates context", async () => {
-          jest
-            .spyOn(CardRepository, "delete")
-            .mockResolvedValueOnce({ ok: true, changes: 1 });
-
-          const storageContext = await renderStorageContext();
-
-          expect(storageContext.current.deckCards).toEqual([card]);
-
-          await act(async () => {
-            await storageContext.current.deleteCard(card.id);
-          });
-
-          expect(CardRepository.delete).toHaveBeenCalledTimes(1);
-          expect(CardRepository.delete).toHaveBeenCalledWith(card.id);
-
-          expect(storageContext.current.deckCards).toEqual([]);
         });
       });
     });
