@@ -32,6 +32,21 @@ export function CardProvider({ deck, children }: CardProviderProps) {
     setCards(newCards);
   };
 
+  const createManyCards = async (
+    deckId: number,
+    patches: CardPermittedFields[],
+  ) => {
+    const resp = await CardRepository.createMany(deckId, patches);
+
+    if (resp.changes === 0 || !resp.ok) {
+      throw new Error(resp.message);
+    }
+
+    const newCards = deck!.ncards();
+
+    setCards(newCards);
+  };
+
   const deleteCard = async (id: number) => {
     const resp = await CardRepository.delete(id);
 
@@ -43,14 +58,11 @@ export function CardProvider({ deck, children }: CardProviderProps) {
     setCards(newCards);
   };
 
-  // createCard
-  // destroyCard
-  // create many cards
-
   const value = {
     deck,
     cards,
     createCard,
+    createManyCards,
     deleteCard,
   };
 

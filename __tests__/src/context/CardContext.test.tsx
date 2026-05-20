@@ -109,6 +109,96 @@ describe("CardContext", () => {
       });
     });
 
+    describe("#createManyCards", () => {
+      const card4 = CardFactory({
+        id: 4,
+        deck_id: deck.id,
+        content: "Drink left!",
+      });
+
+      const card5 = CardFactory({
+        id: 5,
+        deck_id: deck.id,
+        content: "Drink right!",
+      });
+
+      const card6 = CardFactory({
+        id: 6,
+        deck_id: deck.id,
+        content: "Drink forwards!",
+      });
+
+      const cardPatches = [
+        { content: card4.content },
+        { content: card5.content },
+        { content: card6.content },
+      ];
+
+      it("surfaces errors on unsuccessful response", async () => {
+        jest.spyOn(CardRepository, "createMany").mockResolvedValueOnce({
+          ok: false,
+          message: "test error",
+        });
+
+        const cardContext = renderCardContext(deck);
+
+        try {
+          await act(async () => {
+            await cardContext.current.createManyCards(deck.id, cardPatches);
+          });
+        } catch (e: any) {
+          expect(e.message).toEqual("test error");
+        }
+
+        expect(CardRepository.createMany).toHaveBeenCalledTimes(1);
+        expect(CardRepository.createMany).toHaveBeenCalledWith(
+          deck.id,
+          cardPatches,
+        );
+
+        // Assert context state has not updated
+        expect(cardContext.current.cards).toEqual([card1, card2, card3]);
+      });
+
+      it("creates cards using the repository and updates context", async () => {
+        jest
+          .spyOn(CardRepository, "createMany")
+          .mockResolvedValueOnce({ ok: true, changes: 3 });
+
+        jest.spyOn(CardRepository, "index").mockReturnValueOnce({
+          ok: true,
+          payload: [card1, card2, card3, card4, card5, card6],
+        });
+
+        const cardContext = renderCardContext(deck);
+
+        expect(cardContext.current.cards).toEqual([card1, card2, card3]);
+
+        await act(async () => {
+          await cardContext.current.createManyCards(deck.id, cardPatches);
+        });
+
+        expect(CardRepository.createMany).toHaveBeenCalledTimes(1);
+        expect(CardRepository.createMany).toHaveBeenCalledWith(
+          deck.id,
+          cardPatches,
+        );
+
+        // State is set by fetching complete index from repository
+        expect(CardRepository.index).toHaveBeenCalledTimes(2);
+
+        // Assert context state updated
+        expect(cardContext.current.cards).toEqual([
+          card1,
+          card2,
+          card3,
+          card4,
+          card5,
+          card6,
+        ]);
+      });
+    });
+
     describe("#deleteCard", () => {
       it("surfaces errors on unsuccessful response", async () => {
         jest.spyOn(CardRepository, "delete").mockResolvedValueOnce({
