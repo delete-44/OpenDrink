@@ -38,7 +38,6 @@ export function CardProvider({ deck, children }: CardProviderProps) {
     }
 
     const newCards = [...cards, resp.payload];
-
     setCards(newCards);
   };
 
@@ -53,8 +52,7 @@ export function CardProvider({ deck, children }: CardProviderProps) {
       throw new Error(resp.message);
     }
 
-    const newCards = deck!.cards();
-
+    const newCards = deck.cards();
     setCards(newCards);
   };
 
