@@ -100,6 +100,33 @@ describe("PlayerRepository", () => {
       });
     });
 
+    describe("validation errors", () => {
+      describe("#create", () => {
+        it("returns a custom error message if name is empty", async () => {
+          const result = await PlayerRepository.create({ name: "" });
+
+          expect(mockRunAsync).not.toHaveBeenCalled();
+          expect(mockGetFirstAsync).not.toHaveBeenCalled();
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Player name cannot be empty");
+          expect(result.payload).toEqual(undefined);
+        });
+
+        it("returns a custom error message if name is too long", async () => {
+          const name = "1".repeat(101);
+          const result = await PlayerRepository.create({ name });
+
+          expect(mockRunAsync).not.toHaveBeenCalled();
+          expect(mockGetFirstAsync).not.toHaveBeenCalled();
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Maximum length is 100 characters");
+          expect(result.payload).toEqual(undefined);
+        });
+      });
+    });
+
     describe("on success", () => {
       const player1 = PlayerFactory({ id: 1, name: "Sally" });
       const player2 = PlayerFactory({ id: 2, name: "Alice" });

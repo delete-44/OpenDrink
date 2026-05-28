@@ -1,3 +1,4 @@
+import { ValidationError } from "../errors/ValidationError";
 import { Player } from "../models/Player";
 import {
   TCollectionResponse,
@@ -10,6 +11,16 @@ import { BaseRepository } from "./BaseRepository";
 export type PlayerPermittedFields = Pick<TPlayerData, "name">;
 
 export class PlayerRepository extends BaseRepository {
+  private static _validate({ name }: PlayerPermittedFields) {
+    if (!name) {
+      throw new ValidationError("Player name cannot be empty");
+    }
+
+    if (name.length > 100) {
+      throw new ValidationError("Maximum length is 100 characters");
+    }
+  }
+
   static async index(): Promise<TCollectionResponse<Player>> {
     try {
       const result: TPlayerData[] = await this.db.getAllAsync(
@@ -35,9 +46,11 @@ export class PlayerRepository extends BaseRepository {
     name,
   }: PlayerPermittedFields): Promise<TItemResponse<Player>> {
     try {
+      this._validate({ name: name.trim() });
+
       const created = await this.db.runAsync(
         `INSERT INTO players ("name") VALUES (?)`,
-        name,
+        name.trim(),
       );
 
       const result: TPlayerData | null = await this.db.getFirstAsync(
@@ -59,9 +72,12 @@ export class PlayerRepository extends BaseRepository {
     } catch (e: any) {
       console.log("Error creating Player:", e.message);
 
+      const message =
+        e instanceof ValidationError ? e.message : "Error creating Player";
+
       return {
         ok: false,
-        message: "Error creating Player",
+        message,
       };
     }
   }
