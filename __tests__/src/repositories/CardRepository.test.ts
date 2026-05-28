@@ -23,7 +23,9 @@ describe("CardRepository", () => {
       const result = CardRepository.index(deck.id);
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error loading Cards");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.payload).toEqual([]);
     });
 
@@ -33,7 +35,9 @@ describe("CardRepository", () => {
       });
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error creating Card");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.payload).toEqual(undefined);
     });
 
@@ -46,7 +50,9 @@ describe("CardRepository", () => {
       ]);
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error creating Cards");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.changes).toEqual(0);
     });
 
@@ -54,7 +60,9 @@ describe("CardRepository", () => {
       const result = await CardRepository.delete(1);
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error deleting Card");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.changes).toEqual(0);
     });
   });
