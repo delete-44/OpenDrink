@@ -25,7 +25,26 @@ Migrations are stored in `./migrations` and must be of type `./TDataBaseMigratio
 
 ## Seeding data
 
-// TODO
+We seed the database on initial load. This way we can provide a `default` deck for users, whilst letting them customise/remove/reload it as they please
+
+If this is the users first run of the app (ie, their PRAGMA user_version is 0) then we will seed the DB once we run migrations. Otherwise, we skip this step
+
+### In development
+
+You will likely not need to re-seed the database explicitly. You can instead load a copy of the default deck using the `Load Default Deck` button on the new deck page
+
+If you are explicitly testing the `./seed` function call, you can run the following commands one-by-one in the debug pane (details in Debugging):
+
+```
+> DROP TABLE players;
+> DROP TABLE cards;
+> DROP TABLE decks;
+> PRAGMA user_version = 0;
+```
+
+> ⚠️ This will wipe your development database, evidently
+
+Then the DB will create, migrate, and seed the next time you load the app
 
 ## Running queries in code
 
