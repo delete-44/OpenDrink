@@ -33,12 +33,6 @@ export default function DeckTitlebar({
 
   const updateDeckName = useCallback(
     async (name: string) => {
-      if (name.trim() === "") {
-        setDeckNameErrorMessage("Deck name cannot be empty");
-
-        return;
-      }
-
       try {
         await saveDeckCallback(name);
         setEditingDeckName(false);

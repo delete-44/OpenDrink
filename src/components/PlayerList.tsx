@@ -33,13 +33,8 @@ export default function PlayerList() {
 
   const addPlayer = useCallback(
     async (name: string) => {
-      if (!name.trim()) {
-        setErrorMessage("Player name cannot be empty");
-        return;
-      }
-
       try {
-        await createPlayer({ name: name.trim() });
+        await createPlayer({ name });
         setNewPlayer("");
       } catch (e: any) {
         setErrorMessage(e.message);
@@ -52,7 +47,6 @@ export default function PlayerList() {
     async (playerId: number) => {
       try {
         await deletePlayer(playerId);
-        setNewPlayer("");
       } catch (e: any) {
         setErrorMessage(e.message);
       }
@@ -85,7 +79,7 @@ export default function PlayerList() {
 
       <FlatList
         data={players}
-        renderItem={({ item, index }) => (
+        renderItem={({ item }) => (
           <RemovableListItem
             label={item.name}
             removeItemCb={() => removePlayer(item.id)}

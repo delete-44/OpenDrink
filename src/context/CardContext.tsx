@@ -1,5 +1,6 @@
 import { CardContextProps, CardProviderProps } from "@/src/types";
 import { createContext, useEffect, useState } from "react";
+import { InitialisationError } from "../errors/InitialisationError";
 import { Card } from "../models/Card";
 import {
   CardPermittedFields,
@@ -28,7 +29,9 @@ export function CardProvider({ deck, children }: CardProviderProps) {
 
   const createCard = async (patch: CardPermittedFields) => {
     if (!deck) {
-      throw new Error("CardContext must be initialised with a Deck");
+      throw new InitialisationError(
+        "CardContext must be initialised with a Deck",
+      );
     }
 
     const resp = await CardRepository.create(deck.id, patch);
@@ -43,7 +46,9 @@ export function CardProvider({ deck, children }: CardProviderProps) {
 
   const createManyCards = async (patches: CardPermittedFields[]) => {
     if (!deck) {
-      throw new Error("CardContext must be initialised with a Deck");
+      throw new InitialisationError(
+        "CardContext must be initialised with a Deck",
+      );
     }
 
     const resp = await CardRepository.createMany(deck.id, patches);

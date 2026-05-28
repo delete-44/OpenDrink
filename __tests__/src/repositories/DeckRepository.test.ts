@@ -18,7 +18,9 @@ describe("DeckRepository", () => {
       const result = await DeckRepository.index();
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error loading Decks");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.payload).toEqual([]);
     });
 
@@ -26,7 +28,9 @@ describe("DeckRepository", () => {
       const result = await DeckRepository.find(1);
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error loading Deck");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.payload).toEqual(undefined);
     });
 
@@ -34,7 +38,9 @@ describe("DeckRepository", () => {
       const result = await DeckRepository.create({ name: "Default" });
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error creating Deck");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.payload).toEqual(undefined);
     });
 
@@ -42,7 +48,9 @@ describe("DeckRepository", () => {
       const result = await DeckRepository.update(1, { name: "Default" });
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error updating Deck");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.changes).toEqual(0);
     });
 
@@ -50,7 +58,9 @@ describe("DeckRepository", () => {
       const result = await DeckRepository.delete(1);
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error deleting Deck");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.changes).toEqual(0);
     });
   });
@@ -136,6 +146,59 @@ describe("DeckRepository", () => {
       });
     });
 
+    describe("validation errors", () => {
+      describe("#create", () => {
+        it("returns a custom error message if name is empty", async () => {
+          const result = await DeckRepository.create({ name: "" });
+
+          expect(mockRunAsync).not.toHaveBeenCalled();
+          expect(mockGetFirstAsync).not.toHaveBeenCalled();
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Deck name cannot be empty");
+          expect(result.payload).toEqual(undefined);
+        });
+
+        it("returns a custom error message if name is too long", async () => {
+          const name = "1".repeat(101);
+          const result = await DeckRepository.create({ name });
+
+          expect(mockRunAsync).not.toHaveBeenCalled();
+          expect(mockGetFirstAsync).not.toHaveBeenCalled();
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Maximum length is 100 characters");
+          expect(result.payload).toEqual(undefined);
+        });
+      });
+
+      describe("#update", () => {
+        const testDeck = DeckFactory();
+        it("returns a custom error message if name is empty", async () => {
+          const result = await DeckRepository.update(testDeck.id, {
+            name: "",
+          });
+
+          expect(mockRunAsync).not.toHaveBeenCalled();
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Deck name cannot be empty");
+          expect(result.changes).toEqual(0);
+        });
+
+        it("returns a custom error message if name is too long", async () => {
+          const name = "1".repeat(101);
+          const result = await DeckRepository.update(testDeck.id, { name });
+
+          expect(mockRunAsync).not.toHaveBeenCalled();
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Maximum length is 100 characters");
+          expect(result.changes).toEqual(0);
+        });
+      });
+    });
+
     describe("on success", () => {
       const deck1 = DeckFactory({ id: 1, name: "Default" });
       const deck2 = DeckFactory({ id: 2, name: "Hardcore" });
@@ -185,28 +248,71 @@ describe("DeckRepository", () => {
         });
       });
 
-      it("#create creates the new player & fetches it", async () => {
-        mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: deck3.id });
-        mockGetFirstAsync.mockResolvedValueOnce(deck3);
+      describe("#create", () => {
+        it("trims whitespace from deck names", async () => {
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: deck3.id });
+          mockGetFirstAsync.mockResolvedValueOnce(deck3);
 
-        const result = await DeckRepository.create({ name: deck3.name });
+          const result = await DeckRepository.create({
+            name: `   ${deck3.name}       `,
+          });
 
-        expect(mockRunAsync).toHaveBeenCalledWith(
-          'INSERT INTO decks ("name") VALUES (?)',
-          deck3.name,
-        );
+          expect(mockRunAsync).toHaveBeenCalledWith(
+            'INSERT INTO decks ("name") VALUES (?)',
+            deck3.name,
+          );
 
-        expect(mockGetFirstAsync).toHaveBeenCalledWith(
-          "SELECT * FROM decks WHERE id=?",
-          deck3.id,
-        );
+          expect(mockGetFirstAsync).toHaveBeenCalledWith(
+            "SELECT * FROM decks WHERE id=?",
+            deck3.id,
+          );
 
-        expect(result.ok).toEqual(true);
-        expect(result.message).toEqual(undefined);
-        expect(result.payload).toEqual(deck3);
+          expect(result.ok).toEqual(true);
+          expect(result.message).toEqual(undefined);
+          expect(result.payload).toEqual(deck3);
+        });
+
+        it("#create creates the new deck & fetches it", async () => {
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: deck3.id });
+          mockGetFirstAsync.mockResolvedValueOnce(deck3);
+
+          const result = await DeckRepository.create({ name: deck3.name });
+
+          expect(mockRunAsync).toHaveBeenCalledWith(
+            'INSERT INTO decks ("name") VALUES (?)',
+            deck3.name,
+          );
+
+          expect(mockGetFirstAsync).toHaveBeenCalledWith(
+            "SELECT * FROM decks WHERE id=?",
+            deck3.id,
+          );
+
+          expect(result.ok).toEqual(true);
+          expect(result.message).toEqual(undefined);
+          expect(result.payload).toEqual(deck3);
+        });
       });
 
       describe("#update", () => {
+        it("trims whitespace from deck names", async () => {
+          mockRunAsync.mockResolvedValueOnce({ changes: 1 });
+
+          const result = await DeckRepository.update(3, {
+            name: "      My updated deck     ",
+          });
+
+          expect(mockRunAsync).toHaveBeenCalledWith(
+            "UPDATE decks SET name=?, updated_at=CURRENT_TIMESTAMP WHERE id=?",
+            "My updated deck",
+            3,
+          );
+
+          expect(result.ok).toEqual(true);
+          expect(result.message).toEqual(undefined);
+          expect(result.changes).toEqual(1);
+        });
+
         it("shows a friendlier error message if the deck is not found", async () => {
           mockRunAsync.mockResolvedValueOnce({ changes: 0 });
 

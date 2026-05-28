@@ -8,7 +8,7 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react-native";
-import React from "react";
+import React, { act } from "react";
 
 describe("PlayerList", () => {
   const mockCreatePlayer = jest.fn();
@@ -53,27 +53,6 @@ describe("PlayerList", () => {
       expect(screen.queryByLabelText("Loading Players")).toBeNull();
     });
 
-    it("prevents user adding empty names", () => {
-      render(
-        <StorageContext.Provider value={mockStorageContext}>
-          <PlayerList />
-        </StorageContext.Provider>,
-      );
-
-      let errorMessage = screen.queryByText("Player name cannot be empty");
-      expect(errorMessage).toBeNull();
-
-      const input = screen.getByLabelText("Name");
-      const addButton = screen.getByRole("button", { name: "Add Player" });
-      fireEvent.press(addButton);
-
-      expect(mockCreatePlayer).not.toHaveBeenCalled();
-      expect(input).toHaveProp("value", "");
-
-      errorMessage = screen.getByText("Player name cannot be empty");
-      expect(errorMessage).toBeVisible();
-    });
-
     it("surfaces errors from StorageContext on create", async () => {
       mockCreatePlayer.mockRejectedValueOnce(new Error("test error"));
 
@@ -101,33 +80,34 @@ describe("PlayerList", () => {
       });
     });
 
-    it("clears error message on new input", () => {
+    it("clears error message on new input", async () => {
+      mockCreatePlayer.mockRejectedValueOnce(new Error("test error"));
+
       render(
         <StorageContext.Provider value={mockStorageContext}>
           <PlayerList />
         </StorageContext.Provider>,
       );
 
-      let errorMessage = screen.queryByText("Player name cannot be empty");
-      expect(errorMessage).toBeNull();
+      expect(screen.queryByText("test error")).toBeNull();
 
       const input = screen.getByLabelText("Name");
       const addButton = screen.getByRole("button", { name: "Add Player" });
       fireEvent.press(addButton);
 
-      expect(mockCreatePlayer).not.toHaveBeenCalled();
+      expect(mockCreatePlayer).toHaveBeenCalledWith({ name: "" });
       expect(input).toHaveProp("value", "");
 
-      errorMessage = screen.getByText("Player name cannot be empty");
-      expect(errorMessage).toBeVisible();
+      await waitFor(() => {
+        expect(screen.getByText("test error")).toBeVisible();
+      });
 
-      fireEvent.changeText(input, "Alice");
+      await act(() => fireEvent.changeText(input, "Alice"));
 
-      errorMessage = screen.queryByText("Player name cannot be empty");
-      expect(errorMessage).toBeNull();
+      expect(screen.queryByText("test error")).toBeNull();
     });
 
-    it("trims whitespace from player names", async () => {
+    it("successfully creates players", async () => {
       render(
         <StorageContext.Provider value={mockStorageContext}>
           <PlayerList />
@@ -135,7 +115,7 @@ describe("PlayerList", () => {
       );
 
       const input = screen.getByLabelText("Name");
-      fireEvent.changeText(input, " Alice  ");
+      fireEvent.changeText(input, "Alice");
 
       const addButton = screen.getByRole("button", { name: "Add Player" });
       fireEvent.press(addButton);

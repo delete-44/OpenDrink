@@ -49,14 +49,8 @@ export default function CardList() {
 
   const addCard = useCallback(
     async (content: string) => {
-      if (!content.trim()) {
-        setErrorMessage("Card cannot be empty");
-
-        return;
-      }
-
       try {
-        await createCard({ content: content.trim() });
+        await createCard({ content });
         setNewCard("");
       } catch (e: any) {
         setErrorMessage(e.message);

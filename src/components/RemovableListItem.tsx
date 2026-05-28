@@ -16,7 +16,9 @@ export default function RemovableListItem({
 }: RemovableListItemProps) {
   return (
     <View style={styles.listItemWrapper}>
-      <Text style={styles.listItemLabel}>{label}</Text>
+      <Text selectable style={styles.listItemLabel}>
+        {label}
+      </Text>
       <Pressable
         role="button"
         accessibilityLabel={`Remove ${label}`}

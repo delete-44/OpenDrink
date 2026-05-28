@@ -1,3 +1,4 @@
+import { ValidationError } from "../errors/ValidationError";
 import { Deck } from "../models/Deck";
 import {
   TCollectionResponse,
@@ -10,8 +11,20 @@ import { BaseRepository } from "./BaseRepository";
 export type DeckPermittedFields = Pick<TDeckData, "name">;
 
 export class DeckRepository extends BaseRepository {
+  protected static validate({ name }: DeckPermittedFields) {
+    if (!name) {
+      throw new ValidationError("Deck name cannot be empty");
+    }
+
+    if (name.length > 100) {
+      throw new ValidationError("Maximum length is 100 characters");
+    }
+  }
+
   static async index(): Promise<TCollectionResponse<Deck>> {
     try {
+      this.validateDb();
+
       const result: TDeckData[] = await this.db.getAllAsync(
         "SELECT * FROM decks",
       );
@@ -21,11 +34,9 @@ export class DeckRepository extends BaseRepository {
         payload: result.map((d) => Deck.fromJson(d)),
       };
     } catch (e: any) {
-      console.log("Error loading Decks:", e.message);
-
       return {
         ok: false,
-        message: "Error loading Decks",
+        message: this.extractMessage(e, "Error loading Decks"),
         payload: [],
       };
     }
@@ -33,6 +44,8 @@ export class DeckRepository extends BaseRepository {
 
   static async find(id: number): Promise<TItemResponse<Deck>> {
     try {
+      this.validateDb();
+
       const result: TDeckData | null = await this.db.getFirstAsync(
         "SELECT * FROM decks WHERE id=?",
         id,
@@ -50,11 +63,9 @@ export class DeckRepository extends BaseRepository {
         payload: Deck.fromJson(result),
       };
     } catch (e: any) {
-      console.log("Error loading Decks:", e.message);
-
       return {
         ok: false,
-        message: "Error loading Deck",
+        message: this.extractMessage(e, "Error loading Deck"),
       };
     }
   }
@@ -63,9 +74,12 @@ export class DeckRepository extends BaseRepository {
     name,
   }: DeckPermittedFields): Promise<TItemResponse<Deck>> {
     try {
+      this.validateDb();
+      this.validate({ name: name.trim() });
+
       const created = await this.db.runAsync(
         `INSERT INTO decks ("name") VALUES (?)`,
-        name,
+        name.trim(),
       );
 
       const result: TDeckData | null = await this.db.getFirstAsync(
@@ -85,11 +99,9 @@ export class DeckRepository extends BaseRepository {
         payload: Deck.fromJson(result),
       };
     } catch (e: any) {
-      console.log("Error creating Deck:", e.message);
-
       return {
         ok: false,
-        message: "Error creating Deck",
+        message: this.extractMessage(e, "Error creating Deck"),
       };
     }
   }
@@ -99,9 +111,12 @@ export class DeckRepository extends BaseRepository {
     { name }: DeckPermittedFields,
   ): Promise<TPatchResponse> {
     try {
+      this.validateDb();
+      this.validate({ name: name.trim() });
+
       const result = await this.db.runAsync(
         `UPDATE decks SET name=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`,
-        name,
+        name.trim(),
         id,
       );
 
@@ -118,11 +133,9 @@ export class DeckRepository extends BaseRepository {
         changes: result.changes,
       };
     } catch (e: any) {
-      console.log("Error updating Deck:", e.message);
-
       return {
         ok: false,
-        message: "Error updating Deck",
+        message: this.extractMessage(e, "Error updating Deck"),
         changes: 0,
       };
     }
@@ -130,6 +143,8 @@ export class DeckRepository extends BaseRepository {
 
   static async delete(id: number): Promise<TPatchResponse> {
     try {
+      this.validateDb();
+
       const result = await this.db.runAsync(`DELETE FROM decks WHERE id=?`, id);
 
       if (result.changes === 0) {
@@ -149,7 +164,7 @@ export class DeckRepository extends BaseRepository {
 
       return {
         ok: false,
-        message: "Error deleting Deck",
+        message: this.extractMessage(e, "Error deleting Deck"),
         changes: 0,
       };
     }

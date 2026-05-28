@@ -1,3 +1,4 @@
+import { ValidationError } from "../errors/ValidationError";
 import { Player } from "../models/Player";
 import {
   TCollectionResponse,
@@ -10,8 +11,20 @@ import { BaseRepository } from "./BaseRepository";
 export type PlayerPermittedFields = Pick<TPlayerData, "name">;
 
 export class PlayerRepository extends BaseRepository {
+  protected static validate({ name }: PlayerPermittedFields) {
+    if (!name) {
+      throw new ValidationError("Player name cannot be empty");
+    }
+
+    if (name.length > 100) {
+      throw new ValidationError("Maximum length is 100 characters");
+    }
+  }
+
   static async index(): Promise<TCollectionResponse<Player>> {
     try {
+      this.validateDb();
+
       const result: TPlayerData[] = await this.db.getAllAsync(
         "SELECT * FROM players",
       );
@@ -21,11 +34,9 @@ export class PlayerRepository extends BaseRepository {
         payload: result.map((p) => Player.fromJson(p)),
       };
     } catch (e: any) {
-      console.log("Error loading Players:", e.message);
-
       return {
         ok: false,
-        message: "Error loading Players",
+        message: this.extractMessage(e, "Error loading Players"),
         payload: [],
       };
     }
@@ -35,9 +46,12 @@ export class PlayerRepository extends BaseRepository {
     name,
   }: PlayerPermittedFields): Promise<TItemResponse<Player>> {
     try {
+      this.validateDb();
+      this.validate({ name: name.trim() });
+
       const created = await this.db.runAsync(
         `INSERT INTO players ("name") VALUES (?)`,
-        name,
+        name.trim(),
       );
 
       const result: TPlayerData | null = await this.db.getFirstAsync(
@@ -57,17 +71,17 @@ export class PlayerRepository extends BaseRepository {
         payload: Player.fromJson(result),
       };
     } catch (e: any) {
-      console.log("Error creating Player:", e.message);
-
       return {
         ok: false,
-        message: "Error creating Player",
+        message: this.extractMessage(e, "Error creating Player"),
       };
     }
   }
 
   static async delete(id: number): Promise<TPatchResponse> {
     try {
+      this.validateDb();
+
       const result = await this.db.runAsync(
         `DELETE FROM players WHERE id=?`,
         id,
@@ -86,11 +100,9 @@ export class PlayerRepository extends BaseRepository {
         changes: result.changes,
       };
     } catch (e: any) {
-      console.log("Error deleting Player:", e.message);
-
       return {
         ok: false,
-        message: "Error deleting Player",
+        message: this.extractMessage(e, "Error deleting Player"),
         changes: 0,
       };
     }

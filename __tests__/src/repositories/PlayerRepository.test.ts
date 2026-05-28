@@ -18,7 +18,9 @@ describe("PlayerRepository", () => {
       const result = await PlayerRepository.index();
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error loading Players");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.payload).toEqual([]);
     });
 
@@ -26,7 +28,9 @@ describe("PlayerRepository", () => {
       const result = await PlayerRepository.create({ name: "Alice" });
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error creating Player");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.payload).toEqual(undefined);
     });
 
@@ -34,7 +38,9 @@ describe("PlayerRepository", () => {
       const result = await PlayerRepository.delete(1);
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error deleting Player");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.changes).toEqual(0);
     });
   });
@@ -100,6 +106,33 @@ describe("PlayerRepository", () => {
       });
     });
 
+    describe("validation errors", () => {
+      describe("#create", () => {
+        it("returns a custom error message if name is empty", async () => {
+          const result = await PlayerRepository.create({ name: "" });
+
+          expect(mockRunAsync).not.toHaveBeenCalled();
+          expect(mockGetFirstAsync).not.toHaveBeenCalled();
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Player name cannot be empty");
+          expect(result.payload).toEqual(undefined);
+        });
+
+        it("returns a custom error message if name is too long", async () => {
+          const name = "1".repeat(101);
+          const result = await PlayerRepository.create({ name });
+
+          expect(mockRunAsync).not.toHaveBeenCalled();
+          expect(mockGetFirstAsync).not.toHaveBeenCalled();
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Maximum length is 100 characters");
+          expect(result.payload).toEqual(undefined);
+        });
+      });
+    });
+
     describe("on success", () => {
       const player1 = PlayerFactory({ id: 1, name: "Sally" });
       const player2 = PlayerFactory({ id: 2, name: "Alice" });
@@ -117,25 +150,50 @@ describe("PlayerRepository", () => {
         expect(result.payload).toEqual([player1, player2, player3]);
       });
 
-      it("#create creates the new player & fetches it", async () => {
-        mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: player3.id });
-        mockGetFirstAsync.mockResolvedValueOnce(player3);
+      describe("#create", () => {
+        it("trims whitespace from player names", async () => {
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: player3.id });
+          mockGetFirstAsync.mockResolvedValueOnce(player3);
 
-        const result = await PlayerRepository.create({ name: player3.name });
+          const result = await PlayerRepository.create({
+            name: `  ${player3.name}    `,
+          });
 
-        expect(mockRunAsync).toHaveBeenCalledWith(
-          'INSERT INTO players ("name") VALUES (?)',
-          player3.name,
-        );
+          expect(mockRunAsync).toHaveBeenCalledWith(
+            'INSERT INTO players ("name") VALUES (?)',
+            player3.name,
+          );
 
-        expect(mockGetFirstAsync).toHaveBeenCalledWith(
-          "SELECT * FROM players WHERE id=?",
-          player3.id,
-        );
+          expect(mockGetFirstAsync).toHaveBeenCalledWith(
+            "SELECT * FROM players WHERE id=?",
+            player3.id,
+          );
 
-        expect(result.ok).toEqual(true);
-        expect(result.message).toEqual(undefined);
-        expect(result.payload).toEqual(player3);
+          expect(result.ok).toEqual(true);
+          expect(result.message).toEqual(undefined);
+          expect(result.payload).toEqual(player3);
+        });
+
+        it("#create creates the new player & fetches it", async () => {
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: player3.id });
+          mockGetFirstAsync.mockResolvedValueOnce(player3);
+
+          const result = await PlayerRepository.create({ name: player3.name });
+
+          expect(mockRunAsync).toHaveBeenCalledWith(
+            'INSERT INTO players ("name") VALUES (?)',
+            player3.name,
+          );
+
+          expect(mockGetFirstAsync).toHaveBeenCalledWith(
+            "SELECT * FROM players WHERE id=?",
+            player3.id,
+          );
+
+          expect(result.ok).toEqual(true);
+          expect(result.message).toEqual(undefined);
+          expect(result.payload).toEqual(player3);
+        });
       });
 
       describe("#delete", () => {

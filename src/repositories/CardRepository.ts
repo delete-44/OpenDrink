@@ -1,3 +1,4 @@
+import { ValidationError } from "../errors/ValidationError";
 import { Card } from "../models/Card";
 import {
   TCardData,
@@ -10,8 +11,20 @@ import { BaseRepository } from "./BaseRepository";
 export type CardPermittedFields = Pick<TCardData, "content">;
 
 export class CardRepository extends BaseRepository {
+  protected static validate({ content }: CardPermittedFields) {
+    if (!content) {
+      throw new ValidationError("Card cannot be empty");
+    }
+
+    if (content.length > 500) {
+      throw new ValidationError("Maximum length is 500 characters");
+    }
+  }
+
   static index(deckId: number): TCollectionResponse<Card> {
     try {
+      this.validateDb();
+
       const result: TCardData[] = this.db.getAllSync(
         "SELECT * FROM cards WHERE deck_id=?",
         deckId,
@@ -22,11 +35,9 @@ export class CardRepository extends BaseRepository {
         payload: result.map((c) => Card.fromJson(c)),
       };
     } catch (e: any) {
-      console.log("Error loading Cards:", e.message);
-
       return {
         ok: false,
-        message: "Error loading Cards",
+        message: this.extractMessage(e, "Error loading Cards"),
         payload: [],
       };
     }
@@ -37,10 +48,13 @@ export class CardRepository extends BaseRepository {
     { content }: CardPermittedFields,
   ): Promise<TItemResponse<Card>> {
     try {
+      this.validateDb();
+      this.validate({ content: content.trim() });
+
       const created = await this.db.runAsync(
         `INSERT INTO cards ("deck_id", "content") VALUES (?, ?)`,
         deckId,
-        content,
+        content.trim(),
       );
 
       const result: TCardData | null = await this.db.getFirstAsync(
@@ -60,11 +74,9 @@ export class CardRepository extends BaseRepository {
         payload: Card.fromJson(result),
       };
     } catch (e: any) {
-      console.log("Error creating Card:", e.message);
-
       return {
         ok: false,
-        message: "Error creating Card",
+        message: this.extractMessage(e, "Error creating Card"),
       };
     }
   }
@@ -74,6 +86,8 @@ export class CardRepository extends BaseRepository {
     patches: CardPermittedFields[],
   ): Promise<TPatchResponse> {
     try {
+      this.validateDb();
+
       let changes = 0;
       await this.db.withTransactionAsync(async () => {
         for (const patch of patches) {
@@ -92,11 +106,9 @@ export class CardRepository extends BaseRepository {
         changes,
       };
     } catch (e: any) {
-      console.log("Error creating Cards:", e.message);
-
       return {
         ok: false,
-        message: "Error creating Cards",
+        message: this.extractMessage(e, "Error creating Cards"),
         changes: 0,
       };
     }
@@ -104,6 +116,8 @@ export class CardRepository extends BaseRepository {
 
   static async delete(id: number): Promise<TPatchResponse> {
     try {
+      this.validateDb();
+
       const result = await this.db.runAsync(`DELETE FROM cards WHERE id=?`, id);
 
       if (result.changes === 0) {
@@ -119,11 +133,9 @@ export class CardRepository extends BaseRepository {
         changes: result.changes,
       };
     } catch (e: any) {
-      console.log("Error deleting Card:", e.message);
-
       return {
         ok: false,
-        message: "Error deleting Card",
+        message: this.extractMessage(e, "Error deleting Card"),
         changes: 0,
       };
     }
