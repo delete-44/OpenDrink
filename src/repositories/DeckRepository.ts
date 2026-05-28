@@ -1,3 +1,4 @@
+import { ValidationError } from "../errors/ValidationError";
 import { Deck } from "../models/Deck";
 import {
   TCollectionResponse,
@@ -10,6 +11,16 @@ import { BaseRepository } from "./BaseRepository";
 export type DeckPermittedFields = Pick<TDeckData, "name">;
 
 export class DeckRepository extends BaseRepository {
+  protected static validate({ name }: DeckPermittedFields) {
+    if (!name) {
+      throw new ValidationError("Deck name cannot be empty");
+    }
+
+    if (name.length > 100) {
+      throw new ValidationError("Maximum length is 100 characters");
+    }
+  }
+
   static async index(): Promise<TCollectionResponse<Deck>> {
     try {
       const result: TDeckData[] = await this.db.getAllAsync(
@@ -63,9 +74,11 @@ export class DeckRepository extends BaseRepository {
     name,
   }: DeckPermittedFields): Promise<TItemResponse<Deck>> {
     try {
+      this.validate({ name: name.trim() });
+
       const created = await this.db.runAsync(
         `INSERT INTO decks ("name") VALUES (?)`,
-        name,
+        name.trim(),
       );
 
       const result: TDeckData | null = await this.db.getFirstAsync(
@@ -87,9 +100,12 @@ export class DeckRepository extends BaseRepository {
     } catch (e: any) {
       console.log("Error creating Deck:", e.message);
 
+      const message =
+        e instanceof ValidationError ? e.message : "Error creating Deck";
+
       return {
         ok: false,
-        message: "Error creating Deck",
+        message,
       };
     }
   }
@@ -99,9 +115,11 @@ export class DeckRepository extends BaseRepository {
     { name }: DeckPermittedFields,
   ): Promise<TPatchResponse> {
     try {
+      this.validate({ name: name.trim() });
+
       const result = await this.db.runAsync(
         `UPDATE decks SET name=?, updated_at=CURRENT_TIMESTAMP WHERE id=?`,
-        name,
+        name.trim(),
         id,
       );
 
@@ -120,9 +138,12 @@ export class DeckRepository extends BaseRepository {
     } catch (e: any) {
       console.log("Error updating Deck:", e.message);
 
+      const message =
+        e instanceof ValidationError ? e.message : "Error updating Deck";
+
       return {
         ok: false,
-        message: "Error updating Deck",
+        message,
         changes: 0,
       };
     }

@@ -64,20 +64,7 @@ describe("DeckTitlebar", () => {
       assertActive();
     });
 
-    it("stays in active state & shows an error on failed update", () => {
-      fireEvent.press(screen.getByRole("button", { name: "Rename Deck" }));
-
-      fireEvent.changeText(screen.getByLabelText("Deck Name"), "");
-
-      fireEvent.press(screen.getByRole("button", { name: "Confirm Change" }));
-
-      expect(screen.getByText("Deck name cannot be empty")).toBeVisible();
-      expect(mockSaveDeckCallback).not.toHaveBeenCalled();
-
-      assertActive();
-    });
-
-    it("shows errors from the update callback in UI", async () => {
+    it("stays in active state & shows errors from the update callback in UI", async () => {
       mockSaveDeckCallback.mockRejectedValueOnce(new Error("test error"));
 
       fireEvent.press(screen.getByRole("button", { name: "Rename Deck" }));
@@ -93,19 +80,24 @@ describe("DeckTitlebar", () => {
       assertActive();
     });
 
-    it("clears error message on new input", () => {
+    it("clears error message on new input", async () => {
+      mockSaveDeckCallback.mockRejectedValueOnce(new Error("test error"));
+
       fireEvent.press(screen.getByRole("button", { name: "Rename Deck" }));
 
       fireEvent.changeText(screen.getByLabelText("Deck Name"), "");
 
       fireEvent.press(screen.getByRole("button", { name: "Confirm Change" }));
 
-      expect(screen.getByText("Deck name cannot be empty")).toBeVisible();
-      expect(mockSaveDeckCallback).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(screen.getByText("test error")).toBeVisible();
+      });
+
+      expect(mockSaveDeckCallback).toHaveBeenCalledWith("");
 
       fireEvent.changeText(screen.getByLabelText("Deck Name"), "T");
 
-      expect(screen.queryByText("Deck name cannot be empty")).toBeNull();
+      expect(screen.queryByText("test error")).toBeNull();
     });
 
     it("returns to inert state + commits the updated deck on save", async () => {
