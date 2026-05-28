@@ -25,8 +25,7 @@
     "coveragePathIgnorePatterns": [
       "<rootDir>/test-utils",
       "<rootDir>/factories",
-      "<rootDir>/db/migrations",
-      "<rootDir>/src/repositories/BaseRepository.ts"
+      "<rootDir>/db/migrations"
     ]
   },
   "dependencies": {

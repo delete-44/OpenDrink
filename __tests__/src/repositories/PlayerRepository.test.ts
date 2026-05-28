@@ -18,7 +18,9 @@ describe("PlayerRepository", () => {
       const result = await PlayerRepository.index();
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error loading Players");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.payload).toEqual([]);
     });
 
@@ -26,7 +28,9 @@ describe("PlayerRepository", () => {
       const result = await PlayerRepository.create({ name: "Alice" });
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error creating Player");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.payload).toEqual(undefined);
     });
 
@@ -34,7 +38,9 @@ describe("PlayerRepository", () => {
       const result = await PlayerRepository.delete(1);
 
       expect(result.ok).toEqual(false);
-      expect(result.message).toEqual("Error deleting Player");
+      expect(result.message).toEqual(
+        "Repository must be initialised with the .initialise function before use",
+      );
       expect(result.changes).toEqual(0);
     });
   });

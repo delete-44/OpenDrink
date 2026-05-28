@@ -23,6 +23,8 @@ export class PlayerRepository extends BaseRepository {
 
   static async index(): Promise<TCollectionResponse<Player>> {
     try {
+      this.validateDb();
+
       const result: TPlayerData[] = await this.db.getAllAsync(
         "SELECT * FROM players",
       );
@@ -32,11 +34,9 @@ export class PlayerRepository extends BaseRepository {
         payload: result.map((p) => Player.fromJson(p)),
       };
     } catch (e: any) {
-      console.log("Error loading Players:", e.message);
-
       return {
         ok: false,
-        message: "Error loading Players",
+        message: this.extractMessage(e, "Error loading Players"),
         payload: [],
       };
     }
@@ -46,6 +46,7 @@ export class PlayerRepository extends BaseRepository {
     name,
   }: PlayerPermittedFields): Promise<TItemResponse<Player>> {
     try {
+      this.validateDb();
       this.validate({ name: name.trim() });
 
       const created = await this.db.runAsync(
@@ -70,20 +71,17 @@ export class PlayerRepository extends BaseRepository {
         payload: Player.fromJson(result),
       };
     } catch (e: any) {
-      console.log("Error creating Player:", e.message);
-
-      const message =
-        e instanceof ValidationError ? e.message : "Error creating Player";
-
       return {
         ok: false,
-        message,
+        message: this.extractMessage(e, "Error creating Player"),
       };
     }
   }
 
   static async delete(id: number): Promise<TPatchResponse> {
     try {
+      this.validateDb();
+
       const result = await this.db.runAsync(
         `DELETE FROM players WHERE id=?`,
         id,
@@ -102,11 +100,9 @@ export class PlayerRepository extends BaseRepository {
         changes: result.changes,
       };
     } catch (e: any) {
-      console.log("Error deleting Player:", e.message);
-
       return {
         ok: false,
-        message: "Error deleting Player",
+        message: this.extractMessage(e, "Error deleting Player"),
         changes: 0,
       };
     }
