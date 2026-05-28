@@ -1,3 +1,4 @@
+import { ValidationError } from "../errors/ValidationError";
 import { Card } from "../models/Card";
 import {
   TCardData,
@@ -10,6 +11,16 @@ import { BaseRepository } from "./BaseRepository";
 export type CardPermittedFields = Pick<TCardData, "content">;
 
 export class CardRepository extends BaseRepository {
+  protected static validate({ content }: CardPermittedFields) {
+    if (!content) {
+      throw new ValidationError("Card cannot be empty");
+    }
+
+    if (content.length > 500) {
+      throw new ValidationError("Maximum length is 500 characters");
+    }
+  }
+
   static index(deckId: number): TCollectionResponse<Card> {
     try {
       const result: TCardData[] = this.db.getAllSync(
@@ -37,10 +48,12 @@ export class CardRepository extends BaseRepository {
     { content }: CardPermittedFields,
   ): Promise<TItemResponse<Card>> {
     try {
+      this.validate({ content: content.trim() });
+
       const created = await this.db.runAsync(
         `INSERT INTO cards ("deck_id", "content") VALUES (?, ?)`,
         deckId,
-        content,
+        content.trim(),
       );
 
       const result: TCardData | null = await this.db.getFirstAsync(
@@ -62,9 +75,12 @@ export class CardRepository extends BaseRepository {
     } catch (e: any) {
       console.log("Error creating Card:", e.message);
 
+      const message =
+        e instanceof ValidationError ? e.message : "Error creating Card";
+
       return {
         ok: false,
-        message: "Error creating Card",
+        message,
       };
     }
   }

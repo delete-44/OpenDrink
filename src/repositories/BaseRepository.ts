@@ -7,7 +7,7 @@ export abstract class BaseRepository {
     this.db = database;
   }
 
-  protected static validate(patch: any) {
+  protected static validate(_patch: any) {
     throw new Error("Not implemented");
   }
 }

@@ -12,7 +12,7 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react-native";
-import React from "react";
+import React, { act } from "react";
 
 describe("CardList", () => {
   const testDeck = DeckFactory();
@@ -66,23 +66,6 @@ describe("CardList", () => {
       expect(mockCreateManyCards).toHaveBeenCalledWith(DEFAULT_CARDS);
     });
 
-    it("prevents user adding empty cards", () => {
-      let errorMessage = screen.queryByText("Card cannot be empty");
-      expect(errorMessage).toBeNull();
-
-      const input = screen.getByLabelText("Card Content");
-      const addButton = screen.getByRole("button", {
-        name: "Add Card to Deck",
-      });
-      fireEvent.press(addButton);
-
-      expect(mockCreateCard).not.toHaveBeenCalled();
-      expect(input).toHaveProp("value", "");
-
-      errorMessage = screen.getByText("Card cannot be empty");
-      expect(errorMessage).toBeVisible();
-    });
-
     it("surfaces errors from StorageContext on create", async () => {
       mockCreateCard.mockRejectedValueOnce(new Error("test error"));
 
@@ -107,9 +90,10 @@ describe("CardList", () => {
       });
     });
 
-    it("clears error message on new input", () => {
-      let errorMessage = screen.queryByText("Card cannot be empty");
-      expect(errorMessage).toBeNull();
+    it("clears error message on new input", async () => {
+      mockCreateCard.mockRejectedValueOnce(new Error("test error"));
+
+      expect(screen.queryByText("test error")).toBeNull();
 
       const input = screen.getByLabelText("Card Content");
       const addButton = screen.getByRole("button", {
@@ -117,21 +101,21 @@ describe("CardList", () => {
       });
       fireEvent.press(addButton);
 
-      expect(mockCreateCard).not.toHaveBeenCalled();
+      expect(mockCreateCard).toHaveBeenCalledWith({ content: "" });
       expect(input).toHaveProp("value", "");
 
-      errorMessage = screen.getByText("Card cannot be empty");
-      expect(errorMessage).toBeVisible();
+      await waitFor(() => {
+        expect(screen.getByText("test error")).toBeVisible();
+      });
 
-      fireEvent.changeText(input, "Drink up!");
+      await act(() => fireEvent.changeText(input, "Drink up!"));
 
-      errorMessage = screen.queryByText("Card cannot be empty");
-      expect(errorMessage).toBeNull();
+      expect(screen.queryByText("test error")).toBeNull();
     });
 
-    it("trims whitespace from card contents", async () => {
+    it("successfully creates cards", async () => {
       const input = screen.getByLabelText("Card Content");
-      fireEvent.changeText(input, " Drink up!  ");
+      fireEvent.changeText(input, "Drink up!");
 
       const addButton = screen.getByRole("button", {
         name: "Add Card to Deck",

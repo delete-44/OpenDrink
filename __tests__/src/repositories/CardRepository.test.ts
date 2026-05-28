@@ -178,6 +178,33 @@ describe("CardRepository", () => {
       });
     });
 
+    describe("validation errors", () => {
+      describe("#create", () => {
+        it("returns a custom error message if content is empty", async () => {
+          const result = await CardRepository.create(1, { content: "" });
+
+          expect(mockRunAsync).not.toHaveBeenCalled();
+          expect(mockGetFirstAsync).not.toHaveBeenCalled();
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Card cannot be empty");
+          expect(result.payload).toEqual(undefined);
+        });
+
+        it("returns a custom error message if content is too long", async () => {
+          const content = "1".repeat(501);
+          const result = await CardRepository.create(1, { content });
+
+          expect(mockRunAsync).not.toHaveBeenCalled();
+          expect(mockGetFirstAsync).not.toHaveBeenCalled();
+
+          expect(result.ok).toEqual(false);
+          expect(result.message).toEqual("Maximum length is 500 characters");
+          expect(result.payload).toEqual(undefined);
+        });
+      });
+    });
+
     describe("on success", () => {
       const card1 = CardFactory({ id: 1, content: "Drink once" });
       const card2 = CardFactory({ id: 2, content: "Drink twice" });
@@ -198,28 +225,54 @@ describe("CardRepository", () => {
         expect(result.payload).toEqual([card1, card2, card3]);
       });
 
-      it("#create creates the new card & fetches it", async () => {
-        mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: card3.id });
-        mockGetFirstAsync.mockResolvedValueOnce(card3);
+      describe("#create", () => {
+        it("trims whitespace from the card content", async () => {
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: card3.id });
+          mockGetFirstAsync.mockResolvedValueOnce(card3);
 
-        const result = await CardRepository.create(deck.id, {
-          content: card3.content,
+          const result = await CardRepository.create(deck.id, {
+            content: `     ${card3.content}   `,
+          });
+
+          expect(mockRunAsync).toHaveBeenCalledWith(
+            'INSERT INTO cards ("deck_id", "content") VALUES (?, ?)',
+            deck.id,
+            card3.content,
+          );
+
+          expect(mockGetFirstAsync).toHaveBeenCalledWith(
+            "SELECT * FROM cards WHERE id=?",
+            card3.id,
+          );
+
+          expect(result.ok).toEqual(true);
+          expect(result.message).toEqual(undefined);
+          expect(result.payload).toEqual(card3);
         });
 
-        expect(mockRunAsync).toHaveBeenCalledWith(
-          'INSERT INTO cards ("deck_id", "content") VALUES (?, ?)',
-          deck.id,
-          card3.content,
-        );
+        it("creates the new card & fetches it", async () => {
+          mockRunAsync.mockResolvedValueOnce({ lastInsertRowId: card3.id });
+          mockGetFirstAsync.mockResolvedValueOnce(card3);
 
-        expect(mockGetFirstAsync).toHaveBeenCalledWith(
-          "SELECT * FROM cards WHERE id=?",
-          card3.id,
-        );
+          const result = await CardRepository.create(deck.id, {
+            content: card3.content,
+          });
 
-        expect(result.ok).toEqual(true);
-        expect(result.message).toEqual(undefined);
-        expect(result.payload).toEqual(card3);
+          expect(mockRunAsync).toHaveBeenCalledWith(
+            'INSERT INTO cards ("deck_id", "content") VALUES (?, ?)',
+            deck.id,
+            card3.content,
+          );
+
+          expect(mockGetFirstAsync).toHaveBeenCalledWith(
+            "SELECT * FROM cards WHERE id=?",
+            card3.id,
+          );
+
+          expect(result.ok).toEqual(true);
+          expect(result.message).toEqual(undefined);
+          expect(result.payload).toEqual(card3);
+        });
       });
 
       it("#createMany creates the new cards & returns sum of changes", async () => {
