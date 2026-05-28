@@ -28,8 +28,7 @@ describe("Play", () => {
   const mockCardContext = CardContextFactory({ cards });
 
   beforeEach(() => {
-    // @ts-expect-error
-    jest.spyOn(global.Math, "random").mockReturnValue(0.123456789);
+    jest.spyOn(Math, "random").mockReturnValue(0.123456789);
   });
 
   it("shows a loading spinner if storage context is loading", () => {

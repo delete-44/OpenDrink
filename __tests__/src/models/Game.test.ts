@@ -6,8 +6,7 @@ import { Player } from "@/src/models/Player";
 
 describe("Game", () => {
   beforeEach(() => {
-    // @ts-expect-error
-    jest.spyOn(global.Math, "random").mockReturnValue(0.123456789);
+    jest.spyOn(Math, "random").mockReturnValue(0.123456789);
   });
 
   it("throws an error if deck is empty upon instantiation", () => {
