@@ -47,7 +47,7 @@ export default function DeckTitlebar({
 
   if (editingDeckName) {
     return (
-      <View style={styles.deckNameWrapper} role="form">
+      <View style={styles.activeStateWrapper} role="form">
         <WrappedTextInput
           label="Deck Name"
           value={workingDeckName}
@@ -75,7 +75,7 @@ export default function DeckTitlebar({
 
   return (
     <>
-      <View style={styles.actionsWrapper}>
+      <View style={styles.inertStateWrapper}>
         <Text style={[globalStyles.textLg, { flex: 1 }]}>{deck.name}</Text>
 
         <Pressable
@@ -118,18 +118,20 @@ const baseTitlebar = {
 } as ViewStyle;
 
 const styles = StyleSheet.create({
-  actionsWrapper: {
+  inertStateWrapper: {
     ...baseTitlebar,
+    marginTop: FORM_LABEL_HEIGHT,
+    minHeight: FORM_CONTROL_SIZE + 56,
     alignItems: "center",
   },
-  deckNameWrapper: {
+  activeStateWrapper: {
     ...baseTitlebar,
     alignItems: "flex-end",
     paddingBottom: SPACING_LG - FORM_LABEL_HEIGHT,
   },
   confirmButton: {
     ...globalStyles.buttonHighlight,
-    marginBottom: FORM_LABEL_HEIGHT,
+    marginBottom: FORM_LABEL_HEIGHT + 2,
     height: FORM_CONTROL_SIZE,
   },
 });
