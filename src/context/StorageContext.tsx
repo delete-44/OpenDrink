@@ -79,6 +79,8 @@ export function StorageProvider({ children }: StorageProviderProps) {
 
     setDecks(newDecks);
 
+    await saveSelectedDeckIdx(newDecks.length - 1);
+
     return resp.payload;
   };
 

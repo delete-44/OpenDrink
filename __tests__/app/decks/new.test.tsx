@@ -58,16 +58,16 @@ describe("New", () => {
       );
     });
 
-    it("composes the DeckTitleBar (in active state by default) & CardList", () => {
+    it("composes the DeckTitleBar (in active state by default)", () => {
       expect(
         screen.getByRole("button", { name: "Confirm Change" }),
       ).toBeVisible();
       expect(screen.getByLabelText("Deck Name")).toBeVisible();
 
       expect(
-        screen.getByRole("button", { name: "Load Default Cards" }),
-      ).toBeVisible();
-      expect(screen.getByText("... or add your own here!")).toBeVisible();
+        screen.queryByRole("button", { name: "Load Default Cards" }),
+      ).toBeNull();
+      expect(screen.queryByText("... or add your own here!")).toBeNull();
     });
 
     it("prevents duplicate submissions while saving", async () => {

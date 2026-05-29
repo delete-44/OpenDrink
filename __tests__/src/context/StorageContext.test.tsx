@@ -55,6 +55,10 @@ describe("StorageProvider", () => {
   describe("#createDeck", () => {
     const deck = DeckFactory();
 
+    beforeEach(() => {
+      jest.spyOn(Storage, "setItemAsync").mockResolvedValueOnce();
+    });
+
     it("surfaces errors on unsuccessful response", async () => {
       jest.spyOn(DeckRepository, "create").mockResolvedValueOnce({
         ok: false,
@@ -76,6 +80,8 @@ describe("StorageProvider", () => {
         name: deck.name,
       });
 
+      expect(Storage.setItemAsync).not.toHaveBeenCalled();
+
       // Assert context state has not updated
       expect(storageContext.current.decks).toEqual([]);
     });
@@ -93,6 +99,10 @@ describe("StorageProvider", () => {
         await storageContext.current.createDeck({ name: deck.name });
       });
 
+      expect(Storage.setItemAsync).toHaveBeenCalledWith(
+        "selected_deck_idx",
+        "0",
+      );
       expect(DeckRepository.create).toHaveBeenCalledTimes(1);
       expect(DeckRepository.create).toHaveBeenCalledWith({
         name: deck.name,

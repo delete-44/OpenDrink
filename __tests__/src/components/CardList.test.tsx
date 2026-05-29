@@ -28,6 +28,31 @@ describe("CardList", () => {
     deleteCard: mockDeleteCard,
   });
 
+  it("renders a loading state if loading", () => {
+    const mockCardContext = CardContextFactory({
+      deck: testDeck,
+      cards: [],
+      isLoading: true,
+      createCard: mockCreateCard,
+      createManyCards: mockCreateManyCards,
+      deleteCard: mockDeleteCard,
+    });
+
+    render(
+      <CardContext.Provider value={mockCardContext}>
+        <CardList />
+      </CardContext.Provider>,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: "Load Default Cards" }),
+    ).toBeNull();
+    expect(screen.queryByText("... or add your own here!")).toBeNull();
+
+    expect(screen.getByLabelText("Loading Cards")).toBeVisible();
+    expect(screen.queryByText("Error: Failed to load Deck.")).toBeNull();
+  });
+
   describe("with no cards initialised", () => {
     beforeEach(() => {
       render(
@@ -43,7 +68,7 @@ describe("CardList", () => {
       ).toBeVisible();
       expect(screen.getByText("... or add your own here!")).toBeVisible();
 
-      expect(screen.queryByLabelText("Loading Deck")).toBeNull();
+      expect(screen.queryByLabelText("Loading Cards")).toBeNull();
       expect(screen.queryByText("Error: Failed to load Deck.")).toBeNull();
     });
 

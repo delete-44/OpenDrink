@@ -9,37 +9,59 @@ import {
 import React from "react";
 
 describe("DeckForm", () => {
-  const testDeck = DeckFactory();
   const mockSaveDeck = jest.fn();
 
-  beforeEach(() => {
-    render(<DeckForm deck={testDeck} saveDeckCallback={mockSaveDeck} />);
-  });
+  it("does not render card list for decks with no id", () => {
+    render(
+      <DeckForm
+        // @ts-expect-error using stub deck object
+        deck={{ id: null, name: "Test..." }}
+        saveDeckCallback={mockSaveDeck}
+      />,
+    );
 
-  it("composes the DeckTitleBar & CardList", () => {
     expect(screen.getByRole("button", { name: "Rename Deck" })).toBeVisible();
 
     expect(
-      screen.getByRole("button", { name: "Load Default Cards" }),
-    ).toBeVisible();
-    expect(screen.getByText("... or add your own here!")).toBeVisible();
+      screen.queryByRole("button", { name: "Load Default Cards" }),
+    ).toBeNull();
+    expect(screen.queryByText("... or add your own here!")).toBeNull();
   });
 
-  it("renders the given deck", () => {
-    expect(screen.getByText("Test Deck")).toBeVisible();
-  });
+  describe("with a complete deck", () => {
+    const testDeck = DeckFactory();
 
-  it("calls callback on name change", async () => {
-    fireEvent.press(screen.getByRole("button", { name: "Rename Deck" }));
+    beforeEach(() => {
+      render(<DeckForm deck={testDeck} saveDeckCallback={mockSaveDeck} />);
+    });
 
-    fireEvent.changeText(screen.getByLabelText("Deck Name"), "Renamed Deck");
-
-    fireEvent.press(screen.getByRole("button", { name: "Confirm Change" }));
-
-    expect(mockSaveDeck).toHaveBeenCalledWith("Renamed Deck");
-
-    await waitFor(() => {
+    it("composes the DeckTitleBar & CardList", () => {
       expect(screen.getByRole("button", { name: "Rename Deck" })).toBeVisible();
+
+      expect(
+        screen.getByRole("button", { name: "Load Default Cards" }),
+      ).toBeVisible();
+      expect(screen.getByText("... or add your own here!")).toBeVisible();
+    });
+
+    it("renders the given deck", () => {
+      expect(screen.getByText("Test Deck")).toBeVisible();
+    });
+
+    it("calls callback on name change", async () => {
+      fireEvent.press(screen.getByRole("button", { name: "Rename Deck" }));
+
+      fireEvent.changeText(screen.getByLabelText("Deck Name"), "Renamed Deck");
+
+      fireEvent.press(screen.getByRole("button", { name: "Confirm Change" }));
+
+      expect(mockSaveDeck).toHaveBeenCalledWith("Renamed Deck");
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: "Rename Deck" }),
+        ).toBeVisible();
+      });
     });
   });
 });
