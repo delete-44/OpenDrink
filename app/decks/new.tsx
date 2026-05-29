@@ -51,7 +51,7 @@ export default function New() {
           // This is to prevent the UI flickering in the split-second where
           // we commit the deck to the DB. Therefore:
           // @ts-expect-error
-          deck={{ name: workingDeckName }}
+          deck={{ id: null, name: workingDeckName }}
           saveDeckCallback={saveDeck}
         />
       </CardProvider>

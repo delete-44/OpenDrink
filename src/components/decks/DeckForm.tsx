@@ -1,6 +1,7 @@
 import globalStyles from "@/assets/global-styles";
 import DeckTitlebar from "@/src/components/decks/DeckTitlebar";
 import { Deck } from "@/src/models/Deck";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CardList from "../CardList";
 
@@ -14,7 +15,7 @@ export default function DeckForm({ deck, saveDeckCallback }: DeckFormProps) {
     <SafeAreaView style={globalStyles.backgroundGradient}>
       <DeckTitlebar saveDeckCallback={saveDeckCallback} deck={deck} />
 
-      <CardList />
+      {deck.id ? <CardList /> : <View style={{ flex: 1 }} />}
     </SafeAreaView>
   );
 }
