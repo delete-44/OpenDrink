@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "DrinkingApp",
-    "slug": "DrinkingApp",
+    "name": "OpenDrink",
+    "slug": "OpenDrink",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "drinkingapp",
+    "scheme": "opendrink",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true
@@ -18,18 +18,15 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "predictiveBackGestureEnabled": false,
+      "package": "com.delete44.OpenDrink"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/icons/deck.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#540D6E",
@@ -55,6 +52,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ebf19dd1-4d91-4620-9a1c-a0d0e03a529b"
+      }
     }
   }
 }
