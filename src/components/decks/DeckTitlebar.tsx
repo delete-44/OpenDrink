@@ -52,6 +52,8 @@ export default function DeckTitlebar({
           label="Deck Name"
           value={workingDeckName}
           errorMessage={deckNameErrorMessage}
+          submitBehaviour="blurAndSubmit"
+          onSubmit={() => updateDeckName(workingDeckName)}
           onChange={(text) => {
             setDeckNameErrorMessage("");
             setWorkingDeckName(text);

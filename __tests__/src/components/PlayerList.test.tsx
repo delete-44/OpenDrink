@@ -125,6 +125,24 @@ describe("PlayerList", () => {
         expect(input).toHaveProp("value", "");
       });
     });
+
+    it("allows user to submit text using their native keyboard", async () => {
+      render(
+        <StorageContext.Provider value={mockStorageContext}>
+          <PlayerList />
+        </StorageContext.Provider>,
+      );
+
+      const input = screen.getByLabelText("Name");
+      fireEvent.changeText(input, "Alice");
+
+      fireEvent(screen.getByLabelText("Name"), "submitEditing");
+
+      expect(mockCreatePlayer).toHaveBeenCalledWith({ name: "Alice" });
+      await waitFor(() => {
+        expect(input).toHaveProp("value", "");
+      });
+    });
   });
 
   describe("with existing players", () => {

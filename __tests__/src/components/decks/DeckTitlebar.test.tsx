@@ -117,5 +117,23 @@ describe("DeckTitlebar", () => {
 
       assertInert();
     });
+
+    it("allows user to save using the native keyboard interaction", async () => {
+      fireEvent.press(screen.getByRole("button", { name: "Rename Deck" }));
+
+      fireEvent.changeText(screen.getByLabelText("Deck Name"), "Renamed Deck");
+
+      fireEvent(screen.getByLabelText("Deck Name"), "submitEditing");
+
+      expect(mockSaveDeckCallback).toHaveBeenCalledWith("Renamed Deck");
+
+      await waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: "Rename Deck" }),
+        ).toBeVisible();
+      });
+
+      assertInert();
+    });
   });
 });

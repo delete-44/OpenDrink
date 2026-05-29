@@ -61,6 +61,8 @@ export default function PlayerList() {
           label="Name"
           value={newPlayer}
           errorMessage={errorMessage}
+          submitBehaviour="submit"
+          onSubmit={() => addPlayer(newPlayer)}
           onChange={(text) => {
             setErrorMessage("");
             setNewPlayer(text);
