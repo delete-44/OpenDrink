@@ -2,10 +2,10 @@ import globalStyles from "@/assets/global-styles";
 import { DEFAULT_CARDS } from "@/src/constants/default-deck";
 import { SPACING_MD, SPACING_SM } from "@/src/constants/style-constants";
 import { CardPermittedFields } from "@/src/repositories/CardRepository";
+import { Image } from "expo-image";
 import { useState } from "react";
 import {
   ActivityIndicator,
-  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -45,9 +45,11 @@ export default function CardListEmptyState({
       <Text style={globalStyles.textMd}>... or add your own here!</Text>
 
       <Image
+        alt=""
         style={styles.image}
         source={require("../../../assets/images/decorative/arrow-up.png")}
-        alt=""
+        contentFit="contain"
+        allowDownscaling
       />
     </View>
   );
@@ -61,9 +63,8 @@ const styles = StyleSheet.create({
     gap: SPACING_SM,
   },
   image: {
-    width: 50,
-    height: 250,
-    resizeMode: "contain",
+    height: 350,
+    width: 67,
     transform: [{ rotate: "180deg" }],
   },
 });

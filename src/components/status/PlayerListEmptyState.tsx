@@ -1,14 +1,16 @@
 import globalStyles from "@/assets/global-styles";
-import { SPACING_MD, SPACING_SM } from "@/src/constants/style-constants";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function PlayerListEmptyState() {
   return (
     <View style={styles.container}>
       <Image
+        alt=""
         style={styles.image}
         source={require("../../../assets/images/decorative/arrow-up.png")}
-        alt=""
+        contentFit="contain"
+        allowDownscaling
       />
       <Text style={globalStyles.textMd}>Add Players here!</Text>
     </View>
@@ -18,12 +20,9 @@ export default function PlayerListEmptyState() {
 const styles = StyleSheet.create({
   container: {
     alignItems: "flex-end",
-    padding: SPACING_MD,
-    gap: SPACING_SM,
   },
   image: {
-    width: 50,
-    height: 150,
-    resizeMode: "contain",
+    width: 30,
+    height: 125,
   },
 });
