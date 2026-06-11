@@ -1,6 +1,7 @@
-import { getDefaultConfig } from "expo/metro-config";
+// Learn more https://docs.expo.io/guides/customizing-metro
+const { getDefaultConfig } = require('expo/metro-config');
 
-export default (async () => {
-  const config = await getDefaultConfig(__dirname);
-  return config;
-})();
+/** @type {import('expo/metro-config').MetroConfig} */
+const config = getDefaultConfig(__dirname);
+
+module.exports = config;
