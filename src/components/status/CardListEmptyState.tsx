@@ -47,7 +47,7 @@ export default function CardListEmptyState({
       <Image
         alt=""
         style={styles.image}
-        source={require("../../../assets/images/decorative/arrow-up.png")}
+        source={require("../../../assets/images/decorative/arrow-long.png")}
         contentFit="contain"
         allowDownscaling
       />
@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
     gap: SPACING_SM,
   },
   image: {
-    height: 350,
-    width: 67,
+    height: 384,
+    width: 69,
     transform: [{ rotate: "180deg" }],
   },
 });

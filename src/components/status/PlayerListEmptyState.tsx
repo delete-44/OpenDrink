@@ -8,7 +8,7 @@ export default function PlayerListEmptyState() {
       <Image
         alt=""
         style={styles.image}
-        source={require("../../../assets/images/decorative/arrow-up.png")}
+        source={require("../../../assets/images/decorative/arrow-short.png")}
         contentFit="contain"
         allowDownscaling
       />
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   image: {
-    width: 30,
-    height: 125,
+    width: 48,
+    height: 128,
   },
 });
