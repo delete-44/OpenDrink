@@ -109,6 +109,7 @@ export default function Index() {
         source={require("../assets/images/decorative/bg-pattern.png")}
         resizeMode="repeat"
         style={styles.backgroundImage}
+        fadeDuration={150}
       />
 
       {renderDeckSelector()}
