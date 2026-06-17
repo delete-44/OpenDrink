@@ -97,6 +97,9 @@ export default StyleSheet.create({
   button: {
     ...baseButton,
   },
+  buttonPressed: {
+    transform: [{ scale: 0.95 }],
+  },
   buttonText: {
     fontFamily: "JockeyOne",
     fontSize: FONT_SIZE_SM,
