@@ -5,6 +5,6 @@ describe("Logo", () => {
   it("renders markup - the image", () => {
     render(<Logo />);
 
-    expect(screen.getByRole("img")).toBeVisible();
+    expect(screen.getByTestId("logo")).toBeVisible();
   });
 });
