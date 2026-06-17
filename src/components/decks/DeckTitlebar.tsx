@@ -11,7 +11,8 @@ import {
 } from "@/src/constants/style-constants";
 import { Deck } from "@/src/models/Deck";
 import { useCallback, useState } from "react";
-import { Pressable, StyleSheet, Text, View, ViewStyle } from "react-native";
+import { StyleSheet, Text, View, ViewStyle } from "react-native";
+import Button from "../Button";
 import SVG from "../SVG";
 import WrappedTextInput from "../WrappedTextInput";
 import DeleteDeckModal from "./DeleteDeckModal";
@@ -61,14 +62,14 @@ export default function DeckTitlebar({
           autofocus
         />
 
-        <Pressable
-          role="button"
-          style={styles.confirmButton}
+        <Button
+          type="highlight"
+          additionalStyle={styles.confirmButton}
           accessibilityLabel="Confirm Change"
           onPress={() => updateDeckName(workingDeckName)}
         >
           <SVG icon={check} width={24} height={24} />
-        </Pressable>
+        </Button>
       </View>
     );
   }
@@ -78,23 +79,20 @@ export default function DeckTitlebar({
       <View style={styles.inertStateWrapper}>
         <Text style={[globalStyles.textLg, { flex: 1 }]}>{deck.name}</Text>
 
-        <Pressable
-          role="button"
+        <Button
           accessibilityLabel="Rename Deck"
-          style={globalStyles.button}
           onPress={() => setEditingDeckName(true)}
         >
           <SVG icon={pencil} width={24} height={24} />
-        </Pressable>
+        </Button>
 
-        <Pressable
-          role="button"
+        <Button
+          type="danger"
           accessibilityLabel="Delete Deck"
-          style={globalStyles.buttonDanger}
           onPress={() => setIsDeleteModalVisible(true)}
         >
           <SVG icon={cross} width={24} height={24} />
-        </Pressable>
+        </Button>
       </View>
 
       {isDeleteModalVisible && (
@@ -128,7 +126,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   confirmButton: {
-    ...globalStyles.buttonHighlight,
     marginBottom: FORM_LABEL_HEIGHT + 1.5, // Pixel-perfect tweaks to align this with inert-state buttons
     height: FORM_CONTROL_SIZE,
   },

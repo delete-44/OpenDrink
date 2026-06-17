@@ -1,12 +1,5 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 
-import globalStyles from "@/assets/global-styles";
 import { plus } from "@/assets/icons/plus";
 import {
   CONTENT_BACKDROP,
@@ -18,6 +11,7 @@ import {
 } from "@/src/constants/style-constants";
 import { StorageContext } from "@/src/context/StorageContext";
 import { useCallback, useContext, useState } from "react";
+import Button from "./Button";
 import HorizontalDivider from "./HorizontalDivider";
 import RemovableListItem from "./RemovableListItem";
 import PlayerListEmptyState from "./status/PlayerListEmptyState";
@@ -69,14 +63,14 @@ export default function PlayerList() {
           }}
         />
 
-        <Pressable
-          role="button"
+        <Button
           accessibilityLabel="Add Player"
-          style={styles.addPlayerButton}
+          type="highlight"
+          additionalStyle={styles.addPlayerButton}
           onPress={() => addPlayer(newPlayer)}
         >
           <SVG icon={plus} width={24} height={24} />
-        </Pressable>
+        </Button>
       </View>
 
       <FlatList
@@ -124,7 +118,6 @@ const styles = StyleSheet.create({
     marginTop: SPACING_LG,
   },
   addPlayerButton: {
-    ...globalStyles.buttonHighlight,
     marginBottom: FORM_LABEL_HEIGHT,
     height: FORM_CONTROL_SIZE,
   },

@@ -4,7 +4,8 @@ import { StorageContext } from "@/src/context/StorageContext";
 import { Deck } from "@/src/models/Deck";
 import { router } from "expo-router";
 import { useCallback, useContext, useRef } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import Button from "../Button";
 import ModalContainer from "../ModalContainer";
 
 type DeleteDeckModalProps = {
@@ -63,21 +64,13 @@ export default function DeleteDeckModal({
         </Text>
 
         <View style={styles.modalFooter}>
-          <Pressable
-            role="button"
-            style={globalStyles.button}
-            onPress={() => setIsVisible(false)}
-          >
+          <Button onPress={() => setIsVisible(false)}>
             <Text style={globalStyles.buttonText}>Cancel</Text>
-          </Pressable>
+          </Button>
 
-          <Pressable
-            role="button"
-            style={globalStyles.buttonDanger}
-            onPress={() => deleteDeck(deck.id)}
-          >
+          <Button type="danger" onPress={() => deleteDeck(deck.id)}>
             <Text style={globalStyles.buttonText}>Delete Deck</Text>
-          </Pressable>
+          </Button>
         </View>
       </View>
     </ModalContainer>

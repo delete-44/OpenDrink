@@ -7,6 +7,7 @@ type ButtonTypes = "default" | "plain" | "highlight" | "danger";
 type ButtonProps = {
   type?: ButtonTypes;
   additionalStyle?: ViewStyle;
+  accessibilityLabel?: string;
 
   onPress: () => void;
   children: ReactNode;
@@ -17,6 +18,7 @@ type ButtonProps = {
 export default function Button({
   type = "default",
   additionalStyle,
+  accessibilityLabel,
   onPress,
   children,
 
@@ -51,6 +53,7 @@ export default function Button({
       style={({ pressed }) => {
         return [buttonStyles, pressedButtonStyles(pressed), additionalStyle];
       }}
+      accessibilityLabel={accessibilityLabel}
       role="button"
       onPress={onPress}
       testOnly_pressed={testOnly_pressed}

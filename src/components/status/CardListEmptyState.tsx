@@ -4,13 +4,8 @@ import { SPACING_MD, SPACING_SM } from "@/src/constants/style-constants";
 import { CardPermittedFields } from "@/src/repositories/CardRepository";
 import { Image } from "expo-image";
 import { useState } from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import Button from "../Button";
 
 type CardListEmptyStateProps = {
   addCards: (cards: CardPermittedFields[]) => void;
@@ -31,16 +26,14 @@ export default function CardListEmptyState({
 
   return (
     <View style={styles.container}>
-      <Pressable
-        role="button"
-        style={globalStyles.button}
+      <Button
         onPress={() => {
           setIsActive(true);
           addCards(DEFAULT_CARDS);
         }}
       >
         <Text style={globalStyles.buttonText}>Load Default Cards</Text>
-      </Pressable>
+      </Button>
 
       <Text style={globalStyles.textMd}>... or add your own here!</Text>
 

@@ -2,12 +2,10 @@ import {
   ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
-  Pressable,
   StyleSheet,
   View,
 } from "react-native";
 
-import globalStyles from "@/assets/global-styles";
 import { plus } from "@/assets/icons/plus";
 import HorizontalDivider from "@/src/components/HorizontalDivider";
 import RemovableListItem from "@/src/components/RemovableListItem";
@@ -25,6 +23,7 @@ import {
 import { useCallback, useContext, useState } from "react";
 import { CardContext } from "../context/CardContext";
 import { CardPermittedFields } from "../repositories/CardRepository";
+import Button from "./Button";
 
 export default function CardList() {
   const [newCard, setNewCard] = useState("");
@@ -110,14 +109,14 @@ export default function CardList() {
             }}
           />
 
-          <Pressable
-            role="button"
+          <Button
+            type="highlight"
             accessibilityLabel="Add Card to Deck"
-            style={styles.addButton}
+            additionalStyle={styles.addButton}
             onPress={() => addCard(newCard)}
           >
             <SVG icon={plus} width={24} height={24} />
-          </Pressable>
+          </Button>
         </View>
       </KeyboardAvoidingView>
     </>
@@ -148,7 +147,6 @@ const styles = StyleSheet.create({
     paddingTop: SPACING_SM + FORM_LABEL_HEIGHT,
   },
   addButton: {
-    ...globalStyles.buttonHighlight,
     marginBottom: FORM_LABEL_HEIGHT,
     height: FORM_CONTROL_SIZE,
   },
