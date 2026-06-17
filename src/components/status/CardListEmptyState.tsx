@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: SPACING_MD,
     gap: SPACING_SM,
+    overflow: "hidden",
   },
   image: {
     height: 384,

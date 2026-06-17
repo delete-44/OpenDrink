@@ -20,6 +20,7 @@ export default function PlayerListEmptyState() {
 const styles = StyleSheet.create({
   container: {
     alignItems: "flex-end",
+    overflow: "hidden",
   },
   image: {
     width: 48,
