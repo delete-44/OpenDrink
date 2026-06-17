@@ -1,24 +1,12 @@
-import { CONTENT_COLOR, SPACING_MD } from "@/src/constants/style-constants";
 import { Image } from "expo-image";
-import { StyleSheet, View } from "react-native";
 
 export default function Logo() {
   return (
-    <View style={styles.logoBackground}>
-      <Image
-        source={require("../../assets/images/decorative/deck.png")}
-        alt=""
-        role="img"
-        style={{ width: 96, height: 96 }}
-      />
-    </View>
+    <Image
+      source={require("../../assets/images/decorative/deck.png")}
+      alt=""
+      role="img"
+      style={{ width: 96, height: 96 }}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  logoBackground: {
-    backgroundColor: CONTENT_COLOR,
-    borderRadius: 99,
-    padding: SPACING_MD,
-  },
-});
