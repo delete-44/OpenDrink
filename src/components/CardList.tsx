@@ -18,6 +18,7 @@ import {
   FORM_CONTROL_SIZE,
   FORM_LABEL_HEIGHT,
   SPACING_LG,
+  SPACING_MD,
   SPACING_SM,
 } from "@/src/constants/style-constants";
 import { useCallback, useContext, useState } from "react";
@@ -72,8 +73,9 @@ export default function CardList() {
 
   return (
     <>
-      <View style={styles.listContainer}>
+      <View style={styles.cardListWrapper}>
         <FlatList
+          style={styles.listWrapper}
           data={cards}
           renderItem={({ item }) => (
             <RemovableListItem
@@ -124,14 +126,16 @@ export default function CardList() {
 }
 
 const styles = StyleSheet.create({
-  listContainer: {
-    paddingHorizontal: SPACING_LG,
-    paddingVertical: SPACING_LG,
-    marginInline: "auto",
+  cardListWrapper: {
+    padding: SPACING_MD,
+    marginHorizontal: "auto",
     flex: 1,
 
     flexDirection: "column",
     alignItems: "center",
+  },
+  listWrapper: {
+    paddingHorizontal: SPACING_SM,
   },
   inputWrapper: {
     gap: SPACING_SM,
@@ -143,8 +147,7 @@ const styles = StyleSheet.create({
     borderTopColor: DECORATION_COLOR,
     backgroundColor: BACKGROUND_COLOR_HIGHLIGHT,
     paddingHorizontal: SPACING_LG,
-    paddingBottom: SPACING_SM,
-    paddingTop: SPACING_SM + FORM_LABEL_HEIGHT,
+    paddingTop: SPACING_SM,
   },
   addButton: {
     marginBottom: FORM_LABEL_HEIGHT,

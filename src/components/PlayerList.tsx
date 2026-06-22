@@ -6,7 +6,6 @@ import {
   FORM_CONTROL_SIZE,
   FORM_LABEL_HEIGHT,
   SPACING_LG,
-  SPACING_MD,
   SPACING_SM,
 } from "@/src/constants/style-constants";
 import { StorageContext } from "@/src/context/StorageContext";
@@ -49,8 +48,8 @@ export default function PlayerList() {
   );
 
   return (
-    <View style={styles.playerList}>
-      <View style={styles.playerInputWrapper} role="form">
+    <View style={styles.playerListWrapper}>
+      <View style={styles.inputWrapper} role="form">
         <WrappedTextInput
           label="Name"
           value={newPlayer}
@@ -74,6 +73,7 @@ export default function PlayerList() {
       </View>
 
       <FlatList
+        style={styles.listWrapper}
         data={players}
         renderItem={({ item }) => (
           <RemovableListItem
@@ -98,10 +98,9 @@ export default function PlayerList() {
 }
 
 const styles = StyleSheet.create({
-  playerList: {
-    paddingHorizontal: SPACING_MD,
-    paddingVertical: SPACING_SM,
-    marginInline: SPACING_LG,
+  playerListWrapper: {
+    padding: SPACING_SM,
+    marginHorizontal: SPACING_LG,
     flex: 1,
 
     backgroundColor: CONTENT_BACKDROP,
@@ -110,15 +109,18 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
   },
-  playerInputWrapper: {
+  inputWrapper: {
+    paddingHorizontal: SPACING_SM,
     gap: SPACING_SM,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    marginTop: SPACING_LG,
   },
   addPlayerButton: {
     marginBottom: FORM_LABEL_HEIGHT,
     height: FORM_CONTROL_SIZE,
+  },
+  listWrapper: {
+    paddingHorizontal: SPACING_SM,
   },
 });
