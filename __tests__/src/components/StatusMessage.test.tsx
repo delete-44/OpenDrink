@@ -21,6 +21,7 @@ describe("StatusMessage", () => {
     );
 
     expect(screen.getByRole("alert")).toBeVisible();
+    expect(screen.getByRole("alert")).toHaveProp("nativeID", `${label}-status`);
     expect(screen.getByText("Something went right :)")).toHaveStyle(
       globalStyles.textSuccess,
     );
@@ -36,6 +37,7 @@ describe("StatusMessage", () => {
     );
 
     expect(screen.getByRole("alert")).toBeVisible();
+    expect(screen.getByRole("alert")).toHaveProp("nativeID", `${label}-status`);
     expect(screen.getByText("Something went wrong :(")).toHaveStyle(
       globalStyles.textWarning,
     );

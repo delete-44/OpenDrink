@@ -1,11 +1,3 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  KeyboardAvoidingView,
-  StyleSheet,
-  View,
-} from "react-native";
-
 import { plus } from "@/assets/icons/plus";
 import HorizontalDivider from "@/src/components/HorizontalDivider";
 import RemovableListItem from "@/src/components/RemovableListItem";
@@ -22,9 +14,17 @@ import {
   SPACING_SM,
 } from "@/src/constants/style-constants";
 import { useCallback, useContext, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  KeyboardAvoidingView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { CardContext } from "../context/CardContext";
 import { CardPermittedFields } from "../repositories/CardRepository";
 import Button from "./Button";
+import StatusMessage from "./StatusMessage";
 
 export default function CardList() {
   const [newCard, setNewCard] = useState("");
@@ -103,13 +103,20 @@ export default function CardList() {
             label="Card Content"
             value={newCard}
             autocorrect
-            errorMessage={errorMessage}
+            ariaInvalid={errorMessage !== ""}
             multiline
             submitBehaviour="newline"
             onChange={(text) => {
               setErrorMessage("");
               setNewCard(text);
             }}
+            statusMessage={
+              <StatusMessage
+                type="warning"
+                message={errorMessage}
+                describes="Card Content"
+              />
+            }
           />
 
           <Button
