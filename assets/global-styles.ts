@@ -70,6 +70,7 @@ export default StyleSheet.create({
   textInput: {
     fontFamily: "JockeyOne",
     backgroundColor: CONTENT_COLOR,
+    marginLeft: -5, // So we align nicely with the chunky borders
     borderWidth: 5,
     borderColor: DECORATION_COLOR,
     borderRadius: SPACING_SM,

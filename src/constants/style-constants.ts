@@ -9,6 +9,7 @@ export const WARNING_COLOR = "#ffe346";
 
 export const CONTENT_BACKDROP = "rgba(0, 0, 0, 0.4)";
 
+export const SPACING_XS = 4;
 export const SPACING_SM = 8;
 export const SPACING_MD = 16;
 export const SPACING_LG = 24;

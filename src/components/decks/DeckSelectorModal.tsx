@@ -1,4 +1,4 @@
-import { SPACING_SM } from "@/src/constants/style-constants";
+import { SPACING_SM, SPACING_XS } from "@/src/constants/style-constants";
 import { StorageContext } from "@/src/context/StorageContext";
 import { useContext } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
@@ -25,6 +25,7 @@ export default function DeckSelectorModal({
     >
       <View style={styles.modalBody}>
         <FlatList
+          style={styles.listWrapper}
           data={decks}
           keyExtractor={(item) => `${item.id}`}
           renderItem={({ item, index }) => (
@@ -46,7 +47,11 @@ export default function DeckSelectorModal({
 
 const styles = StyleSheet.create({
   modalBody: {
-    padding: SPACING_SM,
+    paddingVertical: SPACING_SM,
+    paddingHorizontal: SPACING_XS,
     flex: 1, // To prevent long lists from overflowing out of the modal body
+  },
+  listWrapper: {
+    paddingHorizontal: SPACING_XS,
   },
 });

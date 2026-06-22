@@ -86,7 +86,6 @@ export default function WrappedTextInput({
 const style = StyleSheet.create({
   textWrapper: {
     minHeight: FORM_LABEL_HEIGHT,
-    marginLeft: 5,
     gap: SPACING_SM,
     flexDirection: "row",
     alignItems: "center",
