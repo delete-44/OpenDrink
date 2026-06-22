@@ -52,6 +52,7 @@ export default function DeckTitlebar({
         <WrappedTextInput
           label="Deck Name"
           value={workingDeckName}
+          autocorrect
           errorMessage={deckNameErrorMessage}
           submitBehaviour="blurAndSubmit"
           onSubmit={() => updateDeckName(workingDeckName)}

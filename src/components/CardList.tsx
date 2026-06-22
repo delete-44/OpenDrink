@@ -102,6 +102,7 @@ export default function CardList() {
           <WrappedTextInput
             label="Card Content"
             value={newCard}
+            autocorrect
             errorMessage={errorMessage}
             multiline
             submitBehaviour="newline"

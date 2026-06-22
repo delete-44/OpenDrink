@@ -19,6 +19,7 @@ type WrappedTextInputProps = {
   value: string;
   errorMessage: string;
   submitBehaviour?: SubmitBehavior;
+  autocorrect?: boolean;
   autofocus?: boolean;
   multiline?: boolean;
   onChange: (text: string) => void;
@@ -29,6 +30,7 @@ export default function WrappedTextInput({
   label,
   value,
   errorMessage,
+  autocorrect = false,
   autofocus = false,
   multiline = false,
   submitBehaviour,
@@ -44,7 +46,7 @@ export default function WrappedTextInput({
       </View>
 
       <TextInput
-        autoCorrect={false}
+        autoCorrect={autocorrect}
         aria-labelledby={`${label}-label`}
         aria-invalid={errorMessage !== ""}
         aria-describedby={errorMessage ? `${label}-error` : undefined}
