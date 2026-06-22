@@ -1,6 +1,6 @@
 import globalStyles from "@/assets/global-styles";
-import { check } from "@/assets/icons/check";
 import { circleAlert } from "@/assets/icons/circleAlert";
+import { circleCheck } from "@/assets/icons/circleCheck";
 import { Text } from "react-native";
 import { SUCCESS_COLOR, WARNING_COLOR } from "../constants/style-constants";
 import { StatusMessageProps } from "../types";
@@ -19,7 +19,12 @@ export default function StatusMessage({
     case "success":
       return (
         <>
-          <SVG icon={check} color={SUCCESS_COLOR} width={18} height={18} />
+          <SVG
+            icon={circleCheck}
+            color={SUCCESS_COLOR}
+            width={18}
+            height={18}
+          />
 
           <Text
             style={globalStyles.textSuccess}
