@@ -2,7 +2,6 @@ import {
   ImageBackground,
   Keyboard,
   KeyboardAvoidingView,
-  Pressable,
   StyleSheet,
   Text,
   View,
@@ -10,6 +9,7 @@ import {
 
 import globalStyles from "@/assets/global-styles";
 import { circleAlert } from "@/assets/icons/circleAlert";
+import Button from "@/src/components/Button";
 import DeckSelector from "@/src/components/decks/DeckSelector";
 import DeckSelectorEmptyState from "@/src/components/decks/DeckSelectorEmptyState";
 import PlayerList from "@/src/components/PlayerList";
@@ -109,6 +109,7 @@ export default function Index() {
         source={require("../assets/images/decorative/bg-pattern.png")}
         resizeMode="repeat"
         style={styles.backgroundImage}
+        fadeDuration={150}
       />
 
       {renderDeckSelector()}
@@ -137,13 +138,13 @@ export default function Index() {
             )}
           </View>
 
-          <Pressable
-            style={styles.heroButton}
-            role="button"
+          <Button
             onPress={prepareGame}
+            type="highlight"
+            additionalStyle={styles.heroButton}
           >
             <Text style={styles.heroButtonText}>Get Started!</Text>
-          </Pressable>
+          </Button>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -170,7 +171,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   heroButton: {
-    ...globalStyles.buttonHighlight,
     paddingVertical: SPACING_LG,
     alignSelf: "center",
     boxShadow: `-5px 5px 0 ${DECORATION_COLOR}`,

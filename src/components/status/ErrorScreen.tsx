@@ -1,8 +1,9 @@
 import globalStyles from "@/assets/global-styles";
 import { SPACING_LG } from "@/src/constants/style-constants";
 import { router } from "expo-router";
-import { Pressable, Text } from "react-native";
+import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Button from "../Button";
 
 type ErrorScreenProps = {
   message: string;
@@ -15,13 +16,9 @@ export default function ErrorScreen({ message }: ErrorScreenProps) {
     >
       <Text style={globalStyles.textLg}>Error: {message}</Text>
 
-      <Pressable
-        onPress={() => router.back()}
-        style={globalStyles.button}
-        role="button"
-      >
+      <Button onPress={() => router.back()}>
         <Text style={globalStyles.buttonText}>Back to Home</Text>
-      </Pressable>
+      </Button>
     </SafeAreaView>
   );
 }

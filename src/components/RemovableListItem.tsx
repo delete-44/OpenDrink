@@ -1,8 +1,9 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import globalStyles from "@/assets/global-styles";
 import { minus } from "@/assets/icons/minus";
 import { SPACING_SM } from "@/src/constants/style-constants";
+import Button from "./Button";
 import SVG from "./SVG";
 
 type RemovableListItemProps = {
@@ -19,14 +20,9 @@ export default function RemovableListItem({
       <Text selectable style={styles.listItemLabel}>
         {label}
       </Text>
-      <Pressable
-        role="button"
-        accessibilityLabel={`Remove ${label}`}
-        style={globalStyles.button}
-        onPress={removeItemCb}
-      >
+      <Button accessibilityLabel={`Remove ${label}`} onPress={removeItemCb}>
         <SVG icon={minus} width={24} height={24} />
-      </Pressable>
+      </Button>
     </View>
   );
 }

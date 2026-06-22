@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import globalStyles from "@/assets/global-styles";
 import { plus } from "@/assets/icons/plus";
@@ -9,6 +9,7 @@ import {
   SPACING_SM,
 } from "@/src/constants/style-constants";
 import { router } from "expo-router";
+import Button from "../Button";
 import Logo from "../Logo";
 import SVG from "../SVG";
 
@@ -19,9 +20,8 @@ export default function DeckSelectorEmptyState() {
 
       <Text style={globalStyles.textMd}>Add a Deck to get started:</Text>
 
-      <Pressable
-        role="button"
-        style={globalStyles.buttonHighlight}
+      <Button
+        type="highlight"
         onPress={() => {
           router.navigate("/decks/new");
         }}
@@ -30,7 +30,7 @@ export default function DeckSelectorEmptyState() {
         <Text style={[globalStyles.buttonText, { fontSize: FONT_SIZE_MD }]}>
           New Deck
         </Text>
-      </Pressable>
+      </Button>
     </View>
   );
 }

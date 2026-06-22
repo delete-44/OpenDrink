@@ -1,5 +1,6 @@
 import { StyleSheet, TextStyle, ViewStyle } from "react-native";
 import {
+  ACCENT_COLOR,
   BACKGROUND_COLOR,
   BACKGROUND_COLOR_HIGHLIGHT,
   CONTENT_COLOR,
@@ -10,7 +11,6 @@ import {
   FONT_SIZE_MD,
   FONT_SIZE_SM,
   FORM_CONTROL_SIZE,
-  HIGHLIGHT_COLOR,
   SPACING_SM,
   WARNING_COLOR,
 } from "../src/constants/style-constants";
@@ -83,7 +83,7 @@ export default StyleSheet.create({
   },
   buttonHighlight: {
     ...baseButton,
-    backgroundColor: HIGHLIGHT_COLOR,
+    backgroundColor: ACCENT_COLOR,
   },
   buttonDanger: {
     ...baseButton,
@@ -96,6 +96,9 @@ export default StyleSheet.create({
   },
   button: {
     ...baseButton,
+  },
+  buttonPressed: {
+    transform: [{ scale: 0.95 }],
   },
   buttonText: {
     fontFamily: "JockeyOne",

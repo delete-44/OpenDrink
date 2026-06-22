@@ -1,4 +1,4 @@
-# Welcome to your Expo app 👋
+# OpenDrink
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
@@ -18,16 +18,23 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 In the output, you'll find options to open the app in a
 
+- (Recommended) [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)
 - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
 - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Testing
+
+- `npm run test` -> Run tests one-off
+- `npm run test -- --coverage` -> Generate a coverage report
+- `npm run test -- --watchAll` -> Run tests with hot-reloading
+
+## Building locally
+
+To generate a preview build of the app, use `eas build -p android --profile preview --local`
 
 ## Icon attribution
 
-- <a href="https://www.flaticon.com/free-icons/deck-of-cards" title="deck-of-cards icons">Deck-of-cards icons created by Georgiana_Lavinia - Flaticon</a>
 - <a href="https://lucide.dev/icons/pencil">Pencil icon from Lucide</a>
 - <a href="https://lucide.dev/icons/minus">Minus icon from Lucide</a>
 - <a href="https://lucide.dev/icons/plus">Plus icon from Lucide</a>
@@ -36,3 +43,5 @@ You can start developing by editing the files inside the **app** directory. This
 - <a href="https://lucide.dev/icons/move-right">ArrowRight icon from Lucide</a>
 - <a href="https://lucide.dev/icons/chevron-down">ChevronDown icon from Lucide</a>
 - <a href="https://lucide.dev/icons/circle-alert">CircleAlert icon from Lucide</a>
+
+All other assets made by me

@@ -11,6 +11,7 @@ import {
 } from "@/src/constants/style-constants";
 import { PropsWithChildren } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import Button from "./Button";
 import SVG from "./SVG";
 
 type Props = PropsWithChildren<{
@@ -53,14 +54,13 @@ export default function ModalContainer({
             <Text style={globalStyles.textMd} role="heading">
               {title}
             </Text>
-            <Pressable
+            <Button
               onPress={onClose}
-              role="button"
               accessibilityLabel="Close Modal"
-              style={globalStyles.buttonPlain}
+              type="plain"
             >
               <SVG icon={cross} width={22} height={22} color={CONTENT_COLOR} />
-            </Pressable>
+            </Button>
           </View>
 
           {children}

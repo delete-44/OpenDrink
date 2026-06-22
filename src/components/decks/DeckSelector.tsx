@@ -1,10 +1,4 @@
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import globalStyles from "@/assets/global-styles";
 import { chevronDown } from "@/assets/icons/chevronDown";
@@ -19,6 +13,7 @@ import {
 import { StorageContext } from "@/src/context/StorageContext";
 import { router } from "expo-router";
 import { useContext, useState } from "react";
+import Button from "../Button";
 import Logo from "../Logo";
 import SVG from "../SVG";
 import DeckSelectorModal from "./DeckSelectorModal";
@@ -38,9 +33,9 @@ export default function DeckSelector() {
       <View style={styles.deckSelectorWrapper}>
         <Logo />
 
-        <Pressable
-          style={[globalStyles.buttonPlain, styles.actionsContainer]}
-          role="button"
+        <Button
+          type="plain"
+          additionalStyle={styles.actionsContainer}
           onPress={() => setIsModalVisible(true)}
         >
           <Text style={globalStyles.textLg} numberOfLines={1}>
@@ -53,12 +48,10 @@ export default function DeckSelector() {
             height={24}
             color={CONTENT_COLOR}
           />
-        </Pressable>
+        </Button>
 
         <View style={styles.actionsContainer}>
-          <Pressable
-            role="button"
-            style={globalStyles.button}
+          <Button
             onPress={() =>
               router.navigate({
                 pathname: "/decks/[id]/edit",
@@ -68,18 +61,16 @@ export default function DeckSelector() {
           >
             <SVG icon={pencil} width={24} height={24} />
             <Text style={globalStyles.buttonText}>Edit Deck</Text>
-          </Pressable>
+          </Button>
 
-          <Pressable
-            role="button"
-            style={globalStyles.button}
+          <Button
             onPress={() => {
               router.navigate("/decks/new");
             }}
           >
             <SVG icon={plus} width={24} height={24} />
             <Text style={globalStyles.buttonText}>New Deck</Text>
-          </Pressable>
+          </Button>
         </View>
       </View>
 
