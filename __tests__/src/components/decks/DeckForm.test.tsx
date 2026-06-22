@@ -11,7 +11,7 @@ import React from "react";
 describe("DeckForm", () => {
   const mockSaveDeck = jest.fn();
 
-  it("does not render card list for decks with no id", () => {
+  it("renders empty state for decks with no id", () => {
     render(
       <DeckForm
         // @ts-expect-error using stub deck object
@@ -21,6 +21,8 @@ describe("DeckForm", () => {
     );
 
     expect(screen.getByRole("button", { name: "Rename Deck" })).toBeVisible();
+
+    expect(screen.getByText("Give your Deck a name")).toBeVisible();
 
     expect(
       screen.queryByRole("button", { name: "Load Default Cards" }),
@@ -37,6 +39,8 @@ describe("DeckForm", () => {
 
     it("composes the DeckTitleBar & CardList", () => {
       expect(screen.getByRole("button", { name: "Rename Deck" })).toBeVisible();
+
+      expect(screen.queryByText("Give your Deck a name")).toBeNull();
 
       expect(
         screen.getByRole("button", { name: "Load Default Cards" }),
