@@ -12,6 +12,7 @@ import {
   FONT_SIZE_SM,
   FORM_CONTROL_SIZE,
   SPACING_SM,
+  SUCCESS_COLOR,
   WARNING_COLOR,
 } from "../src/constants/style-constants";
 
@@ -66,6 +67,11 @@ export default StyleSheet.create({
     ...baseText,
     fontSize: FONT_SIZE_SM,
     color: WARNING_COLOR,
+  },
+  textSuccess: {
+    ...baseText,
+    fontSize: FONT_SIZE_SM,
+    color: SUCCESS_COLOR,
   },
   textInput: {
     fontFamily: "JockeyOne",
