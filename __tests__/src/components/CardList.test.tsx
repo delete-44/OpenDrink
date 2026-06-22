@@ -138,7 +138,7 @@ describe("CardList", () => {
       expect(screen.queryByText("test error")).toBeNull();
     });
 
-    it("successfully creates cards", async () => {
+    it("renders a success message on create card", async () => {
       const input = screen.getByLabelText("Card Content");
       fireEvent.changeText(input, "Drink up!");
 
@@ -154,6 +154,62 @@ describe("CardList", () => {
       await waitFor(() => {
         expect(input).toHaveProp("value", "");
       });
+
+      expect(screen.getByText("Card added")).toBeVisible();
+    });
+
+    it("clears success message on new input", async () => {
+      const input = screen.getByLabelText("Card Content");
+      fireEvent.changeText(input, "Drink up!");
+
+      const addButton = screen.getByRole("button", {
+        name: "Add Card to Deck",
+      });
+      fireEvent.press(addButton);
+
+      expect(mockCreateCard).toHaveBeenCalledWith({
+        content: "Drink up!",
+      });
+
+      await waitFor(() => {
+        expect(input).toHaveProp("value", "");
+      });
+
+      expect(screen.getByText("Card added")).toBeVisible();
+
+      await act(() => fireEvent.changeText(input, "Drink up!"));
+
+      expect(screen.queryByText("Card added")).toBeNull();
+    });
+
+    it("clears success message on error", async () => {
+      const input = screen.getByLabelText("Card Content");
+      fireEvent.changeText(input, "Drink up!");
+
+      const addButton = screen.getByRole("button", {
+        name: "Add Card to Deck",
+      });
+      fireEvent.press(addButton);
+
+      expect(mockCreateCard).toHaveBeenCalledWith({
+        content: "Drink up!",
+      });
+
+      await waitFor(() => {
+        expect(input).toHaveProp("value", "");
+      });
+
+      expect(screen.getByText("Card added")).toBeVisible();
+
+      mockCreateCard.mockRejectedValueOnce(new Error("test error"));
+
+      fireEvent.press(addButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("test error")).toBeVisible();
+      });
+
+      expect(screen.queryByText("Card added")).toBeNull();
     });
   });
 

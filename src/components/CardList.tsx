@@ -29,6 +29,7 @@ import StatusMessage from "./StatusMessage";
 export default function CardList() {
   const [newCard, setNewCard] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const { isLoading, cards, createCard, createManyCards, deleteCard } =
     useContext(CardContext);
@@ -52,7 +53,9 @@ export default function CardList() {
       try {
         await createCard({ content });
         setNewCard("");
+        setSuccessMessage("Card added");
       } catch (e: any) {
+        setSuccessMessage("");
         setErrorMessage(e.message);
       }
     },
@@ -107,13 +110,15 @@ export default function CardList() {
             multiline
             submitBehaviour="newline"
             onChange={(text) => {
+              setSuccessMessage("");
               setErrorMessage("");
+
               setNewCard(text);
             }}
             statusMessage={
               <StatusMessage
-                type="warning"
-                message={errorMessage}
+                type={successMessage ? "success" : "warning"}
+                message={successMessage || errorMessage}
                 describes="Card Content"
               />
             }
