@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     borderRadius: SPACING_SM,
     borderColor: DECORATION_COLOR,
     borderWidth: 5,
-    marginInline: SPACING_LG * 2,
+    marginHorizontal: SPACING_LG * 2,
     overflow: "hidden",
   },
   titleContainer: {

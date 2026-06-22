@@ -87,7 +87,7 @@ export default function DeckSelector() {
 const styles = StyleSheet.create({
   deckSelectorWrapper: {
     padding: SPACING_MD,
-    marginInline: "auto",
+    marginHorizontal: "auto",
     maxWidth: "75%",
 
     backgroundColor: CONTENT_BACKDROP,
