@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import globalStyles from "@/assets/global-styles";
 import ErrorScreen from "@/src/components/status/ErrorScreen";
 import LoadingScreen from "@/src/components/status/LoadingScreen";
-import { SPACING_MD } from "@/src/constants/style-constants";
+import { SPACING_LG } from "@/src/constants/style-constants";
 import { CardContext } from "@/src/context/CardContext";
 import { StorageContext } from "@/src/context/StorageContext";
 import { Game } from "@/src/models/Game";
@@ -60,7 +60,13 @@ export default function Play() {
         role="button"
         accessibilityLabel="Tap to draw next Card"
       >
-        <Text style={[globalStyles.textLg, styles.screenTextMixin]}>
+        <Text
+          style={[
+            globalStyles.textLg,
+            styles.screenTextMixin,
+            { textDecorationLine: "underline" },
+          ]}
+        >
           {gameState.player.name}&apos;s Turn
         </Text>
         <View style={styles.cardWrapper}>
@@ -77,7 +83,7 @@ const styles = StyleSheet.create({
   buttonWrapper: {
     flex: 1,
     alignItems: "center",
-    padding: SPACING_MD,
+    padding: SPACING_LG,
   },
   screenTextMixin: {
     textAlign: "center",
