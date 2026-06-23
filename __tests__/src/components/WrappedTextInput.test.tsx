@@ -10,12 +10,7 @@ describe("WrappedTextInput", () => {
 
   it("renders a semantic label & text input", () => {
     render(
-      <WrappedTextInput
-        label={label}
-        value={value}
-        onChange={onChange}
-        statusMessage={null}
-      />,
+      <WrappedTextInput label={label} value={value} onChange={onChange} />,
     );
 
     // Assert input is accessible by semantic label
@@ -61,7 +56,6 @@ describe("WrappedTextInput", () => {
         value={value}
         onChange={onChange}
         ariaInvalid
-        statusMessage={null}
       />,
     );
 
@@ -73,12 +67,7 @@ describe("WrappedTextInput", () => {
 
   it("responds to change callback", () => {
     render(
-      <WrappedTextInput
-        label={label}
-        value={value}
-        onChange={onChange}
-        statusMessage={null}
-      />,
+      <WrappedTextInput label={label} value={value} onChange={onChange} />,
     );
 
     const input = screen.getByLabelText(label);

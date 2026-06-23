@@ -72,144 +72,137 @@ describe("CardList", () => {
       expect(screen.queryByText("Error: Failed to load Deck.")).toBeNull();
     });
 
+    it("allows the user to load the default deck", async () => {
+      const loadCardsButton = await screen.findByRole("button", {
+        name: "Load Default Cards",
+      });
+
+      fireEvent.press(loadCardsButton);
+
+      expect(mockCreateManyCards).toHaveBeenCalledWith(DEFAULT_CARDS);
+
+      const successMessage = await screen.findByText("Deck loaded");
+      expect(successMessage).toBeVisible();
+    });
+
     it("shows an error message if the create act fails", async () => {
       mockCreateManyCards.mockRejectedValueOnce(new Error("test error"));
+      const loadCardsButton = await screen.findByRole("button", {
+        name: "Load Default Cards",
+      });
 
-      fireEvent.press(
-        screen.getByRole("button", { name: "Load Default Cards" }),
-      );
+      fireEvent.press(loadCardsButton);
 
       expect(mockCreateManyCards).toHaveBeenCalledWith(DEFAULT_CARDS);
       await waitFor(() => expect(screen.getByText("test error")).toBeVisible());
     });
 
-    it("allows the user to load the default deck", () => {
-      fireEvent.press(
-        screen.getByRole("button", { name: "Load Default Cards" }),
-      );
+    describe("adding cards", () => {
+      const addCard = async (input: any) => {
+        fireEvent.changeText(input, "New card <3");
 
-      expect(mockCreateManyCards).toHaveBeenCalledWith(DEFAULT_CARDS);
-    });
+        const addButton = await screen.findByRole("button", {
+          name: "Add Card to Deck",
+        });
 
-    it("surfaces errors from StorageContext on create", async () => {
-      mockCreateCard.mockRejectedValueOnce(new Error("test error"));
+        await act(() => fireEvent.press(addButton));
 
-      let errorMessage = screen.queryByText("test error");
-      expect(errorMessage).toBeNull();
+        expect(mockCreateCard).toHaveBeenCalledWith({
+          content: "New card <3",
+        });
+      };
 
-      const input = screen.getByLabelText("Card Content");
-      fireEvent.changeText(input, "New card <3");
+      it("surfaces errors from StorageContext on create", async () => {
+        mockCreateCard.mockRejectedValueOnce(new Error("test error"));
 
-      const addButton = screen.getByRole("button", {
-        name: "Add Card to Deck",
-      });
-      fireEvent.press(addButton);
+        let errorMessage = screen.queryByText("test error");
+        expect(errorMessage).toBeNull();
 
-      expect(mockCreateCard).toHaveBeenCalledWith({
-        content: "New card <3",
-      });
-      expect(input).toHaveProp("value", "New card <3");
+        const input = screen.getByLabelText("Card Content");
 
-      await waitFor(() => {
-        expect(screen.getByText("test error")).toBeVisible();
-      });
-    });
+        await addCard(input);
 
-    it("clears error message on new input", async () => {
-      mockCreateCard.mockRejectedValueOnce(new Error("test error"));
+        expect(input).toHaveProp("value", "New card <3");
 
-      expect(screen.queryByText("test error")).toBeNull();
-
-      const input = screen.getByLabelText("Card Content");
-      const addButton = screen.getByRole("button", {
-        name: "Add Card to Deck",
-      });
-      fireEvent.press(addButton);
-
-      expect(mockCreateCard).toHaveBeenCalledWith({ content: "" });
-      expect(input).toHaveProp("value", "");
-
-      await waitFor(() => {
-        expect(screen.getByText("test error")).toBeVisible();
+        await waitFor(() => {
+          expect(screen.getByText("test error")).toBeVisible();
+        });
       });
 
-      await act(() => fireEvent.changeText(input, "Drink up!"));
+      it("clears error message on new input", async () => {
+        mockCreateCard.mockRejectedValueOnce(new Error("test error"));
 
-      expect(screen.queryByText("test error")).toBeNull();
-    });
+        expect(screen.queryByText("test error")).toBeNull();
 
-    it("renders a success message on create card", async () => {
-      const input = screen.getByLabelText("Card Content");
-      fireEvent.changeText(input, "Drink up!");
+        const input = screen.getByLabelText("Card Content");
+        const addButton = screen.getByRole("button", {
+          name: "Add Card to Deck",
+        });
+        fireEvent.press(addButton);
 
-      const addButton = screen.getByRole("button", {
-        name: "Add Card to Deck",
-      });
-      fireEvent.press(addButton);
-
-      expect(mockCreateCard).toHaveBeenCalledWith({
-        content: "Drink up!",
-      });
-
-      await waitFor(() => {
+        expect(mockCreateCard).toHaveBeenCalledWith({ content: "" });
         expect(input).toHaveProp("value", "");
+
+        await waitFor(() => {
+          expect(screen.getByText("test error")).toBeVisible();
+        });
+
+        await act(() => fireEvent.changeText(input, "Drink up!"));
+
+        expect(screen.queryByText("test error")).toBeNull();
       });
 
-      expect(screen.getByText("Card added")).toBeVisible();
-    });
+      it("renders a success message on create card", async () => {
+        const input = await screen.findByLabelText("Card Content");
 
-    it("clears success message on new input", async () => {
-      const input = screen.getByLabelText("Card Content");
-      fireEvent.changeText(input, "Drink up!");
+        await addCard(input);
 
-      const addButton = screen.getByRole("button", {
-        name: "Add Card to Deck",
-      });
-      fireEvent.press(addButton);
+        const successMessage = await screen.findByText("Card added");
 
-      expect(mockCreateCard).toHaveBeenCalledWith({
-        content: "Drink up!",
+        expect(successMessage).toBeVisible();
       });
 
-      await waitFor(() => {
-        expect(input).toHaveProp("value", "");
+      it("clears success message on new input", async () => {
+        const input = screen.getByLabelText("Card Content");
+
+        await addCard(input);
+
+        await waitFor(() => {
+          expect(input).toHaveProp("value", "");
+        });
+
+        expect(screen.getByText("Card added")).toBeVisible();
+
+        await act(() => fireEvent.changeText(input, "Drink up!"));
+
+        expect(screen.queryByText("Card added")).toBeNull();
       });
 
-      expect(screen.getByText("Card added")).toBeVisible();
+      it("clears success message on error", async () => {
+        const input = screen.getByLabelText("Card Content");
 
-      await act(() => fireEvent.changeText(input, "Drink up!"));
+        await addCard(input);
 
-      expect(screen.queryByText("Card added")).toBeNull();
-    });
+        await waitFor(() => {
+          expect(input).toHaveProp("value", "");
+        });
 
-    it("clears success message on error", async () => {
-      const input = screen.getByLabelText("Card Content");
-      fireEvent.changeText(input, "Drink up!");
+        expect(screen.getByText("Card added")).toBeVisible();
 
-      const addButton = screen.getByRole("button", {
-        name: "Add Card to Deck",
+        mockCreateCard.mockRejectedValueOnce(new Error("test error"));
+
+        const addButton = screen.getByRole("button", {
+          name: "Add Card to Deck",
+        });
+
+        fireEvent.press(addButton);
+
+        await waitFor(() => {
+          expect(screen.getByText("test error")).toBeVisible();
+        });
+
+        expect(screen.queryByText("Card added")).toBeNull();
       });
-      fireEvent.press(addButton);
-
-      expect(mockCreateCard).toHaveBeenCalledWith({
-        content: "Drink up!",
-      });
-
-      await waitFor(() => {
-        expect(input).toHaveProp("value", "");
-      });
-
-      expect(screen.getByText("Card added")).toBeVisible();
-
-      mockCreateCard.mockRejectedValueOnce(new Error("test error"));
-
-      fireEvent.press(addButton);
-
-      await waitFor(() => {
-        expect(screen.getByText("test error")).toBeVisible();
-      });
-
-      expect(screen.queryByText("Card added")).toBeNull();
     });
   });
 

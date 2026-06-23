@@ -41,6 +41,7 @@ export default function CardList() {
     async (newCards: CardPermittedFields[]) => {
       try {
         await createManyCards(newCards);
+        setSuccessMessage("Deck loaded");
       } catch (e: any) {
         setErrorMessage(e.message);
       }
@@ -55,7 +56,6 @@ export default function CardList() {
         setNewCard("");
         setSuccessMessage("Card added");
       } catch (e: any) {
-        setSuccessMessage("");
         setErrorMessage(e.message);
       }
     },
@@ -116,11 +116,19 @@ export default function CardList() {
               setNewCard(text);
             }}
             statusMessage={
-              <StatusMessage
-                type={successMessage ? "success" : "warning"}
-                message={successMessage || errorMessage}
-                describes="Card Content"
-              />
+              errorMessage ? (
+                <StatusMessage
+                  type="warning"
+                  message={errorMessage}
+                  describes="Card Content"
+                />
+              ) : (
+                <StatusMessage
+                  type={"success"}
+                  message={successMessage}
+                  describes="Card Content"
+                />
+              )
             }
           />
 

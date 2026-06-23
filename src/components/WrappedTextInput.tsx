@@ -20,7 +20,7 @@ type WrappedTextInputProps = {
   ariaInvalid?: boolean;
   onChange: (text: string) => void;
   onSubmit?: () => void;
-  statusMessage: ReactElement<StatusMessageProps> | null;
+  statusMessage?: ReactElement<StatusMessageProps>;
 };
 
 export default function WrappedTextInput({
@@ -58,6 +58,7 @@ export default function WrappedTextInput({
         submitBehavior={submitBehaviour}
       />
 
+      {/* Space for the message is kept even if the message is undefined, with a fixed height, to avoid UI jumps */}
       <View style={style.textWrapper}>{statusMessage}</View>
     </View>
   );
