@@ -43,5 +43,6 @@ To generate a preview build of the app, use `eas build -p android --profile prev
 - <a href="https://lucide.dev/icons/move-right">ArrowRight icon from Lucide</a>
 - <a href="https://lucide.dev/icons/chevron-down">ChevronDown icon from Lucide</a>
 - <a href="https://lucide.dev/icons/circle-alert">CircleAlert icon from Lucide</a>
+- <a href="https://lucide.dev/icons/circle-check">CircleCheck icon from Lucide</a>
 
 All other assets made by me

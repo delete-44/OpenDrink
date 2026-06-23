@@ -13,6 +13,7 @@ import { Deck } from "@/src/models/Deck";
 import { useCallback, useState } from "react";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import Button from "../Button";
+import StatusMessage from "../StatusMessage";
 import SVG from "../SVG";
 import WrappedTextInput from "../WrappedTextInput";
 import DeleteDeckModal from "./DeleteDeckModal";
@@ -52,7 +53,8 @@ export default function DeckTitlebar({
         <WrappedTextInput
           label="Deck Name"
           value={workingDeckName}
-          errorMessage={deckNameErrorMessage}
+          autocorrect
+          ariaInvalid={deckNameErrorMessage !== ""}
           submitBehaviour="blurAndSubmit"
           onSubmit={() => updateDeckName(workingDeckName)}
           onChange={(text) => {
@@ -60,6 +62,13 @@ export default function DeckTitlebar({
             setWorkingDeckName(text);
           }}
           autofocus
+          statusMessage={
+            <StatusMessage
+              type="warning"
+              message={deckNameErrorMessage}
+              describes="Deck Name"
+            />
+          }
         />
 
         <Button

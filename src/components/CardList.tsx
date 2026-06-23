@@ -1,11 +1,3 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  KeyboardAvoidingView,
-  StyleSheet,
-  View,
-} from "react-native";
-
 import { plus } from "@/assets/icons/plus";
 import HorizontalDivider from "@/src/components/HorizontalDivider";
 import RemovableListItem from "@/src/components/RemovableListItem";
@@ -22,13 +14,22 @@ import {
   SPACING_SM,
 } from "@/src/constants/style-constants";
 import { useCallback, useContext, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  KeyboardAvoidingView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { CardContext } from "../context/CardContext";
 import { CardPermittedFields } from "../repositories/CardRepository";
 import Button from "./Button";
+import StatusMessage from "./StatusMessage";
 
 export default function CardList() {
   const [newCard, setNewCard] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const { isLoading, cards, createCard, createManyCards, deleteCard } =
     useContext(CardContext);
@@ -40,6 +41,7 @@ export default function CardList() {
     async (newCards: CardPermittedFields[]) => {
       try {
         await createManyCards(newCards);
+        setSuccessMessage("Deck loaded");
       } catch (e: any) {
         setErrorMessage(e.message);
       }
@@ -52,6 +54,7 @@ export default function CardList() {
       try {
         await createCard({ content });
         setNewCard("");
+        setSuccessMessage("Card added");
       } catch (e: any) {
         setErrorMessage(e.message);
       }
@@ -102,13 +105,31 @@ export default function CardList() {
           <WrappedTextInput
             label="Card Content"
             value={newCard}
-            errorMessage={errorMessage}
+            autocorrect
+            ariaInvalid={errorMessage !== ""}
             multiline
             submitBehaviour="newline"
             onChange={(text) => {
+              setSuccessMessage("");
               setErrorMessage("");
+
               setNewCard(text);
             }}
+            statusMessage={
+              errorMessage ? (
+                <StatusMessage
+                  type="warning"
+                  message={errorMessage}
+                  describes="Card Content"
+                />
+              ) : (
+                <StatusMessage
+                  type={"success"}
+                  message={successMessage}
+                  describes="Card Content"
+                />
+              )
+            }
           />
 
           <Button

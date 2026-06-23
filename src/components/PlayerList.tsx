@@ -14,6 +14,7 @@ import Button from "./Button";
 import HorizontalDivider from "./HorizontalDivider";
 import RemovableListItem from "./RemovableListItem";
 import PlayerListEmptyState from "./status/PlayerListEmptyState";
+import StatusMessage from "./StatusMessage";
 import SVG from "./SVG";
 import WrappedTextInput from "./WrappedTextInput";
 
@@ -53,13 +54,20 @@ export default function PlayerList() {
         <WrappedTextInput
           label="Name"
           value={newPlayer}
-          errorMessage={errorMessage}
+          ariaInvalid={errorMessage !== ""}
           submitBehaviour="submit"
           onSubmit={() => addPlayer(newPlayer)}
           onChange={(text) => {
             setErrorMessage("");
             setNewPlayer(text);
           }}
+          statusMessage={
+            <StatusMessage
+              type="warning"
+              message={errorMessage}
+              describes="Name"
+            />
+          }
         />
 
         <Button

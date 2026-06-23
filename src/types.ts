@@ -88,3 +88,11 @@ export type StorageContextProps = {
   deletePlayer: (id: number) => Promise<void>;
   isLoading: boolean;
 };
+
+export type statusType = "success" | "warning";
+
+export type StatusMessageProps = {
+  type: statusType;
+  message: string;
+  describes: string; // HTML ID of the component this is associated with
+};

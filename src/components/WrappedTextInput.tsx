@@ -1,10 +1,6 @@
 import globalStyles from "@/assets/global-styles";
-import { circleAlert } from "@/assets/icons/circleAlert";
-import {
-  FORM_LABEL_HEIGHT,
-  SPACING_SM,
-  WARNING_COLOR,
-} from "@/src/constants/style-constants";
+import { FORM_LABEL_HEIGHT, SPACING_SM } from "@/src/constants/style-constants";
+import { ReactElement } from "react";
 import {
   StyleSheet,
   SubmitBehavior,
@@ -12,28 +8,32 @@ import {
   TextInput,
   View,
 } from "react-native";
-import SVG from "./SVG";
+import { StatusMessageProps } from "../types";
 
 type WrappedTextInputProps = {
   label: string;
   value: string;
-  errorMessage: string;
   submitBehaviour?: SubmitBehavior;
+  autocorrect?: boolean;
   autofocus?: boolean;
   multiline?: boolean;
+  ariaInvalid?: boolean;
   onChange: (text: string) => void;
   onSubmit?: () => void;
+  statusMessage?: ReactElement<StatusMessageProps>;
 };
 
 export default function WrappedTextInput({
   label,
   value,
-  errorMessage,
+  autocorrect = false,
   autofocus = false,
   multiline = false,
+  ariaInvalid = false,
   submitBehaviour,
   onChange,
   onSubmit,
+  statusMessage,
 }: WrappedTextInputProps) {
   return (
     <View style={globalStyles.formGroup}>
@@ -44,10 +44,10 @@ export default function WrappedTextInput({
       </View>
 
       <TextInput
-        autoCorrect={false}
+        autoCorrect={autocorrect}
         aria-labelledby={`${label}-label`}
-        aria-invalid={errorMessage !== ""}
-        aria-describedby={errorMessage ? `${label}-error` : undefined}
+        aria-invalid={ariaInvalid}
+        aria-describedby={statusMessage ? `${label}-status` : undefined}
         style={globalStyles.textInput}
         value={value}
         onChangeText={onChange}
@@ -58,27 +58,8 @@ export default function WrappedTextInput({
         submitBehavior={submitBehaviour}
       />
 
-      <View style={style.textWrapper}>
-        {errorMessage && (
-          <>
-            <SVG
-              icon={circleAlert}
-              color={WARNING_COLOR}
-              width={18}
-              height={18}
-            />
-
-            <Text
-              style={globalStyles.textWarning}
-              role="alert"
-              accessibilityLiveRegion="polite"
-              nativeID={`${label}-error`}
-            >
-              {errorMessage}
-            </Text>
-          </>
-        )}
-      </View>
+      {/* Space for the message is kept even if the message is undefined, with a fixed height, to avoid UI jumps */}
+      <View style={style.textWrapper}>{statusMessage}</View>
     </View>
   );
 }
