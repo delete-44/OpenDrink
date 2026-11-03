@@ -29,7 +29,7 @@
     ]
   },
   "dependencies": {
-    "expo": "^55.0.24",
+    "expo": "^58.0.22",
     "expo-constants": "~55.0.16",
     "expo-font": "~55.0.7",
     "expo-image": "~55.0.11",
